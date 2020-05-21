@@ -1,6 +1,18 @@
-# LitElement TypeScript starter 
+# glade-component
 
-This project includes a sample component using LitElement with TypeScript.
+### Glade's vision for the internet is that every webpage can be annotated by any user.
+
+After wrapping your content with the tag, all users will need to do is highlight a section of a webpage, to add an annotation, whatever media that may be.
+
+```
+<glade-annotateable slug="readme-example">
+  <div>
+    <p>This web content will be ingested by Glade, because it is encapsulated within a single child node of the component</p>
+    <p>Users viewing this will be able to highlight any portion of this text, and attach an annotation!</p>
+    <p>When this content is loaded, we will look for annotations in our db, using the "slug" attribute</p>
+  </div>
+</glade-annotateable>
+```
 
 ## Setup
 
