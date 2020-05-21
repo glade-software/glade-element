@@ -1,4 +1,4 @@
-# glade-component
+# glade-element
 
 ### Glade's vision for the internet is that every webpage can be annotated by any user.
 
