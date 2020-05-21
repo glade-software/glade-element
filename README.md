@@ -6,11 +6,9 @@ After wrapping your content with the tag, all users will need to do is highlight
 
 ```
 <glade-annotateable slug="readme-example">
-  <div>
-    <p>This web content will be ingested by Glade, because it is encapsulated within a single child node of the component</p>
+    <p>This web content will be ingested by Glade, because it is encapsulated within the glade-annotateable tag</p>
     <p>Users viewing this will be able to highlight any portion of this text, and attach an annotation!</p>
     <p>When this content is loaded, we will look for annotations in our db, using the "slug" attribute</p>
-  </div>
 </glade-annotateable>
 ```
 
