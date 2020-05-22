@@ -46,7 +46,11 @@ export class GladeAnnotateable extends LitElement {
 
   db!: firebase.firestore.Firestore;
 
-  annotations = [];
+  annotations: Array<{
+    body: string;
+    gladeDomNodeIndex: number;
+    postedBy: string;
+  }> = [];
 
   constructor() {
     super();
