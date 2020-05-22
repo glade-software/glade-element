@@ -18,6 +18,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { LitElement, html, customElement, property, css } from 'lit-element';
+import firebase from 'firebase';
 /**
  * An example element.
  *
@@ -30,27 +31,56 @@ let GladeAnnotateable = class GladeAnnotateable extends LitElement {
         /**
          * The slug used to fetch the Glade document
          */
-        this.slug = null;
-        this.annotations = [
-            {
-                gladeIndex: 3,
-                body: 'this is some body text',
-                postedBy: 'matt',
-            },
-        ];
+        this.slug = '';
+        // traditionally should not be published, but the embeddable nature of <glade-component> seems to be an exception
+        this.firebaseConfig = {
+            apiKey: 'AIzaSyAtc2ed5rsHT7IOF9E1psFhkqtCqKib25U',
+            authDomain: 'glade-software-firebase.firebaseapp.com',
+            databaseURL: 'https://glade-software-firebase.firebaseio.com',
+            projectId: 'glade-software-firebase',
+            storageBucket: 'glade-software-firebase.appspot.com',
+            messagingSenderId: '527964919900',
+            appId: '1:527964919900:web:dc1ffc9e14a70b08b3ae99',
+        };
+        this.annotations = [];
         this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
     }
-    initializeFirebase() { }
-    showAnnotations(gladeIndex) {
-        console.log(this.annotations.filter((annotation) => annotation.gladeIndex === gladeIndex));
+    initializeFirebase() {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(this.firebaseConfig);
+        }
+        this.db = firebase.firestore();
     }
-    connectedCallback() {
+    async getAnnotationsFromDB() {
+        if (this.slug.length) {
+            const annotationsSnapshots = await this.db
+                .collection('glade-trees')
+                .doc(this.slug)
+                .collection('annotations')
+                .get();
+            annotationsSnapshots.forEach((document) => {
+                const { body, postedBy, domNodeIndex } = document.data();
+                console.log('document.data()', document.data());
+                this.annotations.push({
+                    body,
+                    postedBy,
+                    gladeDomNodeIndex: domNodeIndex,
+                });
+            });
+        }
+    }
+    showAnnotations(gladeDomNodeIndex) {
+        console.log(this.annotations.filter((annotation) => annotation.gladeDomNodeIndex === gladeDomNodeIndex));
+    }
+    async connectedCallback() {
         super.connectedCallback();
+        this.initializeFirebase();
+        await this.getAnnotationsFromDB();
         console.log(`there are ${this.gladeContentNodes.length} DOM nodes descending from this component`);
         console.log(this.slug);
         this.gladeContentNodes.forEach((node, idx) => {
-            const annotationsForIndex = this.annotations.filter(({ gladeIndex }) => {
-                return gladeIndex === idx;
+            const annotationsForIndex = this.annotations.filter(({ gladeDomNodeIndex }) => {
+                return gladeDomNodeIndex === idx;
             });
             if (annotationsForIndex.length) {
                 node.classList.add('glade-has-annotations');
@@ -60,17 +90,15 @@ let GladeAnnotateable = class GladeAnnotateable extends LitElement {
             }
             node.setAttribute('data-glade-index', `${idx}`);
         });
-        this.initializeFirebase();
     }
     render() {
         return html `<slot
-        @mouseup=${(ev) => {
+      @mouseup=${(ev) => {
             const targetNode = ev.path[0];
-            const gladeIndex = targetNode.getAttribute('data-glade-index');
-            console.log('mouseup @ gladeIndex', gladeIndex);
+            const gladeDomNodeIndex = targetNode.getAttribute('data-glade-index');
+            console.log('mouseup @ gladeIndex', gladeDomNodeIndex);
         }}
-      ></slot>
-      <div></div> `;
+    ></slot>`;
     }
 };
 GladeAnnotateable.styles = css `

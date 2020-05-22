@@ -12,6 +12,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 import { LitElement } from 'lit-element';
+import firebase from 'firebase';
 /**
  * An example element.
  *
@@ -26,17 +27,28 @@ export declare class GladeAnnotateable extends LitElement {
     /**
      * The slug used to fetch the Glade document
      */
-    slug: null;
-    annotations: {
-        gladeIndex: number;
+    slug: string;
+    firebaseConfig: {
+        apiKey: string;
+        authDomain: string;
+        databaseURL: string;
+        projectId: string;
+        storageBucket: string;
+        messagingSenderId: string;
+        appId: string;
+    };
+    db: firebase.firestore.Firestore;
+    annotations: Array<{
         body: string;
+        gladeDomNodeIndex: number;
         postedBy: string;
-    }[];
+    }>;
     constructor();
     static styles: import("lit-element").CSSResult;
     initializeFirebase(): void;
-    showAnnotations(gladeIndex: number): void;
-    connectedCallback(): void;
+    getAnnotationsFromDB(): Promise<void>;
+    showAnnotations(gladeDomNodeIndex: number): void;
+    connectedCallback(): Promise<void>;
     render(): import("lit-element").TemplateResult;
 }
 declare global {
