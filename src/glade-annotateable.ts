@@ -106,34 +106,38 @@ export class GladeAnnotateable extends LitElement {
     this.initializeFirebase();
     await this.getAnnotationsFromDB();
 
-    console.log(
-      `there are ${this.gladeContentNodes.length} DOM nodes descending from this component`
-    );
-
-    console.log(this.slug);
+    console.log(`glade document slug is: ${this.slug}`);
 
     this.gladeContentNodes.forEach((node, idx) => {
+      // aggregate all annotations for a given node index in the DOM
       const annotationsForIndex = this.annotations.filter(
         ({gladeDomNodeIndex}) => {
           return gladeDomNodeIndex === idx;
         }
       );
 
+      // if a node index has annotations, give it a class for CSS styles and a click listener
       if (annotationsForIndex.length) {
         node.classList.add('glade-has-annotations');
+
         node.addEventListener('click', () => {
           this.showAnnotations(idx);
         });
+      } else {
+        // clear class if it is wrongly present on a DOM node that has no annotations
+        node.classList.remove('glade-has-annotations');
       }
 
+      // set the index attribute corresponding to the node's position in the list
       node.setAttribute('data-glade-index', `${idx}`);
     });
   }
 
   render() {
     return html`<slot
-      @mouseup=${(ev) => {
-        const targetNode = ev.path[0];
+      @mouseup=${(ev: MouseEvent) => {
+        // deepest node in DOM tree that recieved this event
+        const targetNode = ev?.composedPath()[0] as Element;
         const gladeDomNodeIndex = targetNode.getAttribute('data-glade-index');
 
         console.log('mouseup @ gladeIndex', gladeDomNodeIndex);
