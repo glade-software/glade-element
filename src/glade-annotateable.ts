@@ -13,13 +13,10 @@
  */
 
 import {LitElement, html, customElement, property, css} from 'lit-element';
+import '@material/mwc-dialog';
+import '@material/mwc-button';
 import firebase from 'firebase';
-/**
- * An example element.
- *
- * @slot - This element has a slot
- * @csspart button - The button
- */
+
 @customElement('glade-annotateable')
 export class GladeAnnotateable extends LitElement {
   /**
@@ -32,6 +29,9 @@ export class GladeAnnotateable extends LitElement {
    */
   @property({type: String})
   slug = '';
+
+  @property({type: Boolean})
+  annotationsModalOpened = false;
 
   // traditionally should not be published, but the embeddable nature of <glade-component> seems to be an exception
   firebaseConfig = {
@@ -52,6 +52,12 @@ export class GladeAnnotateable extends LitElement {
     postedBy: string;
   }> = [];
 
+  activeAnnotations: Array<{
+    body: string;
+    gladeDomNodeIndex: number;
+    postedBy: string;
+  }> = [];
+
   constructor() {
     super();
     this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
@@ -65,6 +71,12 @@ export class GladeAnnotateable extends LitElement {
       max-width: 800px;
     }
   `;
+
+  annotationsForIndex(domNodeIndex: number) {
+    return this.annotations.filter(
+      (annotation) => annotation.gladeDomNodeIndex === domNodeIndex
+    );
+  }
 
   initializeFirebase() {
     if (!firebase.apps.length) {
@@ -93,14 +105,6 @@ export class GladeAnnotateable extends LitElement {
     }
   }
 
-  showAnnotations(gladeDomNodeIndex: number) {
-    console.log(
-      this.annotations.filter(
-        (annotation) => annotation.gladeDomNodeIndex === gladeDomNodeIndex
-      )
-    );
-  }
-
   async connectedCallback() {
     super.connectedCallback();
     this.initializeFirebase();
@@ -119,10 +123,6 @@ export class GladeAnnotateable extends LitElement {
       // if a node index has annotations, give it a class for CSS styles and a click listener
       if (annotationsForIndex.length) {
         node.classList.add('glade-has-annotations');
-
-        node.addEventListener('click', () => {
-          this.showAnnotations(idx);
-        });
       } else {
         // clear class if it is wrongly present on a DOM node that has no annotations
         node.classList.remove('glade-has-annotations');
@@ -134,15 +134,37 @@ export class GladeAnnotateable extends LitElement {
   }
 
   render() {
-    return html`<slot
-      @mouseup=${(ev: MouseEvent) => {
-        // deepest node in DOM tree that recieved this event
-        const targetNode = ev?.composedPath()[0] as Element;
-        const gladeDomNodeIndex = targetNode.getAttribute('data-glade-index');
+    return html`<mwc-dialog
+        @closed=${() => {
+          this.annotationsModalOpened = false;
+        }}
+        heading="annotations"
+        ?open=${this.annotationsModalOpened}
+      >
+        <div>
+          ${this.activeAnnotations.map((annotation) => {
+            return html`<span style="color: #1A535C;"
+                >${annotation.postedBy}</span
+              >:
+              <p>${annotation.body}</p>`;
+          })}
+        </div>
+        <mwc-button slot="primaryAction">create annotation!</mwc-button>
+      </mwc-dialog>
+      <slot
+        @mouseup=${(ev: MouseEvent) => {
+          // deepest node in DOM tree that recieved this event
+          const targetNode = ev?.composedPath()[0] as Element;
 
-        console.log('mouseup @ gladeIndex', gladeDomNodeIndex);
-      }}
-    ></slot>`;
+          const gladeDomNodeIndex: number = parseInt(
+            targetNode.getAttribute('data-glade-index') as string
+          );
+
+          this.activeAnnotations = this.annotationsForIndex(gladeDomNodeIndex);
+          this.annotationsModalOpened = true;
+          this.requestUpdate();
+        }}
+      ></slot>`;
   }
 }
 

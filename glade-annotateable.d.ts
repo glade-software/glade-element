@@ -12,6 +12,8 @@
  * http://polymer.github.io/PATENTS.txt
  */
 import { LitElement } from 'lit-element';
+import '@material/mwc-dialog';
+import '@material/mwc-button';
 import firebase from 'firebase';
 /**
  * An example element.
@@ -28,6 +30,7 @@ export declare class GladeAnnotateable extends LitElement {
      * The slug used to fetch the Glade document
      */
     slug: string;
+    annotationsModalOpened: boolean;
     firebaseConfig: {
         apiKey: string;
         authDomain: string;
@@ -43,11 +46,20 @@ export declare class GladeAnnotateable extends LitElement {
         gladeDomNodeIndex: number;
         postedBy: string;
     }>;
+    activeAnnotations: Array<{
+        body: string;
+        gladeDomNodeIndex: number;
+        postedBy: string;
+    }>;
     constructor();
     static styles: import("lit-element").CSSResult;
+    annotationsForIndex(domNodeIndex: number): {
+        body: string;
+        gladeDomNodeIndex: number;
+        postedBy: string;
+    }[];
     initializeFirebase(): void;
     getAnnotationsFromDB(): Promise<void>;
-    showAnnotations(gladeDomNodeIndex: number): void;
     connectedCallback(): Promise<void>;
     render(): import("lit-element").TemplateResult;
 }

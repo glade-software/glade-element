@@ -18,6 +18,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { LitElement, html, customElement, property, css } from 'lit-element';
+import '@material/mwc-dialog';
+import '@material/mwc-button';
 import firebase from 'firebase';
 /**
  * An example element.
@@ -32,6 +34,7 @@ let GladeAnnotateable = class GladeAnnotateable extends LitElement {
          * The slug used to fetch the Glade document
          */
         this.slug = '';
+        this.annotationsModalOpened = false;
         // traditionally should not be published, but the embeddable nature of <glade-component> seems to be an exception
         this.firebaseConfig = {
             apiKey: 'AIzaSyAtc2ed5rsHT7IOF9E1psFhkqtCqKib25U',
@@ -43,7 +46,11 @@ let GladeAnnotateable = class GladeAnnotateable extends LitElement {
             appId: '1:527964919900:web:dc1ffc9e14a70b08b3ae99',
         };
         this.annotations = [];
+        this.activeAnnotations = [];
         this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
+    }
+    annotationsForIndex(domNodeIndex) {
+        return this.annotations.filter((annotation) => annotation.gladeDomNodeIndex === domNodeIndex);
     }
     initializeFirebase() {
         if (!firebase.apps.length) {
@@ -69,15 +76,11 @@ let GladeAnnotateable = class GladeAnnotateable extends LitElement {
             });
         }
     }
-    showAnnotations(gladeDomNodeIndex) {
-        console.log(this.annotations.filter((annotation) => annotation.gladeDomNodeIndex === gladeDomNodeIndex));
-    }
     async connectedCallback() {
         super.connectedCallback();
         this.initializeFirebase();
         await this.getAnnotationsFromDB();
-        console.log(`there are ${this.gladeContentNodes.length} DOM nodes descending from this component`);
-        console.log(this.slug);
+        console.log(`glade document slug is: ${this.slug}`);
         this.gladeContentNodes.forEach((node, idx) => {
             // aggregate all annotations for a given node index in the DOM
             const annotationsForIndex = this.annotations.filter(({ gladeDomNodeIndex }) => {
@@ -86,9 +89,6 @@ let GladeAnnotateable = class GladeAnnotateable extends LitElement {
             // if a node index has annotations, give it a class for CSS styles and a click listener
             if (annotationsForIndex.length) {
                 node.classList.add('glade-has-annotations');
-                node.addEventListener('click', () => {
-                    this.showAnnotations(idx);
-                });
             }
             else {
                 // clear class if it is wrongly present on a DOM node that has no annotations
@@ -99,14 +99,36 @@ let GladeAnnotateable = class GladeAnnotateable extends LitElement {
         });
     }
     render() {
-        return html `<slot
-      @mouseup=${(ev) => {
+        console.log('this.annotationsModalOpened', this.annotationsModalOpened);
+        return html `<mwc-dialog
+        @closed=${() => {
+            this.annotationsModalOpened = false;
+        }}
+        heading="annotations"
+        ?open=${this.annotationsModalOpened}
+      >
+        <div>
+          ${this.activeAnnotations.map((annotation) => {
+            return html `<span style="color: #1A535C;"
+                >${annotation.postedBy}</span
+              >:
+              <p>${annotation.body}</p>`;
+        })}
+        </div>
+        <mwc-button slot="primaryAction">create annotation!</mwc-button>
+      </mwc-dialog>
+      <slot
+        @mouseup=${(ev) => {
             // deepest node in DOM tree that recieved this event
             const targetNode = ev === null || ev === void 0 ? void 0 : ev.composedPath()[0];
-            const gladeDomNodeIndex = targetNode.getAttribute('data-glade-index');
-            console.log('mouseup @ gladeIndex', gladeDomNodeIndex);
+            const gladeDomNodeIndex = parseInt(targetNode.getAttribute('data-glade-index'));
+            this.activeAnnotations = this.annotationsForIndex(gladeDomNodeIndex);
+            this.annotationsModalOpened = true;
+            this.requestUpdate();
+            console.log('gladeDomNodeIndex', gladeDomNodeIndex);
+            console.log('this.activeAnnotations', this.activeAnnotations);
         }}
-    ></slot>`;
+      ></slot>`;
     }
 };
 GladeAnnotateable.styles = css `
@@ -120,6 +142,9 @@ GladeAnnotateable.styles = css `
 __decorate([
     property({ type: String })
 ], GladeAnnotateable.prototype, "slug", void 0);
+__decorate([
+    property({ type: Boolean })
+], GladeAnnotateable.prototype, "annotationsModalOpened", void 0);
 GladeAnnotateable = __decorate([
     customElement('glade-annotateable')
 ], GladeAnnotateable);
