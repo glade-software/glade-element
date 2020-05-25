@@ -15,12 +15,6 @@ import { LitElement } from 'lit-element';
 import '@material/mwc-dialog';
 import '@material/mwc-button';
 import firebase from 'firebase';
-/**
- * An example element.
- *
- * @slot - This element has a slot
- * @csspart button - The button
- */
 export declare class GladeAnnotateable extends LitElement {
     /**
      * The content nodes inside the tag
