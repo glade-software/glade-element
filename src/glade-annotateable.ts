@@ -153,16 +153,20 @@ export class GladeAnnotateable extends LitElement {
       </mwc-dialog>
       <slot
         @mouseup=${(ev: MouseEvent) => {
-          // deepest node in DOM tree that recieved this event
-          const targetNode = ev?.composedPath()[0] as Element;
+          if (ev.button === 0) {
+            // deepest node in DOM tree that recieved this event
+            const targetNode = ev?.composedPath()[0] as Element;
 
-          const gladeDomNodeIndex: number = parseInt(
-            targetNode.getAttribute('data-glade-index') as string
-          );
+            const gladeDomNodeIndex: number = parseInt(
+              targetNode.getAttribute('data-glade-index') as string
+            );
 
-          this.activeAnnotations = this.annotationsForIndex(gladeDomNodeIndex);
-          this.annotationsModalOpened = true;
-          this.requestUpdate();
+            this.activeAnnotations = this.annotationsForIndex(
+              gladeDomNodeIndex
+            );
+            this.annotationsModalOpened = true;
+            this.requestUpdate();
+          }
         }}
       ></slot>`;
   }

@@ -113,12 +113,14 @@ let GladeAnnotateable = /** @class */ (() => {
       </mwc-dialog>
       <slot
         @mouseup=${(ev) => {
-                // deepest node in DOM tree that recieved this event
-                const targetNode = ev === null || ev === void 0 ? void 0 : ev.composedPath()[0];
-                const gladeDomNodeIndex = parseInt(targetNode.getAttribute('data-glade-index'));
-                this.activeAnnotations = this.annotationsForIndex(gladeDomNodeIndex);
-                this.annotationsModalOpened = true;
-                this.requestUpdate();
+                if (ev.button === 0) {
+                    // deepest node in DOM tree that recieved this event
+                    const targetNode = ev === null || ev === void 0 ? void 0 : ev.composedPath()[0];
+                    const gladeDomNodeIndex = parseInt(targetNode.getAttribute('data-glade-index'));
+                    this.activeAnnotations = this.annotationsForIndex(gladeDomNodeIndex);
+                    this.annotationsModalOpened = true;
+                    this.requestUpdate();
+                }
             }}
       ></slot>`;
         }
