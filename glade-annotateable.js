@@ -52,6 +52,16 @@ let GladeAnnotateable = /** @class */ (() => {
                 firebase.initializeApp(this.firebaseConfig);
             }
             this.db = firebase.firestore();
+            this.user = firebase.auth().currentUser;
+            firebase.auth().onAuthStateChanged(this.handleAuthStateChanged.bind(this));
+        }
+        handleAuthStateChanged(u) {
+            if (u) {
+                this.user = u;
+            }
+            else {
+                this.user = null;
+            }
         }
         async getAnnotationsFromDB() {
             if (this.slug.length) {
@@ -93,6 +103,15 @@ let GladeAnnotateable = /** @class */ (() => {
                 node.setAttribute('data-glade-index', `${idx}`);
             });
         }
+        handleClickCreateAnnotation(ev) {
+            console.log(this.user);
+            console.log('clicked create annotation', ev);
+        }
+        handleClickSignIn(ev) {
+            console.log(this.user);
+            console.log('clicked create annotation', ev);
+            firebase.auth().signInAnonymously();
+        }
         render() {
             return html `<mwc-dialog
         @closed=${() => {
@@ -103,13 +122,26 @@ let GladeAnnotateable = /** @class */ (() => {
       >
         <div>
           ${this.activeAnnotations.map((annotation) => {
-                return html `<span style="color: #1A535C;"
-                >${annotation.postedBy}</span
-              >:
-              <p>${annotation.body}</p>`;
+                return html `<div style="border: 1px solid; margin:8px; padding:8px;">
+              <span style="color: #1A535C;">${annotation.postedBy}</span>:
+              <p>${annotation.body}</p>
+            </div>`;
             })}
         </div>
-        <mwc-button slot="primaryAction">create annotation!</mwc-button>
+
+        <mwc-button
+          slot="secondaryAction"
+          @click=${this.handleClickSignIn}
+          ?disabled=${!!this.user}
+          >sign in!</mwc-button
+        >
+
+        <mwc-button
+          slot="primaryAction"
+          @click=${this.handleClickCreateAnnotation}
+          ?disabled=${!this.user}
+          >create annotation!</mwc-button
+        >
       </mwc-dialog>
       <slot
         @mouseup=${(ev) => {

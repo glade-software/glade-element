@@ -35,6 +35,7 @@ export declare class GladeAnnotateable extends LitElement {
         appId: string;
     };
     db: firebase.firestore.Firestore;
+    user: firebase.User | null;
     annotations: Array<{
         body: string;
         gladeDomNodeIndex: number;
@@ -53,8 +54,11 @@ export declare class GladeAnnotateable extends LitElement {
         postedBy: string;
     }[];
     initializeFirebase(): void;
+    handleAuthStateChanged(u: firebase.User | null): void;
     getAnnotationsFromDB(): Promise<void>;
     connectedCallback(): Promise<void>;
+    handleClickCreateAnnotation(ev: MouseEvent): void;
+    handleClickSignIn(ev: MouseEvent): void;
     render(): import("lit-element").TemplateResult;
 }
 declare global {
