@@ -48,10 +48,23 @@ let GladeAnnotateable = /** @class */ (() => {
                 messagingSenderId: '527964919900',
                 appId: '1:527964919900:web:dc1ffc9e14a70b08b3ae99',
             };
+            this.email = '';
+            this.password = '';
+            this.pendingAnnotationBody = '';
+            this.pendingGladeDomNodeIndex = -1;
             this.annotations = [];
             this.activeAnnotations = [];
             this.dialogRole = DialogRole.List;
             this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
+        }
+        handleEmailInputChange(ev) {
+            this.email = ev === null || ev === void 0 ? void 0 : ev.path[0].value;
+        }
+        handlePasswordInputChange(ev) {
+            this.password = ev === null || ev === void 0 ? void 0 : ev.path[0].value;
+        }
+        handleAnnotationBodyChange(ev) {
+            this.pendingAnnotationBody = ev === null || ev === void 0 ? void 0 : ev.path[0].value;
         }
         get loginTemplate() {
             if (this.user)
@@ -61,20 +74,39 @@ let GladeAnnotateable = /** @class */ (() => {
         id="loginTemplate"
         style="border: 1px solid; margin:8px; padding:8px;"
       >
-        <input name="username" placeholder="username" type="text" />
-        <input name="password" placeholder="password" type="password" />
-        <a href="https://glade.app/signup?from=${encodeURIComponent(window.location.href)}">sign up?</a>
+        <p>you need an account to add annotations</p>
+        <input
+          name="email"
+          placeholder="email"
+          type="email"
+          @change="${this.handleEmailInputChange}"
+        />
+        <input
+          name="password"
+          placeholder="password"
+          type="password"
+          @change="${this.handlePasswordInputChange}"
+        />
       </div>
-      <mwc-button
-        slot="primaryAction"
-        @click=${this.handleClickCreateAnnotation}
+      <mwc-button slot="secondaryAction"
+        ><a
+          href="https://glade.app/signup?from=${encodeURIComponent(window.location.href)}"
+          >sign up?</a
+        ></mwc-button
+      >
+      <mwc-button slot="primaryAction" @click=${this.handleClickLogin}
         >Sign in!</mwc-button
       >
     `;
         }
         get createAnnotationTemplate() {
             return html `
-      <mwc-textarea style="width:500px; margin:8px; padding:8px;" placeholder="my opinion is..." name="body"></mwc-textarea>
+      <mwc-textarea
+        style="width:500px; margin:8px; padding:8px;"
+        placeholder="my opinion is..."
+        name="body"
+        @change="${this.handleAnnotationBodyChange}"
+      ></mwc-textarea>
       <mwc-button
         slot="primaryAction"
         @click=${this.handleClickPublishAnnotation}
@@ -121,10 +153,18 @@ let GladeAnnotateable = /** @class */ (() => {
             this.user = firebase.auth().currentUser;
             firebase.auth().onAuthStateChanged(this.handleAuthStateChanged.bind(this));
         }
-        handleAuthStateChanged(u) {
-            console.log('user is', u);
+        async handleAuthStateChanged(u) {
+            var _a;
             if (u) {
                 this.user = u;
+                const userDocRef = await this.db
+                    .collection('users')
+                    .doc(this.user.uid)
+                    .get();
+                const displayName = (_a = userDocRef === null || userDocRef === void 0 ? void 0 : userDocRef.data()) === null || _a === void 0 ? void 0 : _a.displayName;
+                if (displayName) {
+                    this.user.updateProfile({ displayName });
+                }
             }
             else {
                 this.user = null;
@@ -182,19 +222,29 @@ let GladeAnnotateable = /** @class */ (() => {
             }
             this.requestUpdate();
         }
-        handleClickPublishAnnotation(ev) {
+        async handleClickPublishAnnotation(ev) {
+            var _a;
             console.log('publish button clicked');
+            const postedBy = (_a = this.user) === null || _a === void 0 ? void 0 : _a.displayName;
+            const body = this.pendingAnnotationBody;
+            const domNodeIndex = this.pendingGladeDomNodeIndex;
+            await this.db
+                .collection('glade-trees')
+                .doc(this.slug)
+                .collection('annotations')
+                .add({ postedBy, body, domNodeIndex });
         }
         handleClickLogin(ev) {
-            console.log('this.user', this.user);
-            console.log('clicked login', ev);
-            firebase.auth().signInAnonymously();
+            console.log('email', this.email);
+            console.log('password', this.password);
+            firebase.auth().signInWithEmailAndPassword(this.email, this.password);
         }
         handleMouseUpOnChildren(ev) {
             if (ev.button === 0) {
                 // deepest node in DOM tree that recieved this event
                 const targetNode = ev === null || ev === void 0 ? void 0 : ev.composedPath()[0];
                 const gladeDomNodeIndex = parseInt(targetNode.getAttribute('data-glade-index'));
+                this.pendingGladeDomNodeIndex = gladeDomNodeIndex;
                 this.activeAnnotations = this.annotationsForIndex(gladeDomNodeIndex);
                 this.annotationsModalOpened = true;
                 this.requestUpdate();
@@ -222,7 +272,7 @@ let GladeAnnotateable = /** @class */ (() => {
       max-width: 800px;
     }
     .create-annotation-form {
-      min-width:320px;
+      min-width: 320px;
     }
     .dialog {
       width: 60%;
@@ -235,6 +285,18 @@ let GladeAnnotateable = /** @class */ (() => {
     __decorate([
         property({ type: Boolean })
     ], GladeAnnotateable.prototype, "annotationsModalOpened", void 0);
+    __decorate([
+        property({ type: String })
+    ], GladeAnnotateable.prototype, "email", void 0);
+    __decorate([
+        property({ type: String })
+    ], GladeAnnotateable.prototype, "password", void 0);
+    __decorate([
+        property({ type: String })
+    ], GladeAnnotateable.prototype, "pendingAnnotationBody", void 0);
+    __decorate([
+        property({ type: Number })
+    ], GladeAnnotateable.prototype, "pendingGladeDomNodeIndex", void 0);
     GladeAnnotateable = __decorate([
         customElement('glade-annotateable')
     ], GladeAnnotateable);

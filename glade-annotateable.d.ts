@@ -43,6 +43,10 @@ export declare class GladeAnnotateable extends LitElement {
     };
     db: firebase.firestore.Firestore;
     user: firebase.User | null;
+    email: string;
+    password: string;
+    pendingAnnotationBody: string;
+    pendingGladeDomNodeIndex: number;
     annotations: Array<{
         body: string;
         gladeDomNodeIndex: number;
@@ -56,6 +60,9 @@ export declare class GladeAnnotateable extends LitElement {
     dialogRole: DialogRole;
     static styles: import("lit-element").CSSResult;
     constructor();
+    handleEmailInputChange(ev: Event): void;
+    handlePasswordInputChange(ev: Event): void;
+    handleAnnotationBodyChange(ev: Event): void;
     get loginTemplate(): import("lit-element").TemplateResult;
     get createAnnotationTemplate(): import("lit-element").TemplateResult;
     get annotationsListTemplate(): import("lit-element").TemplateResult;
@@ -66,11 +73,11 @@ export declare class GladeAnnotateable extends LitElement {
         postedBy: string;
     }[];
     initializeFirebase(): void;
-    handleAuthStateChanged(u: firebase.User | null): void;
+    handleAuthStateChanged(u: firebase.User | null): Promise<void>;
     getAnnotationsFromDB(): Promise<void>;
     connectedCallback(): Promise<void>;
     handleClickCreateAnnotation(ev: MouseEvent): void;
-    handleClickPublishAnnotation(ev: MouseEvent): void;
+    handleClickPublishAnnotation(ev: MouseEvent): Promise<void>;
     handleClickLogin(ev: MouseEvent): void;
     handleMouseUpOnChildren(ev: MouseEvent): void;
     render(): import("lit-element").TemplateResult;
