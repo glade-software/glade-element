@@ -15,6 +15,7 @@ import { LitElement } from 'lit-element';
 import '@material/mwc-dialog';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
+import '@material/mwc-textarea';
 import firebase from 'firebase';
 declare enum DialogRole {
     List = "LIST",
@@ -53,12 +54,12 @@ export declare class GladeAnnotateable extends LitElement {
         postedBy: string;
     }>;
     dialogRole: DialogRole;
+    static styles: import("lit-element").CSSResult;
     constructor();
     get loginTemplate(): import("lit-element").TemplateResult;
     get createAnnotationTemplate(): import("lit-element").TemplateResult;
     get annotationsListTemplate(): import("lit-element").TemplateResult;
     get modalContent(): import("lit-element").TemplateResult;
-    static styles: import("lit-element").CSSResult;
     annotationsForIndex(domNodeIndex: number): {
         body: string;
         gladeDomNodeIndex: number;

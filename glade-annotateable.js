@@ -21,6 +21,7 @@ import { LitElement, html, customElement, property, css } from 'lit-element';
 import '@material/mwc-dialog';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
+import '@material/mwc-textarea';
 import firebase from 'firebase';
 var DialogRole;
 (function (DialogRole) {
@@ -62,7 +63,7 @@ let GladeAnnotateable = /** @class */ (() => {
       >
         <input name="username" placeholder="username" type="text" />
         <input name="password" placeholder="password" type="password" />
-        <a href="https://glade.app/signup">sign up?</a>
+        <a href="https://glade.app/signup?from=${encodeURIComponent(window.location.href)}">sign up?</a>
       </div>
       <mwc-button
         slot="primaryAction"
@@ -73,7 +74,7 @@ let GladeAnnotateable = /** @class */ (() => {
         }
         get createAnnotationTemplate() {
             return html `
-      <mwc-textfield placeholder="" name="body"></mwc-textfield>
+      <mwc-textarea style="width:500px; margin:8px; padding:8px;" placeholder="my opinion is..." name="body"></mwc-textarea>
       <mwc-button
         slot="primaryAction"
         @click=${this.handleClickPublishAnnotation}
@@ -175,8 +176,11 @@ let GladeAnnotateable = /** @class */ (() => {
                 console.log('user is signed in');
                 console.log('ev', ev);
                 this.dialogRole = DialogRole.Create;
-                this.requestUpdate();
             }
+            else {
+                this.dialogRole = DialogRole.Login;
+            }
+            this.requestUpdate();
         }
         handleClickPublishAnnotation(ev) {
             console.log('publish button clicked');
@@ -200,6 +204,7 @@ let GladeAnnotateable = /** @class */ (() => {
             return html `<mwc-dialog
         @closed=${() => {
                 this.annotationsModalOpened = false;
+                this.dialogRole = DialogRole.List;
             }}
         heading="annotations"
         ?open=${this.annotationsModalOpened}
@@ -215,6 +220,13 @@ let GladeAnnotateable = /** @class */ (() => {
       border: solid 1px gray;
       padding: 16px;
       max-width: 800px;
+    }
+    .create-annotation-form {
+      min-width:320px;
+    }
+    .dialog {
+      width: 60%;
+      margin: 20%;
     }
   `;
     __decorate([

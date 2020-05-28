@@ -16,6 +16,7 @@ import {LitElement, html, customElement, property, css} from 'lit-element';
 import '@material/mwc-dialog';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
+import '@material/mwc-textarea';
 import firebase from 'firebase';
 
 enum DialogRole {
@@ -69,6 +70,22 @@ export class GladeAnnotateable extends LitElement {
 
   dialogRole: DialogRole = DialogRole.List;
 
+  static styles = css`
+    :host {
+      display: block;
+      border: solid 1px gray;
+      padding: 16px;
+      max-width: 800px;
+    }
+    .create-annotation-form {
+      min-width:320px;
+    }
+    .dialog {
+      width: 60%;
+      margin: 20%;
+    }
+  `;
+
   constructor() {
     super();
     this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
@@ -83,7 +100,7 @@ export class GladeAnnotateable extends LitElement {
       >
         <input name="username" placeholder="username" type="text" />
         <input name="password" placeholder="password" type="password" />
-        <a href="https://glade.app/signup">sign up?</a>
+        <a href="https://glade.app/signup?from=${encodeURIComponent(window.location.href)}">sign up?</a>
       </div>
       <mwc-button
         slot="primaryAction"
@@ -95,7 +112,7 @@ export class GladeAnnotateable extends LitElement {
 
   get createAnnotationTemplate() {
     return html`
-      <mwc-textfield placeholder="" name="body"></mwc-textfield>
+      <mwc-textarea style="width:500px; margin:8px; padding:8px;" placeholder="my opinion is..." name="body"></mwc-textarea>
       <mwc-button
         slot="primaryAction"
         @click=${this.handleClickPublishAnnotation}
@@ -133,15 +150,6 @@ export class GladeAnnotateable extends LitElement {
         return html`DialogRole Error`;
     }
   }
-
-  static styles = css`
-    :host {
-      display: block;
-      border: solid 1px gray;
-      padding: 16px;
-      max-width: 800px;
-    }
-  `;
 
   annotationsForIndex(domNodeIndex: number) {
     return this.annotations.filter(
@@ -223,8 +231,10 @@ export class GladeAnnotateable extends LitElement {
       console.log('user is signed in');
       console.log('ev', ev);
       this.dialogRole = DialogRole.Create;
-      this.requestUpdate();
+    }else{
+      this.dialogRole = DialogRole.Login;
     }
+    this.requestUpdate();
   }
 
   handleClickPublishAnnotation(ev: MouseEvent) {
@@ -256,6 +266,7 @@ export class GladeAnnotateable extends LitElement {
     return html`<mwc-dialog
         @closed=${() => {
           this.annotationsModalOpened = false;
+          this.dialogRole = DialogRole.List;
         }}
         heading="annotations"
         ?open=${this.annotationsModalOpened}

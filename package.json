@@ -38,6 +38,7 @@
   "dependencies": {
     "@material/mwc-button": "^0.15.0",
     "@material/mwc-dialog": "^0.15.0",
+    "@material/mwc-textarea": "^0.15.0",
     "@material/mwc-textfield": "^0.15.0",
     "firebase": "^7.14.5",
     "lit-element": "^2.3.1"
