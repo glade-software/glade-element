@@ -14,7 +14,13 @@
 import { LitElement } from 'lit-element';
 import '@material/mwc-dialog';
 import '@material/mwc-button';
+import '@material/mwc-textfield';
 import firebase from 'firebase';
+declare enum DialogRole {
+    List = "LIST",
+    Create = "CREATE",
+    Login = "LOGIN"
+}
 export declare class GladeAnnotateable extends LitElement {
     /**
      * The content nodes inside the tag
@@ -46,9 +52,12 @@ export declare class GladeAnnotateable extends LitElement {
         gladeDomNodeIndex: number;
         postedBy: string;
     }>;
+    dialogRole: DialogRole;
     constructor();
-    get showLoginForm(): any;
     get loginTemplate(): import("lit-element").TemplateResult;
+    get createAnnotationTemplate(): import("lit-element").TemplateResult;
+    get annotationsListTemplate(): import("lit-element").TemplateResult;
+    get modalContent(): import("lit-element").TemplateResult;
     static styles: import("lit-element").CSSResult;
     annotationsForIndex(domNodeIndex: number): {
         body: string;
@@ -60,6 +69,9 @@ export declare class GladeAnnotateable extends LitElement {
     getAnnotationsFromDB(): Promise<void>;
     connectedCallback(): Promise<void>;
     handleClickCreateAnnotation(ev: MouseEvent): void;
+    handleClickPublishAnnotation(ev: MouseEvent): void;
+    handleClickLogin(ev: MouseEvent): void;
+    handleMouseUpOnChildren(ev: MouseEvent): void;
     render(): import("lit-element").TemplateResult;
 }
 declare global {
@@ -67,4 +79,5 @@ declare global {
         'glade-annotateable': GladeAnnotateable;
     }
 }
+export {};
 //# sourceMappingURL=glade-annotateable.d.ts.map
