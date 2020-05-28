@@ -44,6 +44,21 @@ let GladeAnnotateable = /** @class */ (() => {
             this.activeAnnotations = [];
             this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
         }
+        get showLoginForm() {
+            return !this.user && this.
+            ;
+        }
+        get loginTemplate() {
+            if (this.user)
+                return html ``;
+            return html `
+      <div id="loginTemplate" style="border: 1px solid; margin:8px; padding:8px;">
+        <input name="username" placeholder="username" type="text"/>
+        <input name="password" placeholder="password" type="password"/>
+        <input type="submit">
+      </div>
+    `;
+        }
         annotationsForIndex(domNodeIndex) {
             return this.annotations.filter((annotation) => annotation.gladeDomNodeIndex === domNodeIndex);
         }
@@ -56,6 +71,7 @@ let GladeAnnotateable = /** @class */ (() => {
             firebase.auth().onAuthStateChanged(this.handleAuthStateChanged.bind(this));
         }
         handleAuthStateChanged(u) {
+            console.log('user is', u);
             if (u) {
                 this.user = u;
             }
@@ -106,10 +122,6 @@ let GladeAnnotateable = /** @class */ (() => {
         handleClickCreateAnnotation(ev) {
             console.log(this.user);
             console.log('clicked create annotation', ev);
-        }
-        handleClickSignIn(ev) {
-            console.log(this.user);
-            console.log('clicked create annotation', ev);
             firebase.auth().signInAnonymously();
         }
         render() {
@@ -129,12 +141,7 @@ let GladeAnnotateable = /** @class */ (() => {
             })}
         </div>
 
-        <mwc-button
-          slot="secondaryAction"
-          @click=${this.handleClickSignIn}
-          ?disabled=${!!this.user}
-          >sign in!</mwc-button
-        >
+        ${this.loginTemplate}
 
         <mwc-button
           slot="primaryAction"

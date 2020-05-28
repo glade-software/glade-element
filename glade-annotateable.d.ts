@@ -47,6 +47,8 @@ export declare class GladeAnnotateable extends LitElement {
         postedBy: string;
     }>;
     constructor();
+    get showLoginForm(): any;
+    get loginTemplate(): import("lit-element").TemplateResult;
     static styles: import("lit-element").CSSResult;
     annotationsForIndex(domNodeIndex: number): {
         body: string;
@@ -58,7 +60,6 @@ export declare class GladeAnnotateable extends LitElement {
     getAnnotationsFromDB(): Promise<void>;
     connectedCallback(): Promise<void>;
     handleClickCreateAnnotation(ev: MouseEvent): void;
-    handleClickSignIn(ev: MouseEvent): void;
     render(): import("lit-element").TemplateResult;
 }
 declare global {

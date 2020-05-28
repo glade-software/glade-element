@@ -60,9 +60,25 @@ export class GladeAnnotateable extends LitElement {
     postedBy: string;
   }> = [];
 
+
   constructor() {
     super();
     this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
+  }
+
+  get showLoginForm(){
+    return !this.user && this.
+  }
+
+  get loginTemplate(){
+    if(this.user) return html``;
+    return html`
+      <div id="loginTemplate" style="border: 1px solid; margin:8px; padding:8px;">
+        <input name="username" placeholder="username" type="text"/>
+        <input name="password" placeholder="password" type="password"/>
+        <input type="submit">
+      </div>
+    `
   }
 
   static styles = css`
@@ -84,6 +100,7 @@ export class GladeAnnotateable extends LitElement {
     if (!firebase.apps.length) {
       firebase.initializeApp(this.firebaseConfig);
     }
+
     this.db = firebase.firestore();
     this.user = firebase.auth().currentUser;
 
@@ -91,6 +108,7 @@ export class GladeAnnotateable extends LitElement {
   }
 
   handleAuthStateChanged(u: firebase.User | null){
+    console.log('user is',u);
     if(u) {
       this.user = u;
     } else {
@@ -149,13 +167,7 @@ export class GladeAnnotateable extends LitElement {
   handleClickCreateAnnotation(ev: MouseEvent) {
     console.log(this.user)
     console.log('clicked create annotation', ev);
-  }
-
-  handleClickSignIn(ev: MouseEvent) {
-    console.log(this.user)
-    console.log('clicked create annotation', ev);
     firebase.auth().signInAnonymously();
-
   }
 
   render() {
@@ -175,12 +187,7 @@ export class GladeAnnotateable extends LitElement {
           })}
         </div>
 
-        <mwc-button
-          slot="secondaryAction"
-          @click=${this.handleClickSignIn}
-          ?disabled=${!!this.user}
-          >sign in!</mwc-button
-        >
+        ${this.loginTemplate}
 
         <mwc-button
           slot="primaryAction"
