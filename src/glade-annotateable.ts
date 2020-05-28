@@ -15,7 +15,15 @@
 import {LitElement, html, customElement, property, css} from 'lit-element';
 import '@material/mwc-dialog';
 import '@material/mwc-button';
+import '@material/mwc-textfield';
+import '@material/mwc-textarea';
 import firebase from 'firebase';
+
+enum DialogRole {
+  List = 'LIST',
+  Create = 'CREATE',
+  Login = 'LOGIN',
+}
 
 @customElement('glade-annotateable')
 export class GladeAnnotateable extends LitElement {
@@ -48,6 +56,18 @@ export class GladeAnnotateable extends LitElement {
 
   user!: firebase.User | null;
 
+  @property({type: String})
+  email = '';
+
+  @property({type: String})
+  password = '';
+
+  @property({type: String})
+  pendingAnnotationBody = '';
+
+  @property({type: Number})
+  pendingGladeDomNodeIndex = -1;
+
   annotations: Array<{
     body: string;
     gladeDomNodeIndex: number;
@@ -60,10 +80,7 @@ export class GladeAnnotateable extends LitElement {
     postedBy: string;
   }> = [];
 
-  constructor() {
-    super();
-    this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
-  }
+  dialogRole: DialogRole = DialogRole.List;
 
   static styles = css`
     :host {
@@ -72,7 +89,112 @@ export class GladeAnnotateable extends LitElement {
       padding: 16px;
       max-width: 800px;
     }
+    .create-annotation-form {
+      min-width: 320px;
+    }
+    .dialog {
+      width: 60%;
+      margin: 20%;
+    }
   `;
+
+  constructor() {
+    super();
+    this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
+  }
+
+  handleEmailInputChange(ev: Event) {
+    this.email = ev?.path[0].value;
+  }
+
+  handlePasswordInputChange(ev: Event) {
+    this.password = ev?.path[0].value;
+  }
+
+  handleAnnotationBodyChange(ev: Event) {
+    this.pendingAnnotationBody = ev?.path[0].value;
+  }
+
+  get loginTemplate() {
+    if (this.user) return html``;
+    return html`
+      <div
+        id="loginTemplate"
+        style="border: 1px solid; margin:8px; padding:8px;"
+      >
+        <p>you need an account to add annotations</p>
+        <input
+          name="email"
+          placeholder="email"
+          type="email"
+          @change="${this.handleEmailInputChange}"
+        />
+        <input
+          name="password"
+          placeholder="password"
+          type="password"
+          @change="${this.handlePasswordInputChange}"
+        />
+      </div>
+      <mwc-button slot="secondaryAction"
+        ><a
+          href="https://glade.app/signup?from=${encodeURIComponent(
+            window.location.href
+          )}"
+          >sign up?</a
+        ></mwc-button
+      >
+      <mwc-button slot="primaryAction" @click=${this.handleClickLogin}
+        >Sign in!</mwc-button
+      >
+    `;
+  }
+
+  get createAnnotationTemplate() {
+    return html`
+      <mwc-textarea
+        style="width:500px; margin:8px; padding:8px;"
+        placeholder="my opinion is..."
+        name="body"
+        @change="${this.handleAnnotationBodyChange}"
+      ></mwc-textarea>
+      <mwc-button
+        slot="primaryAction"
+        @click=${this.handleClickPublishAnnotation}
+        >Publish Annotation!</mwc-button
+      >
+    `;
+  }
+
+  get annotationsListTemplate() {
+    return html`<div>
+        ${this.activeAnnotations.map((annotation) => {
+          return html`<div style="border: 1px solid; margin:8px; padding:8px;">
+            <span style="color: #1A535C;">${annotation.postedBy}</span>:
+            <p>${annotation.body}</p>
+          </div>`;
+        })}
+      </div>
+      <mwc-button
+        class="button-cta"
+        slot="primaryAction"
+        @click=${this.handleClickCreateAnnotation}
+        >Create Annotation!</mwc-button
+      > `;
+  }
+
+  get modalContent() {
+    switch (this.dialogRole) {
+      case DialogRole.List:
+        return this.annotationsListTemplate;
+      case DialogRole.Login:
+        return this.loginTemplate;
+      case DialogRole.Create:
+        return this.createAnnotationTemplate;
+      default:
+        return html`DialogRole Error`;
+    }
+  }
 
   annotationsForIndex(domNodeIndex: number) {
     return this.annotations.filter(
@@ -84,18 +206,29 @@ export class GladeAnnotateable extends LitElement {
     if (!firebase.apps.length) {
       firebase.initializeApp(this.firebaseConfig);
     }
+
     this.db = firebase.firestore();
     this.user = firebase.auth().currentUser;
 
     firebase.auth().onAuthStateChanged(this.handleAuthStateChanged.bind(this));
   }
 
-  handleAuthStateChanged(u: firebase.User | null){
-    if(u) {
+  async handleAuthStateChanged(u: firebase.User | null) {
+    if (u) {
       this.user = u;
+      const userDocRef = await this.db
+        .collection('users')
+        .doc(this.user.uid)
+        .get();
+      const displayName = userDocRef?.data()?.displayName;
+
+      if (displayName) {
+        this.user.updateProfile({displayName});
+      }
     } else {
       this.user = null;
     }
+    this.requestUpdate();
   }
 
   async getAnnotationsFromDB() {
@@ -147,66 +280,63 @@ export class GladeAnnotateable extends LitElement {
   }
 
   handleClickCreateAnnotation(ev: MouseEvent) {
-    console.log(this.user)
-    console.log('clicked create annotation', ev);
+    if (this.user) {
+      console.log('user is signed in');
+      console.log('ev', ev);
+      this.dialogRole = DialogRole.Create;
+    } else {
+      this.dialogRole = DialogRole.Login;
+    }
+    this.requestUpdate();
   }
 
-  handleClickSignIn(ev: MouseEvent) {
-    console.log(this.user)
-    console.log('clicked create annotation', ev);
-    firebase.auth().signInAnonymously();
+  async handleClickPublishAnnotation(ev: MouseEvent) {
+    console.log('publish button clicked');
+    const postedBy = this.user?.displayName;
+    const body = this.pendingAnnotationBody;
+    const domNodeIndex = this.pendingGladeDomNodeIndex;
+    await this.db
+      .collection('glade-trees')
+      .doc(this.slug)
+      .collection('annotations')
+      .add({postedBy, body, domNodeIndex});
+  }
 
+  handleClickLogin(ev: MouseEvent) {
+    console.log('email', this.email);
+    console.log('password', this.password);
+    firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+  }
+
+  handleMouseUpOnChildren(ev: MouseEvent) {
+    if (ev.button === 0) {
+      // deepest node in DOM tree that recieved this event
+      const targetNode = ev?.composedPath()[0] as Element;
+
+      const gladeDomNodeIndex: number = parseInt(
+        targetNode.getAttribute('data-glade-index') as string
+      );
+
+      this.pendingGladeDomNodeIndex = gladeDomNodeIndex;
+
+      this.activeAnnotations = this.annotationsForIndex(gladeDomNodeIndex);
+      this.annotationsModalOpened = true;
+      this.requestUpdate();
+    }
   }
 
   render() {
     return html`<mwc-dialog
         @closed=${() => {
           this.annotationsModalOpened = false;
+          this.dialogRole = DialogRole.List;
         }}
         heading="annotations"
         ?open=${this.annotationsModalOpened}
       >
-        <div>
-          ${this.activeAnnotations.map((annotation) => {
-            return html`<div style="border: 1px solid; margin:8px; padding:8px;">
-              <span style="color: #1A535C;">${annotation.postedBy}</span>:
-              <p>${annotation.body}</p>
-            </div>`;
-          })}
-        </div>
-
-        <mwc-button
-          slot="secondaryAction"
-          @click=${this.handleClickSignIn}
-          ?disabled=${!!this.user}
-          >sign in!</mwc-button
-        >
-
-        <mwc-button
-          slot="primaryAction"
-          @click=${this.handleClickCreateAnnotation}
-          ?disabled=${!this.user}
-          >create annotation!</mwc-button
-        >
+        ${this.modalContent}
       </mwc-dialog>
-      <slot
-        @mouseup=${(ev: MouseEvent) => {
-          if (ev.button === 0) {
-            // deepest node in DOM tree that recieved this event
-            const targetNode = ev?.composedPath()[0] as Element;
-
-            const gladeDomNodeIndex: number = parseInt(
-              targetNode.getAttribute('data-glade-index') as string
-            );
-
-            this.activeAnnotations = this.annotationsForIndex(
-              gladeDomNodeIndex
-            );
-            this.annotationsModalOpened = true;
-            this.requestUpdate();
-          }
-        }}
-      ></slot>`;
+      <slot @mouseup=${this.handleMouseUpOnChildren.bind(this)}></slot>`;
   }
 }
 

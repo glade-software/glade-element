@@ -14,7 +14,14 @@
 import { LitElement } from 'lit-element';
 import '@material/mwc-dialog';
 import '@material/mwc-button';
+import '@material/mwc-textfield';
+import '@material/mwc-textarea';
 import firebase from 'firebase';
+declare enum DialogRole {
+    List = "LIST",
+    Create = "CREATE",
+    Login = "LOGIN"
+}
 export declare class GladeAnnotateable extends LitElement {
     /**
      * The content nodes inside the tag
@@ -36,6 +43,10 @@ export declare class GladeAnnotateable extends LitElement {
     };
     db: firebase.firestore.Firestore;
     user: firebase.User | null;
+    email: string;
+    password: string;
+    pendingAnnotationBody: string;
+    pendingGladeDomNodeIndex: number;
     annotations: Array<{
         body: string;
         gladeDomNodeIndex: number;
@@ -46,19 +57,29 @@ export declare class GladeAnnotateable extends LitElement {
         gladeDomNodeIndex: number;
         postedBy: string;
     }>;
-    constructor();
+    dialogRole: DialogRole;
     static styles: import("lit-element").CSSResult;
+    constructor();
+    handleEmailInputChange(ev: Event): void;
+    handlePasswordInputChange(ev: Event): void;
+    handleAnnotationBodyChange(ev: Event): void;
+    get loginTemplate(): import("lit-element").TemplateResult;
+    get createAnnotationTemplate(): import("lit-element").TemplateResult;
+    get annotationsListTemplate(): import("lit-element").TemplateResult;
+    get modalContent(): import("lit-element").TemplateResult;
     annotationsForIndex(domNodeIndex: number): {
         body: string;
         gladeDomNodeIndex: number;
         postedBy: string;
     }[];
     initializeFirebase(): void;
-    handleAuthStateChanged(u: firebase.User | null): void;
+    handleAuthStateChanged(u: firebase.User | null): Promise<void>;
     getAnnotationsFromDB(): Promise<void>;
     connectedCallback(): Promise<void>;
     handleClickCreateAnnotation(ev: MouseEvent): void;
-    handleClickSignIn(ev: MouseEvent): void;
+    handleClickPublishAnnotation(ev: MouseEvent): Promise<void>;
+    handleClickLogin(ev: MouseEvent): void;
+    handleMouseUpOnChildren(ev: MouseEvent): void;
     render(): import("lit-element").TemplateResult;
 }
 declare global {
@@ -66,4 +87,5 @@ declare global {
         'glade-annotateable': GladeAnnotateable;
     }
 }
+export {};
 //# sourceMappingURL=glade-annotateable.d.ts.map

@@ -20,7 +20,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { LitElement, html, customElement, property, css } from 'lit-element';
 import '@material/mwc-dialog';
 import '@material/mwc-button';
+import '@material/mwc-textfield';
+import '@material/mwc-textarea';
 import firebase from 'firebase';
+var DialogRole;
+(function (DialogRole) {
+    DialogRole["List"] = "LIST";
+    DialogRole["Create"] = "CREATE";
+    DialogRole["Login"] = "LOGIN";
+})(DialogRole || (DialogRole = {}));
 let GladeAnnotateable = /** @class */ (() => {
     let GladeAnnotateable = class GladeAnnotateable extends LitElement {
         constructor() {
@@ -40,9 +48,99 @@ let GladeAnnotateable = /** @class */ (() => {
                 messagingSenderId: '527964919900',
                 appId: '1:527964919900:web:dc1ffc9e14a70b08b3ae99',
             };
+            this.email = '';
+            this.password = '';
+            this.pendingAnnotationBody = '';
+            this.pendingGladeDomNodeIndex = -1;
             this.annotations = [];
             this.activeAnnotations = [];
+            this.dialogRole = DialogRole.List;
             this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
+        }
+        handleEmailInputChange(ev) {
+            this.email = ev === null || ev === void 0 ? void 0 : ev.path[0].value;
+        }
+        handlePasswordInputChange(ev) {
+            this.password = ev === null || ev === void 0 ? void 0 : ev.path[0].value;
+        }
+        handleAnnotationBodyChange(ev) {
+            this.pendingAnnotationBody = ev === null || ev === void 0 ? void 0 : ev.path[0].value;
+        }
+        get loginTemplate() {
+            if (this.user)
+                return html ``;
+            return html `
+      <div
+        id="loginTemplate"
+        style="border: 1px solid; margin:8px; padding:8px;"
+      >
+        <p>you need an account to add annotations</p>
+        <input
+          name="email"
+          placeholder="email"
+          type="email"
+          @change="${this.handleEmailInputChange}"
+        />
+        <input
+          name="password"
+          placeholder="password"
+          type="password"
+          @change="${this.handlePasswordInputChange}"
+        />
+      </div>
+      <mwc-button slot="secondaryAction"
+        ><a
+          href="https://glade.app/signup?from=${encodeURIComponent(window.location.href)}"
+          >sign up?</a
+        ></mwc-button
+      >
+      <mwc-button slot="primaryAction" @click=${this.handleClickLogin}
+        >Sign in!</mwc-button
+      >
+    `;
+        }
+        get createAnnotationTemplate() {
+            return html `
+      <mwc-textarea
+        style="width:500px; margin:8px; padding:8px;"
+        placeholder="my opinion is..."
+        name="body"
+        @change="${this.handleAnnotationBodyChange}"
+      ></mwc-textarea>
+      <mwc-button
+        slot="primaryAction"
+        @click=${this.handleClickPublishAnnotation}
+        >Publish Annotation!</mwc-button
+      >
+    `;
+        }
+        get annotationsListTemplate() {
+            return html `<div>
+        ${this.activeAnnotations.map((annotation) => {
+                return html `<div style="border: 1px solid; margin:8px; padding:8px;">
+            <span style="color: #1A535C;">${annotation.postedBy}</span>:
+            <p>${annotation.body}</p>
+          </div>`;
+            })}
+      </div>
+      <mwc-button
+        class="button-cta"
+        slot="primaryAction"
+        @click=${this.handleClickCreateAnnotation}
+        >Create Annotation!</mwc-button
+      > `;
+        }
+        get modalContent() {
+            switch (this.dialogRole) {
+                case DialogRole.List:
+                    return this.annotationsListTemplate;
+                case DialogRole.Login:
+                    return this.loginTemplate;
+                case DialogRole.Create:
+                    return this.createAnnotationTemplate;
+                default:
+                    return html `DialogRole Error`;
+            }
         }
         annotationsForIndex(domNodeIndex) {
             return this.annotations.filter((annotation) => annotation.gladeDomNodeIndex === domNodeIndex);
@@ -55,13 +153,23 @@ let GladeAnnotateable = /** @class */ (() => {
             this.user = firebase.auth().currentUser;
             firebase.auth().onAuthStateChanged(this.handleAuthStateChanged.bind(this));
         }
-        handleAuthStateChanged(u) {
+        async handleAuthStateChanged(u) {
+            var _a;
             if (u) {
                 this.user = u;
+                const userDocRef = await this.db
+                    .collection('users')
+                    .doc(this.user.uid)
+                    .get();
+                const displayName = (_a = userDocRef === null || userDocRef === void 0 ? void 0 : userDocRef.data()) === null || _a === void 0 ? void 0 : _a.displayName;
+                if (displayName) {
+                    this.user.updateProfile({ displayName });
+                }
             }
             else {
                 this.user = null;
             }
+            this.requestUpdate();
         }
         async getAnnotationsFromDB() {
             if (this.slug.length) {
@@ -104,57 +212,56 @@ let GladeAnnotateable = /** @class */ (() => {
             });
         }
         handleClickCreateAnnotation(ev) {
-            console.log(this.user);
-            console.log('clicked create annotation', ev);
+            if (this.user) {
+                console.log('user is signed in');
+                console.log('ev', ev);
+                this.dialogRole = DialogRole.Create;
+            }
+            else {
+                this.dialogRole = DialogRole.Login;
+            }
+            this.requestUpdate();
         }
-        handleClickSignIn(ev) {
-            console.log(this.user);
-            console.log('clicked create annotation', ev);
-            firebase.auth().signInAnonymously();
+        async handleClickPublishAnnotation(ev) {
+            var _a;
+            console.log('publish button clicked');
+            const postedBy = (_a = this.user) === null || _a === void 0 ? void 0 : _a.displayName;
+            const body = this.pendingAnnotationBody;
+            const domNodeIndex = this.pendingGladeDomNodeIndex;
+            await this.db
+                .collection('glade-trees')
+                .doc(this.slug)
+                .collection('annotations')
+                .add({ postedBy, body, domNodeIndex });
+        }
+        handleClickLogin(ev) {
+            console.log('email', this.email);
+            console.log('password', this.password);
+            firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+        }
+        handleMouseUpOnChildren(ev) {
+            if (ev.button === 0) {
+                // deepest node in DOM tree that recieved this event
+                const targetNode = ev === null || ev === void 0 ? void 0 : ev.composedPath()[0];
+                const gladeDomNodeIndex = parseInt(targetNode.getAttribute('data-glade-index'));
+                this.pendingGladeDomNodeIndex = gladeDomNodeIndex;
+                this.activeAnnotations = this.annotationsForIndex(gladeDomNodeIndex);
+                this.annotationsModalOpened = true;
+                this.requestUpdate();
+            }
         }
         render() {
             return html `<mwc-dialog
         @closed=${() => {
                 this.annotationsModalOpened = false;
+                this.dialogRole = DialogRole.List;
             }}
         heading="annotations"
         ?open=${this.annotationsModalOpened}
       >
-        <div>
-          ${this.activeAnnotations.map((annotation) => {
-                return html `<div style="border: 1px solid; margin:8px; padding:8px;">
-              <span style="color: #1A535C;">${annotation.postedBy}</span>:
-              <p>${annotation.body}</p>
-            </div>`;
-            })}
-        </div>
-
-        <mwc-button
-          slot="secondaryAction"
-          @click=${this.handleClickSignIn}
-          ?disabled=${!!this.user}
-          >sign in!</mwc-button
-        >
-
-        <mwc-button
-          slot="primaryAction"
-          @click=${this.handleClickCreateAnnotation}
-          ?disabled=${!this.user}
-          >create annotation!</mwc-button
-        >
+        ${this.modalContent}
       </mwc-dialog>
-      <slot
-        @mouseup=${(ev) => {
-                if (ev.button === 0) {
-                    // deepest node in DOM tree that recieved this event
-                    const targetNode = ev === null || ev === void 0 ? void 0 : ev.composedPath()[0];
-                    const gladeDomNodeIndex = parseInt(targetNode.getAttribute('data-glade-index'));
-                    this.activeAnnotations = this.annotationsForIndex(gladeDomNodeIndex);
-                    this.annotationsModalOpened = true;
-                    this.requestUpdate();
-                }
-            }}
-      ></slot>`;
+      <slot @mouseup=${this.handleMouseUpOnChildren.bind(this)}></slot>`;
         }
     };
     GladeAnnotateable.styles = css `
@@ -164,6 +271,13 @@ let GladeAnnotateable = /** @class */ (() => {
       padding: 16px;
       max-width: 800px;
     }
+    .create-annotation-form {
+      min-width: 320px;
+    }
+    .dialog {
+      width: 60%;
+      margin: 20%;
+    }
   `;
     __decorate([
         property({ type: String })
@@ -171,6 +285,18 @@ let GladeAnnotateable = /** @class */ (() => {
     __decorate([
         property({ type: Boolean })
     ], GladeAnnotateable.prototype, "annotationsModalOpened", void 0);
+    __decorate([
+        property({ type: String })
+    ], GladeAnnotateable.prototype, "email", void 0);
+    __decorate([
+        property({ type: String })
+    ], GladeAnnotateable.prototype, "password", void 0);
+    __decorate([
+        property({ type: String })
+    ], GladeAnnotateable.prototype, "pendingAnnotationBody", void 0);
+    __decorate([
+        property({ type: Number })
+    ], GladeAnnotateable.prototype, "pendingGladeDomNodeIndex", void 0);
     GladeAnnotateable = __decorate([
         customElement('glade-annotateable')
     ], GladeAnnotateable);
