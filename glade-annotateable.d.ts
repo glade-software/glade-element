@@ -32,6 +32,7 @@ export declare class GladeAnnotateable extends LitElement {
      */
     slug: string;
     annotationsModalOpened: boolean;
+    loginErrorMessage: string;
     firebaseConfig: {
         apiKey: string;
         authDomain: string;
@@ -78,7 +79,7 @@ export declare class GladeAnnotateable extends LitElement {
     connectedCallback(): Promise<void>;
     handleClickCreateAnnotation(ev: MouseEvent): void;
     handleClickPublishAnnotation(ev: MouseEvent): Promise<void>;
-    handleClickLogin(ev: MouseEvent): void;
+    handleClickLogin(ev: MouseEvent): Promise<void>;
     handleMouseUpOnChildren(ev: MouseEvent): void;
     render(): import("lit-element").TemplateResult;
 }
