@@ -216,7 +216,6 @@ let GladeAnnotateable = /** @class */ (() => {
         handleClickCreateAnnotation(ev) {
             if (this.user) {
                 console.log('user is signed in');
-                console.log('ev', ev);
                 this.dialogRole = DialogRole.Create;
             }
             else {
@@ -237,8 +236,6 @@ let GladeAnnotateable = /** @class */ (() => {
                 .add({ postedBy, body, domNodeIndex });
         }
         async handleClickLogin(ev) {
-            console.log('email', this.email);
-            console.log('password', this.password);
             try {
                 await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
                 this.annotationsModalOpened = false;

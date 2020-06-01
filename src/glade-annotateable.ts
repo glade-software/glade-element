@@ -286,7 +286,6 @@ export class GladeAnnotateable extends LitElement {
   handleClickCreateAnnotation(ev: MouseEvent) {
     if (this.user) {
       console.log('user is signed in');
-      console.log('ev', ev);
       this.dialogRole = DialogRole.Create;
     } else {
       this.dialogRole = DialogRole.Login;
@@ -307,8 +306,6 @@ export class GladeAnnotateable extends LitElement {
   }
 
   async handleClickLogin(ev: MouseEvent) {
-    console.log('email', this.email);
-    console.log('password', this.password);
     try {
       await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
       this.annotationsModalOpened = false;
