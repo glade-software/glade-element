@@ -38,6 +38,7 @@ let GladeAnnotateable = /** @class */ (() => {
              */
             this.slug = '';
             this.annotationsModalOpened = false;
+            this.loginErrorMessage = '';
             // traditionally should not be published, but the embeddable nature of <glade-component> seems to be an exception
             this.firebaseConfig = {
                 apiKey: 'AIzaSyAtc2ed5rsHT7IOF9E1psFhkqtCqKib25U',
@@ -88,6 +89,7 @@ let GladeAnnotateable = /** @class */ (() => {
           @change="${this.handlePasswordInputChange}"
         />
       </div>
+      <div style="color:red;">${this.loginErrorMessage}</div>
       <mwc-button slot="secondaryAction"
         ><a
           href="https://glade.app/signup?from=${encodeURIComponent(window.location.href)}"
@@ -214,7 +216,6 @@ let GladeAnnotateable = /** @class */ (() => {
         handleClickCreateAnnotation(ev) {
             if (this.user) {
                 console.log('user is signed in');
-                console.log('ev', ev);
                 this.dialogRole = DialogRole.Create;
             }
             else {
@@ -234,10 +235,26 @@ let GladeAnnotateable = /** @class */ (() => {
                 .collection('annotations')
                 .add({ postedBy, body, domNodeIndex });
         }
-        handleClickLogin(ev) {
-            console.log('email', this.email);
-            console.log('password', this.password);
-            firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+        async handleClickLogin(ev) {
+            try {
+                await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+                this.annotationsModalOpened = false;
+            }
+            catch (error) {
+                if (error.code === 'auth/wrong-password') {
+                    this.loginErrorMessage = 'password incorrect!';
+                    console.log('wrong password');
+                }
+                else if (error.code === 'auth/user-not-found') {
+                    this.loginErrorMessage = 'no user with that email!';
+                    console.log('user not found');
+                }
+                else if (error.code === 'auth/too-many-requests') {
+                    this.loginErrorMessage = "too many attempts! try again later";
+                }
+                console.log(error);
+            }
+            this.requestUpdate();
         }
         handleMouseUpOnChildren(ev) {
             if (ev.button === 0) {
@@ -285,6 +302,9 @@ let GladeAnnotateable = /** @class */ (() => {
     __decorate([
         property({ type: Boolean })
     ], GladeAnnotateable.prototype, "annotationsModalOpened", void 0);
+    __decorate([
+        property({ type: String })
+    ], GladeAnnotateable.prototype, "loginErrorMessage", void 0);
     __decorate([
         property({ type: String })
     ], GladeAnnotateable.prototype, "email", void 0);
