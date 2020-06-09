@@ -19,10 +19,11 @@ import '@material/mwc-textfield';
 import '@material/mwc-textarea';
 import firebase from 'firebase';
 
+// Different views the modal may reflect
 enum DialogRole {
-  List = 'LIST',
-  Create = 'CREATE',
-  Login = 'LOGIN',
+  List = 'LIST', // Listing annotations in the modal
+  Create = 'CREATE', // Annotation creation form
+  Login = 'LOGIN', // User authentication form
 }
 
 @customElement('glade-annotateable')
@@ -158,7 +159,7 @@ export class GladeAnnotateable extends LitElement {
     return html`
       <mwc-textarea
         style="width:500px; margin:8px; padding:8px;"
-        placeholder="my opinion is..."
+        placeholder=""
         name="body"
         @change="${this.handleAnnotationBodyChange}"
       ></mwc-textarea>
@@ -245,7 +246,6 @@ export class GladeAnnotateable extends LitElement {
 
       annotationsSnapshots.forEach((document) => {
         const { body, postedBy, domNodeIndex } = document.data();
-        console.log('document.data()', document.data());
         this.annotations.push({
           body,
           postedBy,
@@ -303,6 +303,9 @@ export class GladeAnnotateable extends LitElement {
       .doc(this.slug)
       .collection('annotations')
       .add({ postedBy, body, domNodeIndex });
+    this.annotationsModalOpened = false;
+    this.dialogRole = DialogRole.List;
+    this.requestUpdate();
   }
 
   async handleClickLogin(ev: MouseEvent) {

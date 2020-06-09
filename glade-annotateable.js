@@ -23,6 +23,7 @@ import '@material/mwc-button';
 import '@material/mwc-textfield';
 import '@material/mwc-textarea';
 import firebase from 'firebase';
+// Different views the modal may reflect
 var DialogRole;
 (function (DialogRole) {
     DialogRole["List"] = "LIST";
@@ -105,7 +106,7 @@ let GladeAnnotateable = /** @class */ (() => {
             return html `
       <mwc-textarea
         style="width:500px; margin:8px; padding:8px;"
-        placeholder="my opinion is..."
+        placeholder=""
         name="body"
         @change="${this.handleAnnotationBodyChange}"
       ></mwc-textarea>
@@ -182,7 +183,6 @@ let GladeAnnotateable = /** @class */ (() => {
                     .get();
                 annotationsSnapshots.forEach((document) => {
                     const { body, postedBy, domNodeIndex } = document.data();
-                    console.log('document.data()', document.data());
                     this.annotations.push({
                         body,
                         postedBy,
@@ -234,6 +234,9 @@ let GladeAnnotateable = /** @class */ (() => {
                 .doc(this.slug)
                 .collection('annotations')
                 .add({ postedBy, body, domNodeIndex });
+            this.annotationsModalOpened = false;
+            this.dialogRole = DialogRole.List;
+            this.requestUpdate();
         }
         async handleClickLogin(ev) {
             try {
