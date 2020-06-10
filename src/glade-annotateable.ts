@@ -163,7 +163,7 @@ export class GladeAnnotateable extends LitElement {
       <mwc-textarea
         style="width:500px; margin:8px; padding:8px;"
         placeholder=""
-        name="body"
+        id="bodyTextArea"
         @change="${this.handleAnnotationBodyChange}"
       ></mwc-textarea>
       <mwc-button
