@@ -77,9 +77,9 @@ export declare class GladeAnnotateable extends LitElement {
     handleAuthStateChanged(u: firebase.User | null): Promise<void>;
     getAnnotationsFromDB(): Promise<void>;
     connectedCallback(): Promise<void>;
-    handleClickCreateAnnotation(ev: MouseEvent): void;
-    handleClickPublishAnnotation(ev: MouseEvent): Promise<void>;
-    handleClickLogin(ev: MouseEvent): Promise<void>;
+    handleClickCreateAnnotation(_: MouseEvent): void;
+    handleClickPublishAnnotation(_: MouseEvent): Promise<void>;
+    handleClickLogin(_: MouseEvent): Promise<void>;
     handleMouseUpOnChildren(ev: MouseEvent): void;
     render(): import("lit-element").TemplateResult;
 }

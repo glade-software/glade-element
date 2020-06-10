@@ -108,15 +108,18 @@ export class GladeAnnotateable extends LitElement {
   }
 
   handleEmailInputChange(ev: Event) {
-    this.email = ev?.path[0].value;
+    const inputEl = ev.composedPath()[0] as HTMLInputElement;
+    this.email = inputEl.value;
   }
 
   handlePasswordInputChange(ev: Event) {
-    this.password = ev?.path[0].value;
+    const inputEl = ev.composedPath()[0] as HTMLInputElement;
+    this.password = inputEl.value;
   }
 
   handleAnnotationBodyChange(ev: Event) {
-    this.pendingAnnotationBody = ev?.path[0].value;
+    const inputEl = ev.composedPath()[0] as HTMLInputElement;
+    this.pendingAnnotationBody = inputEl.value;
   }
 
   get loginTemplate() {
@@ -283,7 +286,7 @@ export class GladeAnnotateable extends LitElement {
     });
   }
 
-  handleClickCreateAnnotation(ev: MouseEvent) {
+  handleClickCreateAnnotation(_: MouseEvent) {
     if (this.user) {
       console.log('user is signed in');
       this.dialogRole = DialogRole.Create;
@@ -293,7 +296,7 @@ export class GladeAnnotateable extends LitElement {
     this.requestUpdate();
   }
 
-  async handleClickPublishAnnotation(ev: MouseEvent) {
+  async handleClickPublishAnnotation(_: MouseEvent) {
     console.log('publish button clicked');
     const postedBy = this.user?.displayName;
     const body = this.pendingAnnotationBody;
@@ -308,7 +311,7 @@ export class GladeAnnotateable extends LitElement {
     this.requestUpdate();
   }
 
-  async handleClickLogin(ev: MouseEvent) {
+  async handleClickLogin(_: MouseEvent) {
     try {
       await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
       this.annotationsModalOpened = false;
