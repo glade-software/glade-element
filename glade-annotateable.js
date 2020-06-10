@@ -60,13 +60,16 @@ let GladeAnnotateable = /** @class */ (() => {
             this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
         }
         handleEmailInputChange(ev) {
-            this.email = ev === null || ev === void 0 ? void 0 : ev.path[0].value;
+            const inputEl = ev.composedPath()[0];
+            this.email = inputEl.value;
         }
         handlePasswordInputChange(ev) {
-            this.password = ev === null || ev === void 0 ? void 0 : ev.path[0].value;
+            const inputEl = ev.composedPath()[0];
+            this.password = inputEl.value;
         }
         handleAnnotationBodyChange(ev) {
-            this.pendingAnnotationBody = ev === null || ev === void 0 ? void 0 : ev.path[0].value;
+            const inputEl = ev.composedPath()[0];
+            this.pendingAnnotationBody = inputEl.value;
         }
         get loginTemplate() {
             if (this.user)
@@ -213,7 +216,7 @@ let GladeAnnotateable = /** @class */ (() => {
                 node.setAttribute('data-glade-index', `${idx}`);
             });
         }
-        handleClickCreateAnnotation(ev) {
+        handleClickCreateAnnotation(_) {
             if (this.user) {
                 console.log('user is signed in');
                 this.dialogRole = DialogRole.Create;
@@ -223,7 +226,7 @@ let GladeAnnotateable = /** @class */ (() => {
             }
             this.requestUpdate();
         }
-        async handleClickPublishAnnotation(ev) {
+        async handleClickPublishAnnotation(_) {
             var _a;
             console.log('publish button clicked');
             const postedBy = (_a = this.user) === null || _a === void 0 ? void 0 : _a.displayName;
@@ -238,7 +241,7 @@ let GladeAnnotateable = /** @class */ (() => {
             this.dialogRole = DialogRole.List;
             this.requestUpdate();
         }
-        async handleClickLogin(ev) {
+        async handleClickLogin(_) {
             try {
                 await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
                 this.annotationsModalOpened = false;
