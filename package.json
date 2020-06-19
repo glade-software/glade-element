@@ -1,7 +1,7 @@
 {
-  "name": "lit-element-starter-ts",
+  "name": "glade-annotateable",
   "version": "0.0.0",
-  "description": "A simple web component",
+  "description": "a component that makes DOM annotateable",
   "main": "glade-annotateable.js",
   "module": "glade-annotateable.js",
   "type": "module",
