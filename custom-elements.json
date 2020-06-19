@@ -4,47 +4,144 @@
     {
       "name": "glade-annotateable",
       "path": "./src/glade-annotateable.ts",
-      "description": "An example element.",
       "attributes": [
         {
-          "name": "name",
-          "description": "The name to say \"Hello\" to.",
+          "name": "slug",
+          "description": "The slug used to fetch the Glade document",
           "type": "string",
-          "default": "\"World\""
+          "default": "\"\""
         },
         {
-          "name": "count",
-          "description": "The number of times the button has been clicked.",
+          "name": "annotationsModalOpened",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "loginErrorMessage",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "password",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "pendingAnnotationBody",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "pendingGladeDomNodeIndex",
           "type": "number",
-          "default": "0"
+          "default": "-1"
         }
       ],
       "properties": [
         {
-          "name": "name",
-          "attribute": "name",
-          "description": "The name to say \"Hello\" to.",
+          "name": "slug",
+          "attribute": "slug",
+          "description": "The slug used to fetch the Glade document",
           "type": "string",
-          "default": "\"World\""
+          "default": "\"\""
         },
         {
-          "name": "count",
-          "attribute": "count",
-          "description": "The number of times the button has been clicked.",
+          "name": "annotationsModalOpened",
+          "attribute": "annotationsModalOpened",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "loginErrorMessage",
+          "attribute": "loginErrorMessage",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "firebaseConfig",
+          "type": "{ apiKey: string; authDomain: string; databaseURL: string; projectId: string; storageBucket: string; messagingSenderId: string; appId: string; }",
+          "default": "{\"apiKey\":\"AIzaSyAtc2ed5rsHT7IOF9E1psFhkqtCqKib25U\",\"authDomain\":\"glade-software-firebase.firebaseapp.com\",\"databaseURL\":\"https://glade-software-firebase.firebaseio.com\",\"projectId\":\"glade-software-firebase\",\"storageBucket\":\"glade-software-firebase.appspot.com\",\"messagingSenderId\":\"527964919900\",\"appId\":\"1:527964919900:web:dc1ffc9e14a70b08b3ae99\"}"
+        },
+        {
+          "name": "db",
+          "type": "Firestore"
+        },
+        {
+          "name": "user",
+          "type": "User | null"
+        },
+        {
+          "name": "email",
+          "attribute": "email",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "password",
+          "attribute": "password",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "pendingAnnotationBody",
+          "attribute": "pendingAnnotationBody",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "pendingGladeDomNodeIndex",
+          "attribute": "pendingGladeDomNodeIndex",
           "type": "number",
-          "default": "0"
-        }
-      ],
-      "slots": [
+          "default": "-1"
+        },
         {
-          "name": "",
-          "description": "This element has a slot"
-        }
-      ],
-      "cssParts": [
+          "name": "annotations",
+          "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
+          "default": "[]"
+        },
         {
-          "name": "button",
-          "description": "The button"
+          "name": "activeAnnotations",
+          "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
+          "default": "[]"
+        },
+        {
+          "name": "dialogRole",
+          "type": "DialogRole",
+          "default": "\"LIST\""
+        },
+        {
+          "name": "loginTemplate",
+          "type": "TemplateResult"
+        },
+        {
+          "name": "createAnnotationTemplate",
+          "type": "TemplateResult"
+        },
+        {
+          "name": "annotationsListTemplate",
+          "type": "TemplateResult"
+        },
+        {
+          "name": "modalContent",
+          "type": "TemplateResult"
+        },
+        {
+          "name": "gladeContentNodes",
+          "description": "The content nodes inside the tag",
+          "type": "NodeListOf<Element>"
+        },
+        {
+          "name": "floatingLabelFoundation",
+          "type": "MDCFloatingLabelFoundation | undefined"
+        },
+        {
+          "name": "lineRippleFoundation",
+          "type": "MDCLineRippleFoundation | undefined"
         }
       ]
     }
