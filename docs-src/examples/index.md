@@ -1,20 +1,20 @@
 ---
 layout: example.11ty.cjs
-title: <my-element> ⌲ Examples ⌲ Basic
+title: <glade-annotateable> ⌲ Examples ⌲ Basic
 tags: example
 name: Basic
 description: A basic example
 ---
 
 <style>
-  my-element p {
+  glade-annotateable p {
     border: solid 1px blue;
     padding: 8px;
   }
 </style>
-<my-element>
+<glade-annotateable>
   <p>This is child content</p>
-</my-element>
+</glade-annotateable>
 
 <h3>CSS</h3>
 
@@ -28,7 +28,7 @@ description: A basic example
 <h3>HTML</h3>
 
 ```html
-<my-element>
+<glade-annotateable>
   <p>This is child content</p>
-</my-element>
+</glade-annotateable>
 ```

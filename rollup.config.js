@@ -18,9 +18,9 @@ import resolve from 'rollup-plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 
 export default {
-  input: 'my-element.js',
+  input: 'glade-annotateable.js',
   output: {
-    file: 'my-element.bundled.js',
+    file: 'glade-annotateable.bundled.js',
     format: 'esm',
   },
   onwarn(warning) {

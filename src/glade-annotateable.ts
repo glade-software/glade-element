@@ -12,7 +12,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import { LitElement, html, customElement, property, css } from 'lit-element';
+import {LitElement, html, customElement, property, css} from 'lit-element';
 import '@material/mwc-dialog';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
@@ -36,13 +36,13 @@ export class GladeAnnotateable extends LitElement {
   /**
    * The slug used to fetch the Glade document
    */
-  @property({ type: String })
+  @property({type: String})
   slug = '';
 
-  @property({ type: Boolean })
+  @property({type: Boolean})
   annotationsModalOpened = false;
 
-  @property({ type: String })
+  @property({type: String})
   loginErrorMessage = '';
 
   // traditionally should not be published, but the embeddable nature of <glade-component> seems to be an exception
@@ -60,16 +60,16 @@ export class GladeAnnotateable extends LitElement {
 
   user!: firebase.User | null;
 
-  @property({ type: String })
+  @property({type: String})
   email = '';
 
-  @property({ type: String })
+  @property({type: String})
   password = '';
 
-  @property({ type: String })
+  @property({type: String})
   pendingAnnotationBody = '';
 
-  @property({ type: Number })
+  @property({type: Number})
   pendingGladeDomNodeIndex = -1;
 
   annotations: Array<{
@@ -147,8 +147,8 @@ export class GladeAnnotateable extends LitElement {
       <mwc-button slot="secondaryAction"
         ><a
           href="https://glade.app/signup?from=${encodeURIComponent(
-      window.location.href
-    )}"
+            window.location.href
+          )}"
           >sign up?</a
         ></mwc-button
       >
@@ -163,7 +163,6 @@ export class GladeAnnotateable extends LitElement {
       <mwc-textarea
         style="width:500px; margin:8px; padding:8px;"
         placeholder=""
-        name="body"
         @change="${this.handleAnnotationBodyChange}"
       ></mwc-textarea>
       <mwc-button
@@ -177,11 +176,11 @@ export class GladeAnnotateable extends LitElement {
   get annotationsListTemplate() {
     return html`<div>
         ${this.activeAnnotations.map((annotation) => {
-      return html`<div style="border: 1px solid; margin:8px; padding:8px;">
+          return html`<div style="border: 1px solid; margin:8px; padding:8px;">
             <span style="color: #1A535C;">${annotation.postedBy}</span>:
             <p>${annotation.body}</p>
           </div>`;
-    })}
+        })}
       </div>
       <mwc-button
         class="button-cta"
@@ -231,7 +230,7 @@ export class GladeAnnotateable extends LitElement {
       const displayName = userDocRef?.data()?.displayName;
 
       if (displayName) {
-        this.user.updateProfile({ displayName });
+        this.user.updateProfile({displayName});
       }
     } else {
       this.user = null;
@@ -248,7 +247,7 @@ export class GladeAnnotateable extends LitElement {
         .get();
 
       annotationsSnapshots.forEach((document) => {
-        const { body, postedBy, domNodeIndex } = document.data();
+        const {body, postedBy, domNodeIndex} = document.data();
         this.annotations.push({
           body,
           postedBy,
@@ -268,7 +267,7 @@ export class GladeAnnotateable extends LitElement {
     this.gladeContentNodes.forEach((node, idx) => {
       // aggregate all annotations for a given node index in the DOM
       const annotationsForIndex = this.annotations.filter(
-        ({ gladeDomNodeIndex }) => {
+        ({gladeDomNodeIndex}) => {
           return gladeDomNodeIndex === idx;
         }
       );
@@ -305,7 +304,7 @@ export class GladeAnnotateable extends LitElement {
       .collection('glade-trees')
       .doc(this.slug)
       .collection('annotations')
-      .add({ postedBy, body, domNodeIndex });
+      .add({postedBy, body, domNodeIndex});
     this.annotationsModalOpened = false;
     this.dialogRole = DialogRole.List;
     this.requestUpdate();
@@ -313,22 +312,23 @@ export class GladeAnnotateable extends LitElement {
 
   async handleClickLogin(_: MouseEvent) {
     try {
-      await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password);
       this.annotationsModalOpened = false;
     } catch (error) {
       if (error.code === 'auth/wrong-password') {
-        this.loginErrorMessage = 'password incorrect!'
-        console.log('wrong password')
+        this.loginErrorMessage = 'password incorrect!';
+        console.log('wrong password');
       } else if (error.code === 'auth/user-not-found') {
-        this.loginErrorMessage = 'no user with that email!'
-        console.log('user not found')
-      } else if (error.code === 'auth/too-many-requests'){
-        this.loginErrorMessage = "too many attempts! try again later"
+        this.loginErrorMessage = 'no user with that email!';
+        console.log('user not found');
+      } else if (error.code === 'auth/too-many-requests') {
+        this.loginErrorMessage = 'too many attempts! try again later';
       }
       console.log(error);
     }
     this.requestUpdate();
-
   }
 
   handleMouseUpOnChildren(ev: MouseEvent) {
@@ -351,9 +351,9 @@ export class GladeAnnotateable extends LitElement {
   render() {
     return html`<mwc-dialog
         @closed=${() => {
-        this.annotationsModalOpened = false;
-        this.dialogRole = DialogRole.List;
-      }}
+          this.annotationsModalOpened = false;
+          this.dialogRole = DialogRole.List;
+        }}
         heading="annotations"
         ?open=${this.annotationsModalOpened}
       >
