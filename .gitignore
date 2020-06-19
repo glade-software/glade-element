@@ -3,7 +3,7 @@
 /test/
 
 # top level source
-my-element.js
-my-element.js.map
-my-element.d.ts
-my-element.d.ts.map
+glade-annotateable.js
+glade-annotateable.js.map
+glade-annotateable.d.ts
+glade-annotateable.d.ts.map

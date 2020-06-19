@@ -1,15 +1,15 @@
 ---
 layout: example.11ty.cjs
-title: <my-element> ⌲ Examples ⌲ Name Property
+title: <glade-annotateable> ⌲ Examples ⌲ Name Property
 tags: example
 name: Name Property
 description: Setting the name property
 ---
 
-<my-element name="Earth"></my-element>
+<glade-annotateable slug="earth"></glade-annotateable>
 
 <h3>HTML</h3>
 
 ```html
-<my-element name="Earth"></my-element>
+<glade-annotateable slug="earth"></glade-annotateable>
 ```
