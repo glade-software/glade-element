@@ -1,6 +1,6 @@
 {
   "name": "@glade-software/glade-annotateable",
-  "version": "0.0.2-beta.3",
+  "version": "0.0.2-beta.4",
   "description": "a component that makes DOM annotateable",
   "main": "glade-annotateable.js",
   "module": "glade-annotateable.js",
