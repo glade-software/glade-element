@@ -210,6 +210,8 @@ export class GladeAnnotateable extends LitElement {
   }
 
   initializeFirebase() {
+    console.log('initializing');
+    console.log('firebase', firebase);
     if (!firebase.apps.length) {
       firebase.initializeApp(this.firebaseConfig);
     }
