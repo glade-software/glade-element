@@ -1,6 +1,6 @@
 {
-  "name": "glade-annotateable",
-  "version": "0.0.0",
+  "name": "@glade-software/glade-annotateable",
+  "version": "0.0.1",
   "description": "a component that makes DOM annotateable",
   "main": "glade-annotateable.js",
   "module": "glade-annotateable.js",
@@ -33,7 +33,7 @@
     "lit-element",
     "typescript"
   ],
-  "author": "The Polymer Authors",
+  "author": "Matt Johnston",
   "license": "BSD-3-Clause",
   "dependencies": {
     "@material/mwc-button": "^0.15.0",
