@@ -17,7 +17,7 @@ import '@material/mwc-dialog';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
 import '@material/mwc-textarea';
-import * as firebase from 'firebase/app';
+import * as firebase from '@firebase/app';
 import '@firebase/firestore';
 import '@firebase/auth';
 
