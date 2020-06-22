@@ -5,6 +5,7 @@
   "main": "glade-annotateable.js",
   "module": "glade-annotateable.js",
   "type": "module",
+  "private": true,
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
