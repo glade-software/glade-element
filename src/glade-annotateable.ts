@@ -17,7 +17,7 @@ import '@material/mwc-dialog';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
 import '@material/mwc-textarea';
-import firebase from 'firebase/app';
+import * as firebase from 'firebase/app';
 import '@firebase/firestore';
 import '@firebase/auth';
 
@@ -58,6 +58,8 @@ export class GladeAnnotateable extends LitElement {
     messagingSenderId: '527964919900',
     appId: '1:527964919900:web:dc1ffc9e14a70b08b3ae99',
   };
+
+  firebase: any;
 
   db!: firebase.firestore.Firestore;
 
@@ -213,16 +215,18 @@ export class GladeAnnotateable extends LitElement {
   }
 
   initializeFirebase() {
+    this.firebase = firebase.default;
     console.log('initializing');
-    console.log('firebase', firebase);
-    if (!firebase.apps.length) {
-      firebase.initializeApp(this.firebaseConfig);
+    console.log('firebase', this.firebase)
+
+    if (!this.firebase.apps.length) {
+      this.firebase.initializeApp(this.firebaseConfig);
     }
 
-    this.db = firebase.firestore();
-    this.user = firebase.auth().currentUser;
+    this.db = this.firebase.firestore();
+    this.user = this.firebase.auth().currentUser;
 
-    firebase.auth().onAuthStateChanged(this.handleAuthStateChanged.bind(this));
+    this.firebase.auth().onAuthStateChanged(this.handleAuthStateChanged.bind(this));
   }
 
   async handleAuthStateChanged(u: firebase.User | null) {
@@ -317,7 +321,7 @@ export class GladeAnnotateable extends LitElement {
 
   async handleClickLogin(_: MouseEvent) {
     try {
-      await firebase
+      await this.firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password);
       this.annotationsModalOpened = false;
