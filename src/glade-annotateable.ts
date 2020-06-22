@@ -18,6 +18,8 @@ import '@material/mwc-button';
 import '@material/mwc-textfield';
 import '@material/mwc-textarea';
 import firebase from 'firebase';
+import 'firebase/firestore';
+import 'firebase/auth';
 
 // Different views the modal may reflect
 enum DialogRole {
