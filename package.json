@@ -3,7 +3,7 @@
   "version": "0.0.2-beta.8",
   "description": "a component that makes DOM annotateable",
   "main": "glade-annotateable.bundled.js",
-  "module": "glade-annotateable.js",
+  "module": "glade-annotateable.bundled.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
