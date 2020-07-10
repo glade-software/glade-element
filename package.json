@@ -2,7 +2,7 @@
   "name": "@glade-software/glade-annotateable",
   "version": "0.0.2-beta.7",
   "description": "a component that makes DOM annotateable",
-  "main": "glade-annotateable.js",
+  "main": "glade-annotateable.bundled.js",
   "module": "glade-annotateable.js",
   "type": "module",
   "scripts": {
@@ -37,7 +37,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "@firebase/auth": "^0.14.7",
-    "@firebase/firestore": "^1.15.3",
+    "@firebase/firestore": "^1.15.4",
     "@material/mwc-button": "^0.15.0",
     "@material/mwc-dialog": "^0.15.0",
     "@material/mwc-textarea": "^0.15.0",

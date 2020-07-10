@@ -17,10 +17,8 @@ import '@material/mwc-dialog';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
 import '@material/mwc-textarea';
-import * as firebase from '@firebase/app';
-import '@firebase/firestore';
-import '@firebase/auth';
 
+import firebase from 'firebase';
 
 // Different views the modal may reflect
 enum DialogRole {
@@ -215,18 +213,15 @@ export class GladeAnnotateable extends LitElement {
   }
 
   initializeFirebase() {
-    this.firebase = firebase.default;
-    console.log('initializing');
-    console.log('firebase', this.firebase)
 
-    if (!this.firebase.apps.length) {
-      this.firebase.initializeApp(this.firebaseConfig);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(this.firebaseConfig);
     }
 
-    this.db = this.firebase.firestore();
-    this.user = this.firebase.auth().currentUser;
+    this.db = firebase.firestore();
+    this.user = firebase.auth().currentUser;
 
-    this.firebase.auth().onAuthStateChanged(this.handleAuthStateChanged.bind(this));
+    firebase.auth().onAuthStateChanged(this.handleAuthStateChanged.bind(this));
   }
 
   async handleAuthStateChanged(u: firebase.User | null) {
@@ -321,7 +316,7 @@ export class GladeAnnotateable extends LitElement {
 
   async handleClickLogin(_: MouseEvent) {
     try {
-      await this.firebase
+      await firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password);
       this.annotationsModalOpened = false;
