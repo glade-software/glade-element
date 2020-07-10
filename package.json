@@ -39,13 +39,11 @@
   "author": "Matt Johnston",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@firebase/auth": "^0.14.7",
-    "@firebase/firestore": "^1.15.4",
     "@material/mwc-button": "^0.15.0",
     "@material/mwc-dialog": "^0.15.0",
     "@material/mwc-textarea": "^0.15.0",
     "@material/mwc-textfield": "^0.15.0",
-    "firebase": "^7.14.5",
+    "firebase": "^7.16.0",
     "lit-element": "^2.3.1"
   },
   "devDependencies": {
