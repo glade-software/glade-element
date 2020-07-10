@@ -31,15 +31,15 @@ export default {
   plugins: [
     replace({'Reflect.decorate': 'undefined'}),
     resolve(),
-    // terser({
-    //   module: true,
-    //   warnings: true,
-    //   mangle: {
-    //     properties: {
-    //       regex: /^__/,
-    //     },
-    //   },
-    // }),
+    terser({
+      module: true,
+      warnings: true,
+      mangle: {
+        properties: {
+          regex: /^__/,
+        },
+      },
+    }),
     filesize({
       showBrotliSize: true,
     }),
