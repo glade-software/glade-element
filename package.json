@@ -1,12 +1,15 @@
 {
   "name": "@glade-software/glade-annotateable",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "a component that makes DOM annotateable",
-  "main": "glade-annotateable.js",
-  "module": "glade-annotateable.js",
+  "main": "glade-annotateable.bundled.js",
+  "module": "glade-annotateable.bundled.js",
   "type": "module",
+  "files": [
+    "glade-annotateable.bundled.js"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "rollup -c",
     "build:watch": "tsc --watch",
     "clean": "rimraf glade-annotateable.{d.ts,d.ts.map,js,js.map} test/glade-annotateable.{d.ts,d.ts.map,js,js.map} test/glade-annotateable_test.{d.ts,d.ts.map,js,js.map}",
     "lint": "npm run lint:lit-analyzer && npm run lint:eslint",
@@ -40,7 +43,7 @@
     "@material/mwc-dialog": "^0.15.0",
     "@material/mwc-textarea": "^0.15.0",
     "@material/mwc-textfield": "^0.15.0",
-    "firebase": "^7.14.5",
+    "firebase": "^7.16.0",
     "lit-element": "^2.3.1"
   },
   "devDependencies": {

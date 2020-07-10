@@ -17,6 +17,7 @@ import '@material/mwc-dialog';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
 import '@material/mwc-textarea';
+
 import firebase from 'firebase';
 
 // Different views the modal may reflect
@@ -55,6 +56,8 @@ export class GladeAnnotateable extends LitElement {
     messagingSenderId: '527964919900',
     appId: '1:527964919900:web:dc1ffc9e14a70b08b3ae99',
   };
+
+  firebase: any;
 
   db!: firebase.firestore.Firestore;
 
@@ -210,6 +213,7 @@ export class GladeAnnotateable extends LitElement {
   }
 
   initializeFirebase() {
+
     if (!firebase.apps.length) {
       firebase.initializeApp(this.firebaseConfig);
     }
