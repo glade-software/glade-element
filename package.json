@@ -5,8 +5,11 @@
   "main": "glade-annotateable.bundled.js",
   "module": "glade-annotateable.bundled.js",
   "type": "module",
+  "files": [
+    "glade-annotateable.bundled.js"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "rollup -c",
     "build:watch": "tsc --watch",
     "clean": "rimraf glade-annotateable.{d.ts,d.ts.map,js,js.map} test/glade-annotateable.{d.ts,d.ts.map,js,js.map} test/glade-annotateable_test.{d.ts,d.ts.map,js,js.map}",
     "lint": "npm run lint:lit-analyzer && npm run lint:eslint",
