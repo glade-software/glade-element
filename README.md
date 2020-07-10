@@ -12,6 +12,18 @@ After wrapping your content with the tag, all users will need to do is highlight
 </glade-annotateable>
 ```
 
+## All you need to make this work
+```
+  <script type="module" src="https://unpkg.com/@glade-software/glade-annotateable"></script>
+  <style>
+    .glade-has-annotations {
+      // style nodes with annotations however you wish
+      background-color:skyblue;
+      cursor: pointer;
+    }
+  </style>
+```
+
 ## Setup
 
 Install dependencies:
