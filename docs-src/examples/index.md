@@ -7,28 +7,34 @@ description: A basic example
 ---
 
 <style>
-  glade-annotateable p {
-    border: solid 1px blue;
-    padding: 8px;
-  }
+    .glade-has-annotations {
+      background-color:skyblue;
+      cursor: pointer;
+    }
 </style>
-<glade-annotateable>
-  <p>This is child content</p>
+
+<glade-annotateable slug="basic-example">
+  <p>This is a basic example</p>
+  <p>it has a few nodes<p>
+  <p>click one to annotate it!</p>
 </glade-annotateable>
 
 <h3>CSS</h3>
 
 ```css
-  p {
-    border: solid 1px blue;
-    padding: 8px;
-  }
+    .glade-has-annotations {
+      // style nodes with annotations however you wish
+      background-color:skyblue;
+      cursor: pointer;
+    }
 ```
 
 <h3>HTML</h3>
 
 ```html
 <glade-annotateable>
-  <p>This is child content</p>
+  <p>This is a basic example</p>
+  <p>it has a few nodes<p>
+  <p>click one to annotate it!</p>
 </glade-annotateable>
 ```
