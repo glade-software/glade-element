@@ -12,7 +12,7 @@ title: <glade-annotateable> ⌲ Home
 <section class="columns">
   <div>
 
-`<glade-annotateable>` can be configured with attributes in plain HTML. Just wrap your content with a tag, and give it a slug for use as a unique identifier for the content you wrapped.
+`<glade-annotateable>` can be configured with plain HTML. Just wrap your content with the tag, and give it a `slug` for use as a unique identifier for the content you wrapped.
 
 ```html
 <glade-annotateable slug="demo">

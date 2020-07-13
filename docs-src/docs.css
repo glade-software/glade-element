@@ -42,7 +42,7 @@ header {
 footer {
   width: 100%;
   min-height: 120px;
-  background: gray;
+  background: rgb(26, 83, 92);
   color: white;
   display: flex;
   flex-direction: column;

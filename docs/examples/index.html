@@ -36,26 +36,24 @@
                     <a href="">A basic example</a>
                   </li>
                 
-                  <li class=>
-                    <a href="name-property/">Setting the name property</a>
-                  </li>
-                
         </ul>
       </nav>
       <div>
         <style>
-  glade-annotateable p {
-    border: solid 1px blue;
-    padding: 8px;
-  }
+    .glade-has-annotations {
+      background-color:skyblue;
+      cursor: pointer;
+    }
 </style>
-<glade-annotateable>
-  <p>This is child content</p>
+<glade-annotateable slug="basic-example">
+  <p>This is a basic example</p>
+  <p>it has a few nodes<p>
+  <p>click one to annotate it!</p>
 </glade-annotateable>
 <h3>CSS</h3>
-<pre class="language-css"><code class="language-css">  <span class="token selector">p</span> <span class="token punctuation">{</span><br>    <span class="token property">border</span><span class="token punctuation">:</span> solid 1px blue<span class="token punctuation">;</span><br>    <span class="token property">padding</span><span class="token punctuation">:</span> 8px<span class="token punctuation">;</span><br>  <span class="token punctuation">}</span></code></pre>
+<pre class="language-css"><code class="language-css">    <span class="token selector">.glade-has-annotations</span> <span class="token punctuation">{</span><br>      // style nodes with annotations however you wish<br>      <span class="token property">background-color</span><span class="token punctuation">:</span>skyblue<span class="token punctuation">;</span><br>      <span class="token property">cursor</span><span class="token punctuation">:</span> pointer<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span></code></pre>
 <h3>HTML</h3>
-<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>glade-annotateable</span><span class="token punctuation">></span></span><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>This is child content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>glade-annotateable</span><span class="token punctuation">></span></span></code></pre>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>glade-annotateable</span><span class="token punctuation">></span></span><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>This is a basic example<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>it has a few nodes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>click one to annotate it!<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>glade-annotateable</span><span class="token punctuation">></span></span></code></pre>
 
       </div>
     </section>
