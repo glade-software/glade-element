@@ -13,31 +13,37 @@
         },
         {
           "name": "annotationsModalOpened",
+          "description": "Whether or not the Glade dialog is currently opened",
           "type": "boolean",
           "default": "false"
         },
         {
           "name": "loginErrorMessage",
+          "description": "The current login form error message",
           "type": "string",
           "default": "\"\""
         },
         {
           "name": "email",
+          "description": "the email currently being used to sign in",
           "type": "string",
           "default": "\"\""
         },
         {
           "name": "password",
+          "description": "the password currently being used to sign in",
           "type": "string",
           "default": "\"\""
         },
         {
           "name": "pendingAnnotationBody",
+          "description": "the body of the annotation that is currently being composed",
           "type": "string",
           "default": "\"\""
         },
         {
           "name": "pendingGladeDomNodeIndex",
+          "description": "the index of the referrent DOM node for the pending annotation",
           "type": "number",
           "default": "-1"
         }
@@ -53,81 +59,101 @@
         {
           "name": "annotationsModalOpened",
           "attribute": "annotationsModalOpened",
+          "description": "Whether or not the Glade dialog is currently opened",
           "type": "boolean",
           "default": "false"
         },
         {
           "name": "loginErrorMessage",
           "attribute": "loginErrorMessage",
+          "description": "The current login form error message",
           "type": "string",
           "default": "\"\""
         },
         {
           "name": "firebaseConfig",
+          "description": "An object with all firebase configuration options, traditionally this config should not be published, but the embeddable nature of <glade-component> seems to be an exception",
           "type": "{ apiKey: string; authDomain: string; databaseURL: string; projectId: string; storageBucket: string; messagingSenderId: string; appId: string; }",
           "default": "{\"apiKey\":\"AIzaSyAtc2ed5rsHT7IOF9E1psFhkqtCqKib25U\",\"authDomain\":\"glade-software-firebase.firebaseapp.com\",\"databaseURL\":\"https://glade-software-firebase.firebaseio.com\",\"projectId\":\"glade-software-firebase\",\"storageBucket\":\"glade-software-firebase.appspot.com\",\"messagingSenderId\":\"527964919900\",\"appId\":\"1:527964919900:web:dc1ffc9e14a70b08b3ae99\"}"
         },
         {
+          "name": "firebase",
+          "description": "the current firebase instance"
+        },
+        {
           "name": "db",
+          "description": "the current firestore database instance",
           "type": "Firestore"
         },
         {
           "name": "user",
+          "description": "the active firebase user",
           "type": "User | null"
         },
         {
           "name": "email",
           "attribute": "email",
+          "description": "the email currently being used to sign in",
           "type": "string",
           "default": "\"\""
         },
         {
           "name": "password",
           "attribute": "password",
+          "description": "the password currently being used to sign in",
           "type": "string",
           "default": "\"\""
         },
         {
           "name": "pendingAnnotationBody",
           "attribute": "pendingAnnotationBody",
+          "description": "the body of the annotation that is currently being composed",
           "type": "string",
           "default": "\"\""
         },
         {
           "name": "pendingGladeDomNodeIndex",
           "attribute": "pendingGladeDomNodeIndex",
+          "description": "the index of the referrent DOM node for the pending annotation",
           "type": "number",
           "default": "-1"
         },
         {
           "name": "annotations",
+          "description": "an array of all annotations for this document",
           "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
           "default": "[]"
         },
         {
           "name": "activeAnnotations",
+          "description": "an array of all annotations that are currently listed for the selected referrent",
           "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
           "default": "[]"
         },
         {
           "name": "dialogRole",
+          "description": "the current UI mode of the Glade dialog\nList, Create, or Login",
           "type": "DialogRole",
           "default": "\"LIST\""
         },
         {
           "name": "loginTemplate",
+          "description": "the template to display when in Login DialogRole",
           "type": "TemplateResult"
         },
         {
           "name": "createAnnotationTemplate",
+          "description": "the template to display when in Create DialogRole",
           "type": "TemplateResult"
         },
         {
           "name": "annotationsListTemplate",
+          "description": "the template to display when in List DialogRole",
           "type": "TemplateResult"
         },
         {
           "name": "modalContent",
+          "description": "the current template to display in the dialog",
           "type": "TemplateResult"
         },
         {
