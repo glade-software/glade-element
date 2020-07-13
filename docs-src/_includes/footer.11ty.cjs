@@ -2,8 +2,7 @@ module.exports = function(data) {
   return `
 <footer>
   <p>
-    Made with
-    <a href="https://github.com/PolymerLabs/lit-element-starter-ts">lit-element-starter-ts</a>
+  Glade Software - An evergreen company, forever.
   </p>
 </footer>`;
 };

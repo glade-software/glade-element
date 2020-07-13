@@ -9,13 +9,13 @@
     <link rel="stylesheet" href="../docs.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto+Mono">
     <link href="../prism-okaidia.css" rel="stylesheet" />
-    <script type="module" src="../my-element.bundled.js"></script>
+    <script type="module" src="../glade-annotateable.bundled.js"></script>
   </head>
   <body>
     
 <header>
   <h1>&lt;glade-annotateable></h1>
-  <h2>A web component just for me.</h2>
+  <h2>It makes your content annotateable</h2>
 </header>
     
 <nav>
@@ -45,27 +45,27 @@
         </tr>
       
         <tr>
-          <td>annotationsModalOpened</td><td>undefined</td><td>boolean</td><td>false</td>
+          <td>annotationsModalOpened</td><td>Whether or not the Glade dialog is currently opened</td><td>boolean</td><td>false</td>
         </tr>
       
         <tr>
-          <td>loginErrorMessage</td><td>undefined</td><td>string</td><td>""</td>
+          <td>loginErrorMessage</td><td>The current login form error message</td><td>string</td><td>""</td>
         </tr>
       
         <tr>
-          <td>email</td><td>undefined</td><td>string</td><td>""</td>
+          <td>email</td><td>the email currently being used to sign in</td><td>string</td><td>""</td>
         </tr>
       
         <tr>
-          <td>password</td><td>undefined</td><td>string</td><td>""</td>
+          <td>password</td><td>the password currently being used to sign in</td><td>string</td><td>""</td>
         </tr>
       
         <tr>
-          <td>pendingAnnotationBody</td><td>undefined</td><td>string</td><td>""</td>
+          <td>pendingAnnotationBody</td><td>the body of the annotation that is currently being composed</td><td>string</td><td>""</td>
         </tr>
       
         <tr>
-          <td>pendingGladeDomNodeIndex</td><td>undefined</td><td>number</td><td>-1</td>
+          <td>pendingGladeDomNodeIndex</td><td>the index of the referrent DOM node for the pending annotation</td><td>number</td><td>-1</td>
         </tr>
       
     </table>
@@ -82,67 +82,72 @@
         </tr>
       
         <tr>
-          <td>annotationsModalOpened</td><td>annotationsModalOpened</td><td>undefined</td><td>boolean</td><td>false</td>
+          <td>annotationsModalOpened</td><td>annotationsModalOpened</td><td>Whether or not the Glade dialog is currently opened</td><td>boolean</td><td>false</td>
         </tr>
       
         <tr>
-          <td>loginErrorMessage</td><td>loginErrorMessage</td><td>undefined</td><td>string</td><td>""</td>
+          <td>loginErrorMessage</td><td>loginErrorMessage</td><td>The current login form error message</td><td>string</td><td>""</td>
         </tr>
       
         <tr>
-          <td>firebaseConfig</td><td>undefined</td><td>undefined</td><td>{ apiKey: string; authDomain: string; databaseURL: string; projectId: string; storageBucket: string; messagingSenderId: string; appId: string; }</td><td>{"apiKey":"AIzaSyAtc2ed5rsHT7IOF9E1psFhkqtCqKib25U","authDomain":"glade-software-firebase.firebaseapp.com","databaseURL":"https://glade-software-firebase.firebaseio.com","projectId":"glade-software-firebase","storageBucket":"glade-software-firebase.appspot.com","messagingSenderId":"527964919900","appId":"1:527964919900:web:dc1ffc9e14a70b08b3ae99"}</td>
+          <td>firebaseConfig</td><td>undefined</td><td>An object with all firebase configuration options, traditionally this config should not be published, but the embeddable nature of <glade-component> seems to be an exception</td><td>{ apiKey: string; authDomain: string; databaseURL: string; projectId: string; storageBucket: string; messagingSenderId: string; appId: string; }</td><td>{"apiKey":"AIzaSyAtc2ed5rsHT7IOF9E1psFhkqtCqKib25U","authDomain":"glade-software-firebase.firebaseapp.com","databaseURL":"https://glade-software-firebase.firebaseio.com","projectId":"glade-software-firebase","storageBucket":"glade-software-firebase.appspot.com","messagingSenderId":"527964919900","appId":"1:527964919900:web:dc1ffc9e14a70b08b3ae99"}</td>
         </tr>
       
         <tr>
-          <td>db</td><td>undefined</td><td>undefined</td><td>Firestore</td><td>undefined</td>
+          <td>firebase</td><td>undefined</td><td>the current firebase instance</td><td>undefined</td><td>undefined</td>
         </tr>
       
         <tr>
-          <td>user</td><td>undefined</td><td>undefined</td><td>User | null</td><td>undefined</td>
+          <td>db</td><td>undefined</td><td>the current firestore database instance</td><td>Firestore</td><td>undefined</td>
         </tr>
       
         <tr>
-          <td>email</td><td>email</td><td>undefined</td><td>string</td><td>""</td>
+          <td>user</td><td>undefined</td><td>the active firebase user</td><td>User | null</td><td>undefined</td>
         </tr>
       
         <tr>
-          <td>password</td><td>password</td><td>undefined</td><td>string</td><td>""</td>
+          <td>email</td><td>email</td><td>the email currently being used to sign in</td><td>string</td><td>""</td>
         </tr>
       
         <tr>
-          <td>pendingAnnotationBody</td><td>pendingAnnotationBody</td><td>undefined</td><td>string</td><td>""</td>
+          <td>password</td><td>password</td><td>the password currently being used to sign in</td><td>string</td><td>""</td>
         </tr>
       
         <tr>
-          <td>pendingGladeDomNodeIndex</td><td>pendingGladeDomNodeIndex</td><td>undefined</td><td>number</td><td>-1</td>
+          <td>pendingAnnotationBody</td><td>pendingAnnotationBody</td><td>the body of the annotation that is currently being composed</td><td>string</td><td>""</td>
         </tr>
       
         <tr>
-          <td>annotations</td><td>undefined</td><td>undefined</td><td>{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]</td><td>[]</td>
+          <td>pendingGladeDomNodeIndex</td><td>pendingGladeDomNodeIndex</td><td>the index of the referrent DOM node for the pending annotation</td><td>number</td><td>-1</td>
         </tr>
       
         <tr>
-          <td>activeAnnotations</td><td>undefined</td><td>undefined</td><td>{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]</td><td>[]</td>
+          <td>annotations</td><td>undefined</td><td>an array of all annotations for this document</td><td>{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]</td><td>[]</td>
         </tr>
       
         <tr>
-          <td>dialogRole</td><td>undefined</td><td>undefined</td><td>DialogRole</td><td>"LIST"</td>
+          <td>activeAnnotations</td><td>undefined</td><td>an array of all annotations that are currently listed for the selected referrent</td><td>{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]</td><td>[]</td>
         </tr>
       
         <tr>
-          <td>loginTemplate</td><td>undefined</td><td>undefined</td><td>TemplateResult</td><td>undefined</td>
+          <td>dialogRole</td><td>undefined</td><td>the current UI mode of the Glade dialog
+List, Create, or Login</td><td>DialogRole</td><td>"LIST"</td>
         </tr>
       
         <tr>
-          <td>createAnnotationTemplate</td><td>undefined</td><td>undefined</td><td>TemplateResult</td><td>undefined</td>
+          <td>loginTemplate</td><td>undefined</td><td>the template to display when in Login DialogRole</td><td>TemplateResult</td><td>undefined</td>
         </tr>
       
         <tr>
-          <td>annotationsListTemplate</td><td>undefined</td><td>undefined</td><td>TemplateResult</td><td>undefined</td>
+          <td>createAnnotationTemplate</td><td>undefined</td><td>the template to display when in Create DialogRole</td><td>TemplateResult</td><td>undefined</td>
         </tr>
       
         <tr>
-          <td>modalContent</td><td>undefined</td><td>undefined</td><td>TemplateResult</td><td>undefined</td>
+          <td>annotationsListTemplate</td><td>undefined</td><td>the template to display when in List DialogRole</td><td>TemplateResult</td><td>undefined</td>
+        </tr>
+      
+        <tr>
+          <td>modalContent</td><td>undefined</td><td>the current template to display in the dialog</td><td>TemplateResult</td><td>undefined</td>
         </tr>
       
         <tr>
@@ -171,8 +176,7 @@
     
 <footer>
   <p>
-    Made with
-    <a href="https://github.com/PolymerLabs/lit-element-starter-ts">lit-element-starter-ts</a>
+  Glade Software - An evergreen company, forever.
   </p>
 </footer>
   </body>

@@ -26,13 +26,21 @@ export class GladeAnnotateable extends LitElement {
   @property({type: String})
   slug = '';
 
+  /**
+   * Whether or not the Glade dialog is currently opened
+   */
   @property({type: Boolean})
   annotationsModalOpened = false;
 
+  /**
+   * The current login form error message
+   */
   @property({type: String})
   loginErrorMessage = '';
 
-  // traditionally should not be published, but the embeddable nature of <glade-component> seems to be an exception
+  /**
+   * An object with all firebase configuration options, traditionally this config should not be published, but the embeddable nature of <glade-component> seems to be an exception
+   */
   firebaseConfig = {
     apiKey: 'AIzaSyAtc2ed5rsHT7IOF9E1psFhkqtCqKib25U',
     authDomain: 'glade-software-firebase.firebaseapp.com',
@@ -43,36 +51,67 @@ export class GladeAnnotateable extends LitElement {
     appId: '1:527964919900:web:dc1ffc9e14a70b08b3ae99',
   };
 
+  /**
+   * the current firebase instance
+   */
   firebase: any;
 
+  /**
+   * the current firestore database instance
+   */
   db!: firebase.firestore.Firestore;
 
+  /**
+   * the active firebase user
+   */
   user!: firebase.User | null;
 
+  /**
+   * the email currently being used to sign in
+   */
   @property({type: String})
   email = '';
 
+  /**
+   * the password currently being used to sign in
+   */
   @property({type: String})
   password = '';
 
+  /**
+   * the body of the annotation that is currently being composed
+   */
   @property({type: String})
   pendingAnnotationBody = '';
 
+  /**
+   * the index of the referrent DOM node for the pending annotation
+   */
   @property({type: Number})
   pendingGladeDomNodeIndex = -1;
 
+  /**
+   * an array of all annotations for this document
+   */
   annotations: Array<{
     body: string;
     gladeDomNodeIndex: number;
     postedBy: string;
   }> = [];
 
+  /**
+   * an array of all annotations that are currently listed for the selected referrent
+   */
   activeAnnotations: Array<{
     body: string;
     gladeDomNodeIndex: number;
     postedBy: string;
   }> = [];
 
+  /**
+   * the current UI mode of the Glade dialog
+   * List, Create, or Login
+   */
   dialogRole: DialogRole = DialogRole.List;
 
   static styles = css`
@@ -110,6 +149,9 @@ export class GladeAnnotateable extends LitElement {
     this.pendingAnnotationBody = inputEl.value;
   }
 
+  /**
+  * the template to display when in Login DialogRole
+  */
   get loginTemplate() {
     if (this.user) return html``;
     return html`
@@ -146,6 +188,9 @@ export class GladeAnnotateable extends LitElement {
     `;
   }
 
+  /**
+   * the template to display when in Create DialogRole
+   */
   get createAnnotationTemplate() {
     return html`
       <mwc-textarea
@@ -160,7 +205,9 @@ export class GladeAnnotateable extends LitElement {
       >
     `;
   }
-
+  /**
+   * the template to display when in List DialogRole
+   */
   get annotationsListTemplate() {
     return html`<div>
         ${this.activeAnnotations.map((annotation) => {
@@ -178,6 +225,9 @@ export class GladeAnnotateable extends LitElement {
       > `;
   }
 
+  /**
+   * the current template to display in the dialog
+   */
   get modalContent() {
     switch (this.dialogRole) {
       case DialogRole.List:
