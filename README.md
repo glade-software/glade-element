@@ -26,7 +26,7 @@ After wrapping your content with the tag, all users will need to do is highlight
 
 ## Dev Guide
 
-`npm run build` yields a file in the root of the repo called `glade-annotateable.bundled.js` it is the only file required to declare the web component for use on the page, and is the one unpkg.com/@glade-software/glade-annotateable points to.
+`npm run build` yields a file in the root of the repo called `glade-annotateable.bundled.js` it is the only file required to declare the web component for use on the page, and is the one [https://unpkg.com/@glade-software/glade-annotateable](https://unpkg.com/@glade-software/glade-annotateable) points to.
 
 For a dev server, run `npm run build:watch` and `npm serve`
 
