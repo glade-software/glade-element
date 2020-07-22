@@ -30,6 +30,6 @@ After wrapping your content with the tag, all users will need to do is highlight
 
 For a dev server, run `npm run build:watch` and `npm serve`
 
-This will serve a the `restless` demo on http://localhost:8000/dev/index.html
+This will serve the `restless` demo on http://localhost:8000/dev/index.html
 
 ### Feature and bug requests encouraged!
