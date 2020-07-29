@@ -25,12 +25,26 @@ After wrapping your content with the tag, all users will need to do is highlight
   </style>
 ```
 
-## Dev Guide
+## Developer Guide
 
-`npm run build` yields a file in the root of the repo called `glade-annotateable.bundled.js` it is the only file required to declare the web component for use on the page, and is the one [https://unpkg.com/@glade-software/glade-annotateable](https://unpkg.com/@glade-software/glade-annotateable) points to.
+`<glade-annotateable>` is a complete web annotation system bundled in a single web component.
 
-For a dev server, run `npm run build:watch` and `npm serve`
+### How it works
 
-This will serve the `restless` demo on http://localhost:8000/dev/index.html
+When the component loads, it requests all annotations from the database that have a matching `slug` attribute.
+
+Each `<glade-annotateable>` instance must have a defined `slug` attribute.
+
+If there are no annotations pertaining to a given `slug`, that's fine. When an annotation is made it will be linked to the defined `slug`.
+
+### Contributing
+
+The component is declared in [/src/glade-annotateable.ts](/src/glade-annotateable.ts), this is where changes to the functionality of the component will likely take place.
+
+To have the typescript compiler watch for changes and compile them, run `npm run build:watch`.
+
+Then to test your changes, run `npm run serve` which serves the demo found in [/dev/index.html](/dev/index.html).
+
+`npm run build` yields a single file in the root of the repo called `glade-annotateable.bundled.js` it is the only file required to declare the web component for use on the page, and is the one [https://unpkg.com/@glade-software/glade-annotateable](https://unpkg.com/@glade-software/glade-annotateable) points to.
 
 ### Feature and bug requests encouraged!
