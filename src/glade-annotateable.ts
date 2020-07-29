@@ -150,8 +150,8 @@ export class GladeAnnotateable extends LitElement {
   }
 
   /**
-  * the template to display when in Login DialogRole
-  */
+   * the template to display when in Login DialogRole
+   */
   get loginTemplate() {
     if (this.user) return html``;
     return html`
@@ -210,12 +210,16 @@ export class GladeAnnotateable extends LitElement {
    */
   get annotationsListTemplate() {
     return html`<div>
-        ${this.activeAnnotations.map((annotation) => {
-          return html`<div style="border: 1px solid; margin:8px; padding:8px;">
-            <span style="color: #1A535C;">${annotation.postedBy}</span>:
-            <p>${annotation.body}</p>
-          </div>`;
-        })}
+        ${this.activeAnnotations.length
+          ? this.activeAnnotations.map((annotation) => {
+              return html`<div
+                style="border: 1px solid; margin:8px; padding:8px;"
+              >
+                <span style="color: #1A535C;">${annotation.postedBy}</span>:
+                <p>${annotation.body}</p>
+              </div>`;
+            })
+          : 'No annotations here yet!'}
       </div>
       <mwc-button
         class="button-cta"
@@ -248,7 +252,6 @@ export class GladeAnnotateable extends LitElement {
   }
 
   initializeFirebase() {
-
     if (!firebase.apps.length) {
       firebase.initializeApp(this.firebaseConfig);
     }
