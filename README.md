@@ -4,7 +4,7 @@
 
 After wrapping your content with the tag, all users will need to do is highlight a section of a webpage, to add an annotation, whatever media that may be.
 
-```
+```html
 <glade-annotateable slug="readme-example">
     <p>This web content will be ingested by Glade, because it is encapsulated within the glade-annotateable tag</p>
     <p>Users viewing this will be able to highlight any portion of this text, and attach an annotation!</p>
@@ -13,7 +13,7 @@ After wrapping your content with the tag, all users will need to do is highlight
 ```
 
 ### All you need to make this work
-```
+```html
   <script type="module" src="https://unpkg.com/@glade-software/glade-annotateable"></script>
   <style>
     .glade-has-annotations {
