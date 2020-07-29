@@ -93,6 +93,7 @@ export class GladeAnnotateable extends LitElement {
   /**
    * an array of all annotations for this document
    */
+  @property({type: Array})
   annotations: Array<{
     body: string;
     gladeDomNodeIndex: number;
@@ -102,6 +103,7 @@ export class GladeAnnotateable extends LitElement {
   /**
    * an array of all annotations that are currently listed for the selected referrent
    */
+  @property({type: Array})
   activeAnnotations: Array<{
     body: string;
     gladeDomNodeIndex: number;
@@ -112,6 +114,7 @@ export class GladeAnnotateable extends LitElement {
    * the current UI mode of the Glade dialog
    * List, Create, or Login
    */
+  @property({type: String})
   dialogRole: DialogRole = DialogRole.List;
 
   static styles = css`
@@ -196,10 +199,10 @@ export class GladeAnnotateable extends LitElement {
       <mwc-textarea
         style="width:500px; margin:8px; padding:8px;"
         placeholder=""
-        @change="${this.handleAnnotationBodyChange}"
+        @change=${this.handleAnnotationBodyChange}
       ></mwc-textarea>
       <mwc-button
-        slot="primaryAction"
+        slot="secondaryAction"
         @click=${this.handleClickPublishAnnotation}
         >Publish Annotation!</mwc-button
       >
@@ -306,6 +309,10 @@ export class GladeAnnotateable extends LitElement {
 
     console.log(`glade document slug is: ${this.slug}`);
 
+    this.processAnnotations();
+  }
+
+  processAnnotations() {
     this.gladeContentNodes.forEach((node, idx) => {
       // aggregate all annotations for a given node index in the DOM
       const annotationsForIndex = this.annotations.filter(
@@ -349,7 +356,14 @@ export class GladeAnnotateable extends LitElement {
       .add({postedBy, body, domNodeIndex});
     this.annotationsModalOpened = false;
     this.dialogRole = DialogRole.List;
-    this.requestUpdate();
+
+    this.annotations.push({
+      postedBy: postedBy || 'anonymous',
+      body,
+      gladeDomNodeIndex: domNodeIndex,
+    });
+
+    this.processAnnotations();
   }
 
   async handleClickLogin(_: MouseEvent) {
