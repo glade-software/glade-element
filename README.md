@@ -1,4 +1,4 @@
-# glade-element
+# glade-element  [![Published on npm](https://img.shields.io/npm/v/@glade-software/glade-annotateable.svg)](https://www.npmjs.com/package/@glade-software/glade-annotateable)
 
 ### Glade's vision for the internet is that every webpage can be annotated by any user.
 
