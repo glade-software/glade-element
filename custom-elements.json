@@ -46,6 +46,24 @@
           "description": "the index of the referrent DOM node for the pending annotation",
           "type": "number",
           "default": "-1"
+        },
+        {
+          "name": "annotations",
+          "description": "an array of all annotations for this document",
+          "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
+          "default": "[]"
+        },
+        {
+          "name": "activeAnnotations",
+          "description": "an array of all annotations that are currently listed for the selected referrent",
+          "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
+          "default": "[]"
+        },
+        {
+          "name": "dialogRole",
+          "description": "the current UI mode of the Glade dialog\nList, Create, or Login",
+          "type": "DialogRole",
+          "default": "\"LIST\""
         }
       ],
       "properties": [
@@ -120,18 +138,21 @@
         },
         {
           "name": "annotations",
+          "attribute": "annotations",
           "description": "an array of all annotations for this document",
           "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
           "default": "[]"
         },
         {
           "name": "activeAnnotations",
+          "attribute": "activeAnnotations",
           "description": "an array of all annotations that are currently listed for the selected referrent",
           "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
           "default": "[]"
         },
         {
           "name": "dialogRole",
+          "attribute": "dialogRole",
           "description": "the current UI mode of the Glade dialog\nList, Create, or Login",
           "type": "DialogRole",
           "default": "\"LIST\""
