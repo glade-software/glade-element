@@ -1,4 +1,4 @@
-# glade-element  [![Published on npm](https://img.shields.io/npm/v/@glade-software/glade-annotateable.svg)](https://www.npmjs.com/package/@glade-software/glade-annotateable)
+# glade-element [![Published on npm](https://img.shields.io/npm/v/@glade-software/glade-annotateable.svg)](https://www.npmjs.com/package/@glade-software/glade-annotateable)
 
 ### Glade's vision for the internet is that every webpage can be annotated by any user.
 
@@ -6,23 +6,37 @@ After wrapping your content with the tag, all users will need to do is highlight
 
 ```html
 <glade-annotateable slug="readme-example">
-    <p>This web content will be ingested by Glade</p>
-    <p>because it is within the glade-annotateable tag</p>
-    <p>Users will now be able to highlight any portion of this text to add an annotation!</p>
-    <p>When this content is loaded, we will check for annotations in the database using the "slug" attribute</p>
+  <p>This web content will be ingested by Glade</p>
+  <p>because it is within the glade-annotateable tag</p>
+  <p>
+    Users will now be able to highlight any portion of this text to add an
+    annotation!
+  </p>
+  <p>
+    When this content is loaded, we will check for annotations in the database
+    using the "slug" attribute
+  </p>
 </glade-annotateable>
 ```
 
 ### All you need to make this work
+
 ```html
-  <script type="module" src="https://unpkg.com/@glade-software/glade-annotateable"></script>
-  <style>
-    .glade-has-annotations {
-      /* style nodes with annotations however you wish */
-      background-color:skyblue;
-      cursor: pointer;
-    }
-  </style>
+<script
+  type="module"
+  src="https://unpkg.com/@glade-software/glade-annotateable"
+></script>
+<style>
+  glade-annotateable > .glade-has-annotations {
+    /* style nodes with annotations however you wish */
+    background-color: skyblue;
+    cursor: pointer;
+  }
+  glade-annotateable > :not(.glade-has-annotations) {
+    /* style nodes without annotations however you wish */
+    cursor: pointer;
+  }
+</style>
 ```
 
 ## Developer Guide
