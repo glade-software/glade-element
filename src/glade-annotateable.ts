@@ -27,6 +27,12 @@ export class GladeAnnotateable extends LitElement {
   slug = '';
 
   /**
+   * Verbosity of logs
+   */
+  @property({type: Boolean})
+  verbose = false;
+
+  /**
    * Whether or not the Glade dialog is currently opened
    */
   @property({type: Boolean})
@@ -130,11 +136,20 @@ export class GladeAnnotateable extends LitElement {
       width: 60%;
       margin: 20%;
     }
+    .large {
+      font-size: x-large;
+    }
   `;
 
   constructor() {
     super();
     this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
+  }
+
+  log(msg: String) {
+    if (this.verbose) {
+      console.log(msg);
+    }
   }
 
   handleEmailInputChange(ev: Event) {
@@ -307,7 +322,13 @@ export class GladeAnnotateable extends LitElement {
     this.initializeFirebase();
     await this.getAnnotationsFromDB();
 
-    console.log(`glade document slug is: ${this.slug}`);
+    if (!this.slug) {
+      console.error(
+        '<glade-annotateable> needs a slug attribute of type String'
+      );
+    }
+
+    this.log(`glade document slug is: ${this.slug}`);
 
     this.processAnnotations();
   }
@@ -345,7 +366,7 @@ export class GladeAnnotateable extends LitElement {
   }
 
   async handleClickPublishAnnotation(_: MouseEvent) {
-    console.log('publish button clicked');
+    this.log('publish button clicked');
     const postedBy = this.user?.displayName;
     const body = this.pendingAnnotationBody;
     const domNodeIndex = this.pendingGladeDomNodeIndex;
@@ -373,6 +394,8 @@ export class GladeAnnotateable extends LitElement {
         .signInWithEmailAndPassword(this.email, this.password);
       this.annotationsModalOpened = false;
     } catch (error) {
+      let beLouder = !!this.loginErrorMessage;
+
       if (error.code === 'auth/wrong-password') {
         this.loginErrorMessage = 'password incorrect!';
         console.log('wrong password');
@@ -380,9 +403,11 @@ export class GladeAnnotateable extends LitElement {
         this.loginErrorMessage = 'no user with that email!';
         console.log('user not found');
       } else if (error.code === 'auth/too-many-requests') {
-        this.loginErrorMessage = 'too many attempts! try again later';
+        this.loginErrorMessage = 'too many attempts, try again later';
       }
-      console.log(error);
+      if (beLouder) {
+        this.loginErrorMessage += '!';
+      }
     }
     this.requestUpdate();
   }
