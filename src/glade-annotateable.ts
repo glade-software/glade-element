@@ -21,6 +21,12 @@ export class GladeAnnotateable extends LitElement {
   gladeContentNodes: NodeListOf<Element>;
 
   /**
+   * selectedText
+   *
+   */
+  selectedText: String | undefined;
+
+  /**
    * The slug used to fetch the Glade document
    */
   @property({type: String})
@@ -136,9 +142,6 @@ export class GladeAnnotateable extends LitElement {
       width: 60%;
       margin: 20%;
     }
-    .large {
-      font-size: x-large;
-    }
   `;
 
   constructor() {
@@ -210,7 +213,11 @@ export class GladeAnnotateable extends LitElement {
    * the template to display when in Create DialogRole
    */
   get createAnnotationTemplate() {
+    const referrentText =
+      this.selectedText ||
+      this.gladeContentNodes[this.pendingGladeDomNodeIndex].textContent;
     return html`
+      <pre>${referrentText}</pre>
       <mwc-textarea
         style="width:500px; margin:8px; padding:8px;"
         placeholder=""
@@ -425,6 +432,11 @@ export class GladeAnnotateable extends LitElement {
 
       this.activeAnnotations = this.annotationsForIndex(gladeDomNodeIndex);
       this.annotationsModalOpened = true;
+
+      this.selectedText = window.getSelection()?.toString();
+
+      console.log('this.selectedText', this.selectedText);
+
       this.requestUpdate();
     }
   }
