@@ -30,11 +30,11 @@ After wrapping your content with the tag, all users will need to do is highlight
   glade-annotateable > .glade-has-annotations {
     /* style nodes with annotations however you wish */
     background-color: skyblue;
-    cursor: pointer;
+    cursor: context-menu;
   }
   glade-annotateable > :not(.glade-has-annotations) {
     /* style nodes without annotations however you wish */
-    cursor: pointer;
+    cursor: cell;
   }
 </style>
 ```
@@ -50,6 +50,12 @@ When the component loads, it requests all annotations from the database that hav
 Each `<glade-annotateable>` instance must have a defined `slug` attribute.
 
 If there are no annotations pertaining to a given `slug`, that's fine. When an annotation is made it will be linked to the defined `slug`.
+
+When debugging, you can use the `verbose` attribute to tell glade to log more info to the console.
+
+```html
+<glade-annotateable slug="my-document" verbose></glade-annotateable>
+```
 
 ### Contributing
 

@@ -1,58 +1,56 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <title>&lt;glade-annotateable> Demo</title>
+    <script type="module" src="../glade-annotateable.js"></script>
 
-<head>
-  <meta charset="utf-8">
-  <title>&lt;glade-annotateable> Demo</title>
-  <script type="module" src="../glade-annotateable.js"></script>
+    <style>
+      p {
+        padding: 8px;
+        font-family: Arial, Helvetica, sans-serif;
+      }
 
-  <style>
-    p {
-      padding: 8px;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+      glade-annotateable > :not(.glade-has-annotations) {
+        cursor: cell;
+      }
 
-    glade-annotateable>* {
-      cursor: context-menu;
-    }
+      glade-annotateable > .glade-has-annotations {
+        background-color: skyblue;
+        cursor: context-menu;
+      }
+    </style>
+  </head>
 
-    .glade-has-annotations {
-      background-color: skyblue;
-      cursor: pointer;
-    }
-  </style>
-</head>
+  <body>
+    <p>Restless Lyrics</p>
 
-<body>
-  <p>Restless Lyrics</p>
-
-  <glade-annotateable slug="restless">
-    <p>Check my common thread count</p>
-    <p>I'll put this shit to bed now</p>
-    <p>lying on my back but I'll get this off my chest wow</p>
-    <p>I'm tired of the rest and the rest are tired</p>
-    <p>but between me and the rest im the less admired</p>
-    <p>after all theres no rest for the wicked</p>
-    <p>and theres adderall for the rest if you isn't</p>
-    <p>poor grammar in the interest of rhyme</p>
-    <p>if you pay attention grow interest with time</p>
-    <p>if you have a deficit pay me no mind</p>
-    <p>so binary, restful or restless</p>
-    <p>shouts the proxy, not first to address this</p>
-    <p>404 if you didn’t get the message</p>
-    <p>restful just like the measures</p>
-    <p>restless from the atmosphere</p>
-    <p>that's the pressure</p>
-    <p>so many bars, I didn’t under tongue it</p>
-    <p>I'm off wax, on wax, I just have to blunt it</p>
-    <p>coding with no coating</p>
-    <p>it's wack that this shit's still funded</p>
-    <p>damn, I just let the meds talk</p>
-    <p>more sus than a susan with headshots</p>
-    <p>more buck than the bloody med shots</p>
-    <p>more tune for my fucking headtop</p>
-  </glade-annotateable>
-</body>
-
+    <glade-annotateable verbose slug="restless">
+      <p>Check my common thread count</p>
+      <p>I'll put this shit to bed now</p>
+      <p>lying on my back but I'll get this off my chest wow</p>
+      <p>I'm tired of the rest and the rest are tired</p>
+      <p>but between me and the rest im the less admired</p>
+      <p>after all theres no rest for the wicked</p>
+      <p>and theres adderall for the rest if you isn't</p>
+      <p>poor grammar in the interest of rhyme</p>
+      <p>if you pay attention grow interest with time</p>
+      <p>if you have a deficit pay me no mind</p>
+      <p>so binary, restful or restless</p>
+      <p>shouts the proxy, not first to address this</p>
+      <p>404 if you didn’t get the message</p>
+      <p>restful just like the measures</p>
+      <p>restless from the atmosphere</p>
+      <p>that's the pressure</p>
+      <p>so many bars, I didn’t under tongue it</p>
+      <p>I'm off wax, on wax, I just have to blunt it</p>
+      <p>coding with no coating</p>
+      <p>it's wack that this shit's still funded</p>
+      <p>damn, I just let the meds talk</p>
+      <p>more sus than a susan with headshots</p>
+      <p>more buck than the bloody med shots</p>
+      <p>more tune for my fucking headtop</p>
+    </glade-annotateable>
+  </body>
 </html>
