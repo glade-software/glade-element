@@ -8,3 +8,27 @@ glade-annotateable.js.map
 glade-annotateable.d.ts
 glade-annotateable.d.ts.map
 glade-annotateable.bundled.js
+
+/app/node_modules/
+
+# next.js
+/app/.next/
+/app/out/
+/app/!public/
+
+
+# production
+/app/build
+
+# misc
+.DS_Store
+/app/.env*
+
+# debug
+/app/npm-debug.log*
+/app/yarn-debug.log*
+/app/yarn-error.log*
+
+# Environment Variables
+/app/.env
+/app/.env.build
