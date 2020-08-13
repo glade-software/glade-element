@@ -19,6 +19,7 @@ const Landing = () => {
       <Head>
         <title>Glade</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta name="description" content="an Open Source web annotation platform"/>
       </Head>
       <Grommet theme={grommet}>
         <Box align="center">
