@@ -37,12 +37,12 @@
     "@material/mwc-dialog": "^0.15.0",
     "@material/mwc-textarea": "^0.15.0",
     "@material/mwc-textfield": "^0.15.0",
-    "firebase": "^7.16.0",
+    "firebase": "^7.23.0",
     "lit-element": "^2.3.1"
   },
   "devDependencies": {
-    "@open-wc/testing": "^2.5.17",
-    "@open-wc/testing-karma": "^4.0.3",
+    "@open-wc/testing": "^2.5.29",
+    "@open-wc/testing-karma": "^4.0.8",
     "@rollup/plugin-replace": "^2.3.2",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
