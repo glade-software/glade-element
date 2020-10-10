@@ -1,28 +1,28 @@
 module.exports = {
-  title: 'My Site',
-  tagline: 'The tagline of my site',
-  url: 'https://your-docusaurus-test-site.com',
+  title: '<glade-annotateable>',
+  tagline: 'make any webpage annotateable',
+  url: 'https://docs.glade.app',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'glade-software', // Usually your GitHub org/user name.
+  projectName: 'glade-element', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'Glade',
       logo: {
-        alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        alt: 'Glade Software logo',
+        src: 'img/glade-rounded.png',
       },
-      links: [
+      items: [
         {
-          to: 'docs/doc1',
+          to: 'docs/getting-started',
           activeBasePath: 'docs',
           label: 'Docs',
           position: 'left',
         },
-        {to: 'blog', label: 'Blog', position: 'left'},
+        {href: 'https://demos.glade.app', label: 'Demos', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/glade-software/glade-element',
           label: 'GitHub',
           position: 'right',
         },
@@ -35,29 +35,17 @@ module.exports = {
           title: 'Docs',
           items: [
             {
-              label: 'Style Guide',
-              to: 'docs/doc1',
-            },
-            {
-              label: 'Second Doc',
-              to: 'docs/doc2',
-            },
+              label: 'Getting Started',
+              to: 'docs/getting-started',
+            }
           ],
         },
         {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
               label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              href: 'https://twitter.com/gladesoftware',
             },
           ],
         },
@@ -65,17 +53,17 @@ module.exports = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: 'blog',
+              label: 'Demos',
+              to: 'https://demos.glade.app',
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/glade-software/glade-element',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Glade Software, Inc. Built with Docusaurus.`,
     },
   },
   presets: [
@@ -86,13 +74,13 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
+            'https://github.com/glade-software/glade-element/edit/master/docs/',
         },
-        blog: {
+        demos: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/blog/',
+            'https://github.com/glade-software/glade-element/edit/master/demos/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
