@@ -8,9 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
-    "firebase": "^7.14.4",
+    "firebase": "^7.23.0",
     "formik": "^2.1.4",
-    "grommet": "^2.13.0",
+    "grommet": "^2.15.1",
     "next": "^9.3.3",
     "polished": "^3.6.3",
     "react": "^16.13.0",
