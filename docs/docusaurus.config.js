@@ -37,7 +37,7 @@ module.exports = {
             {
               label: 'Getting Started',
               to: 'docs/getting-started',
-            }
+            },
           ],
         },
         {
@@ -65,6 +65,7 @@ module.exports = {
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Glade Software, Inc. Built with Docusaurus.`,
     },
+    colorMode: {disableSwitch: true},
   },
   presets: [
     [
