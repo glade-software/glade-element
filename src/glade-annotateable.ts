@@ -357,7 +357,6 @@ export class GladeAnnotateable extends LitElement {
 
   handleClickCreateAnnotation(_: MouseEvent) {
     if (this.user) {
-      console.log('user is signed in');
       this.dialogRole = DialogRole.Create;
     } else {
       this.dialogRole = DialogRole.Login;
@@ -375,6 +374,7 @@ export class GladeAnnotateable extends LitElement {
       .doc(this.slug)
       .collection('annotations')
       .add({postedBy, body, domNodeIndex});
+
     this.annotationsModalOpened = false;
     this.dialogRole = DialogRole.List;
 
@@ -398,10 +398,10 @@ export class GladeAnnotateable extends LitElement {
 
       if (error.code === 'auth/wrong-password') {
         this.loginErrorMessage = 'password incorrect!';
-        console.log('wrong password');
+        this.log('wrong password');
       } else if (error.code === 'auth/user-not-found') {
         this.loginErrorMessage = 'no user with that email!';
-        console.log('user not found');
+        this.log('user not found');
       } else if (error.code === 'auth/too-many-requests') {
         this.loginErrorMessage = 'too many attempts, try again later';
       }
