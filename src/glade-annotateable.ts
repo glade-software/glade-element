@@ -21,16 +21,13 @@ export class GladeAnnotateable extends LitElement {
   gladeContentNodes: NodeListOf<Element>;
 
   /**
-   * The slug used to fetch the Glade document
-   */
-  @property({type: String})
-  slug = '';
-
-  /**
    * Verbosity of logs
    */
   @property({type: Boolean})
   verbose = false;
+
+  @property({type: Number, reflect: true})
+  gladeDocumentHash = 0;
 
   /**
    * Whether or not the Glade dialog is currently opened
@@ -94,7 +91,7 @@ export class GladeAnnotateable extends LitElement {
    * the index of the referrent DOM node for the pending annotation
    */
   @property({type: Number})
-  pendingGladeDomNodeIndex = -1;
+  pendingGladeDomNodeHash = 0;
 
   /**
    * an array of all annotations for this document
@@ -102,8 +99,8 @@ export class GladeAnnotateable extends LitElement {
   @property({type: Array})
   annotations: Array<{
     body: string;
-    gladeDomNodeIndex: number;
-    postedBy: string;
+    gladeDomNodeHash: number;
+    postedBy: string | undefined;
   }> = [];
 
   /**
@@ -112,8 +109,8 @@ export class GladeAnnotateable extends LitElement {
   @property({type: Array})
   activeAnnotations: Array<{
     body: string;
-    gladeDomNodeIndex: number;
-    postedBy: string;
+    gladeDomNodeHash: number;
+    postedBy: string | undefined;
   }> = [];
 
   /**
@@ -146,10 +143,8 @@ export class GladeAnnotateable extends LitElement {
     this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
   }
 
-  log(msg: String) {
-    if (this.verbose) {
-      console.log(msg);
-    }
+  log(...messages: String[]) {
+    if (this.verbose) console.log(...messages);
   }
 
   handleEmailInputChange(ev: Event) {
@@ -165,6 +160,27 @@ export class GladeAnnotateable extends LitElement {
   handleAnnotationBodyChange(ev: Event) {
     const inputEl = ev.composedPath()[0] as HTMLInputElement;
     this.pendingAnnotationBody = inputEl.value;
+  }
+
+  /**
+   * hashString https://stackoverflow.com/a/8831937/2183475
+   * @param stringToHash the string we wish to hash
+   */
+
+  hashString(stringToHash: string): string {
+    var hash = 0;
+
+    if (stringToHash.length == 0) {
+      return `${hash}`;
+    }
+
+    for (var i = 0; i < stringToHash.length; i++) {
+      var char = stringToHash.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+
+    return `${hash}`;
   }
 
   /**
@@ -233,7 +249,9 @@ export class GladeAnnotateable extends LitElement {
               return html`<div
                 style="border: 1px solid; margin:8px; padding:8px;"
               >
-                <span style="color: #1A535C;">${annotation.postedBy}</span>:
+                <span style="color: #1A535C;"
+                  >${annotation.postedBy || 'anonymous'}</span
+                >:
                 <p>${annotation.body}</p>
               </div>`;
             })
@@ -263,9 +281,9 @@ export class GladeAnnotateable extends LitElement {
     }
   }
 
-  annotationsForIndex(domNodeIndex: number) {
+  annotationsForHash(domNodeHash: number) {
     return this.annotations.filter(
-      (annotation) => annotation.gladeDomNodeIndex === domNodeIndex
+      (annotation) => annotation.gladeDomNodeHash === domNodeHash
     );
   }
 
@@ -287,6 +305,7 @@ export class GladeAnnotateable extends LitElement {
         .collection('users')
         .doc(this.user.uid)
         .get();
+
       const displayName = userDocRef?.data()?.displayName;
 
       if (displayName) {
@@ -299,59 +318,67 @@ export class GladeAnnotateable extends LitElement {
   }
 
   async getAnnotationsFromDB() {
-    if (this.slug.length) {
-      const annotationsSnapshots = await this.db
-        .collection('glade-trees')
-        .doc(this.slug)
-        .collection('annotations')
-        .get();
+    this.log(
+      'fetching annotations for glade-tree',
+      `${this.gladeDocumentHash}`
+    );
 
-      annotationsSnapshots.forEach((document) => {
-        const {body, postedBy, domNodeIndex} = document.data();
-        this.annotations.push({
-          body,
-          postedBy,
-          gladeDomNodeIndex: domNodeIndex,
-        });
+    const annotationSnapshots = await this.db
+      .collection(`glade-trees`)
+      .doc(`${this.gladeDocumentHash}`)
+      .collection(`annotations`)
+      .get();
+
+    annotationSnapshots.forEach((document) => {
+      const {body, postedBy, gladeDomNodeHash} = document.data();
+      this.annotations.push({
+        body,
+        postedBy,
+        gladeDomNodeHash,
       });
-    }
+    });
   }
 
   async connectedCallback() {
     super.connectedCallback();
     this.initializeFirebase();
+
+    let nodeHashes: string[] = [];
+
+    this.gladeContentNodes.forEach((node: Element) => {
+      const gladeNodeHash = this.hashString(node.textContent || '');
+      node.setAttribute('data-glade-node-hash', gladeNodeHash);
+      nodeHashes.push(gladeNodeHash);
+    });
+
+    const docHash: string = this.hashString(nodeHashes.join('_'));
+    this.gladeDocumentHash = parseInt(docHash);
+
     await this.getAnnotationsFromDB();
-
-    if (!this.slug) {
-      console.error(
-        '<glade-annotateable> needs a slug attribute of type String'
-      );
-    }
-
-    this.log(`glade document slug is: ${this.slug}`);
 
     this.processAnnotations();
   }
 
   processAnnotations() {
-    this.gladeContentNodes.forEach((node, idx) => {
+    this.gladeContentNodes.forEach((node) => {
+      const nodeHash = parseInt(
+        node.getAttribute('data-glade-node-hash') || '0'
+      );
+
       // aggregate all annotations for a given node index in the DOM
-      const annotationsForIndex = this.annotations.filter(
-        ({gladeDomNodeIndex}) => {
-          return gladeDomNodeIndex === idx;
+      const annotationsForHash = this.annotations.filter(
+        ({gladeDomNodeHash}) => {
+          return gladeDomNodeHash == nodeHash;
         }
       );
 
       // if a node index has annotations, give it a class for CSS styles and a click listener
-      if (annotationsForIndex.length) {
+      if (annotationsForHash.length) {
         node.classList.add('glade-has-annotations');
       } else {
         // clear class if it is wrongly present on a DOM node that has no annotations
         node.classList.remove('glade-has-annotations');
       }
-
-      // set the index attribute corresponding to the node's position in the list
-      node.setAttribute('data-glade-index', `${idx}`);
     });
   }
 
@@ -368,21 +395,26 @@ export class GladeAnnotateable extends LitElement {
     this.log('publish button clicked');
     const postedBy = this.user?.displayName;
     const body = this.pendingAnnotationBody;
-    const domNodeIndex = this.pendingGladeDomNodeIndex;
+
+    const gladeDomNodeHash = this.pendingGladeDomNodeHash;
+    this.log('publishing annotation with nodeHash', `${gladeDomNodeHash}`);
+
+    let annotationDocument = {
+      postedBy: postedBy || undefined,
+      body,
+      gladeDomNodeHash,
+    };
+
     await this.db
       .collection('glade-trees')
-      .doc(this.slug)
+      .doc(`${this.gladeDocumentHash}`)
       .collection('annotations')
-      .add({postedBy, body, domNodeIndex});
+      .add(annotationDocument);
 
     this.annotationsModalOpened = false;
     this.dialogRole = DialogRole.List;
 
-    this.annotations.push({
-      postedBy: postedBy || 'anonymous',
-      body,
-      gladeDomNodeIndex: domNodeIndex,
-    });
+    this.annotations.push(annotationDocument);
 
     this.processAnnotations();
   }
@@ -417,13 +449,13 @@ export class GladeAnnotateable extends LitElement {
       // deepest node in DOM tree that recieved this event
       const targetNode = ev?.composedPath()[0] as Element;
 
-      const gladeDomNodeIndex: number = parseInt(
-        targetNode.getAttribute('data-glade-index') as string
+      const gladeDomNodeHash: number = parseInt(
+        targetNode.getAttribute('data-glade-node-hash') as string
       );
 
-      this.pendingGladeDomNodeIndex = gladeDomNodeIndex;
+      this.pendingGladeDomNodeHash = gladeDomNodeHash;
 
-      this.activeAnnotations = this.annotationsForIndex(gladeDomNodeIndex);
+      this.activeAnnotations = this.annotationsForHash(gladeDomNodeHash);
       this.annotationsModalOpened = true;
       this.requestUpdate();
     }

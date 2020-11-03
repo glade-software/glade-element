@@ -1,6 +1,6 @@
 {
   "name": "@glade-software/glade-annotateable",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "a component that makes DOM annotateable",
   "main": "glade-annotateable.bundled.js",
   "module": "glade-annotateable.js",
@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build": "tsc && rollup -c",
-    "build:watch": "tsc --watch",
+    "build:watch": "tsc --watch && rollup -c -w",
     "clean": "rimraf glade-annotateable.{d.ts,d.ts.map,js,bundled.js,js.map} test/glade-annotateable.{d.ts,d.ts.map,js,js.map} test/glade-annotateable_test.{d.ts,d.ts.map,js,js.map}",
     "lint": "npm run lint:lit-analyzer && npm run lint:eslint",
     "lint:eslint": "eslint 'src/**/*.ts'",
