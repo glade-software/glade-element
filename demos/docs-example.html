@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>&lt;glade-annotateable> docs example Demo</title>
+    <script
+      type="module"
+      src="https://unpkg.com/@glade-software/glade-annotateable"
+    ></script>
+    <style>
+      p {
+        padding: 8px;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      glade-annotateable > * {
+        cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAEqADAAQAAAABAAAAEgAAAACaqbJVAAAAQ0lEQVQ4EWNkwA/+o0kzovHhXCY4i0LGqEGEA5BqYQSKTvQoJmw9FhVUc9HgMwhnkocGA3r44VQ/+Lw26iIsSRlNCABZuwMhw3OLPQAAAABJRU5ErkJggg==),
+          auto;
+      }
+
+      .glade-has-annotations {
+        background-color: skyblue;
+        cursor: context-menu;
+      }
+    </style>
+  </head>
+
+  <body>
+    <a
+      href="https://github.com/glade-software/glade-element/tree/master/demos/docs-example.html"
+    >
+      <pre>source code</pre>
+    </a>
+    <p>Docs Example</p>
+    <glade-annotateable>
+      <p>This is a simple example for demonstration purposes.</p>
+      <p>
+        If you came here from the
+        <a href="https://docs.glade.app/getting-started">documentation</a>
+        please add an annotation here!
+      </p>
+    </glade-annotateable>
+  </body>
+</html>
