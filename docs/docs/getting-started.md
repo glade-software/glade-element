@@ -13,19 +13,15 @@ To get started you just need to include our javascript library on your page like
 ></script>
 ```
 
-Then you need to decide on a **unique** `slug` for your content.
-
-A `slug` must _only_ use letters, numbers, and hypens.
-
-The only thing left to do is wrap your content with our tag!
-
-That looks like this:
+Next, wrap your content with our newly declared custom element
 
 ```html
-<glade-annotateable slug="@matt/some-post">
+<glade-annotateable>
   <p>This content can be whatever you want!</p>
   <p>Users will be able to click on it, sign in, and add annotations!</p>
 </glade-annotateable>
 ```
 
-It's important to prefix your slug with your [Glade](https://glade.app) username, because at the moment everyone shares the same namespace 😳
+Now, users will be able to click on any DOM node within that body of content to add an annotation
+
+If you're curious what that looks like, check out [this](https://demos.glade.app/docs-example)
