@@ -65,6 +65,7 @@ module.exports = {
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Glade Software, Inc. Built with Docusaurus.`,
     },
+    sidebarCollapsible: false,
     colorMode: {disableSwitch: true},
   },
   presets: [
