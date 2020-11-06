@@ -1,17 +1,5 @@
-# Docusaurus Example
+# glade-element [![Published on npm](https://img.shields.io/npm/v/@glade-software/glade-annotateable.svg)](https://www.npmjs.com/package/@glade-software/glade-annotateable)
 
-This directory is a brief example of a [Docusaurus](https://v2.docusaurus.io) site that can be deployed with Vercel and zero configuration.
+### Glade's vision for the internet is that every webpage can be annotated by any user.
 
-## Deploy Your Own
-
-Deploy your own Docusaurus project with Vercel.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/vercel/vercel/tree/master/docusaurus-2)
-
-### How We Created This Example
-
-To get started with Docusaurus on Vercel, you can use the [Docusaurus CLI](https://v2.docusaurus.io/docs/installation#scaffold-project-website) to initialize the project:
-
-```shell
-$ npx @docusaurus/init@next init my-website classic
-```
+Check out the docs at [docs.glade.app](https://docs.glade.app), maintained here in the [docs](/docs/docs) folder!
