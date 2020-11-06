@@ -22,6 +22,6 @@ Next, wrap your content with our newly declared custom element
 </glade-annotateable>
 ```
 
-Now, users will be able to click on any DOM node within that body of content to add an annotation
+Now, users will be able to click on any DOM node within that body of content to add an annotation 🎉
 
 If you're curious what that looks like, check out [this demo](https://demos.glade.app/docs-example) and add an annotation of your own!
