@@ -36,6 +36,19 @@ function Home() {
             type="module"
             src="https://unpkg.com/@glade-software/glade-annotateable"
           ></script>
+          <style>
+            {`
+            glade-annotateable > * {
+              cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAEqADAAQAAAABAAAAEgAAAACaqbJVAAAAQ0lEQVQ4EWNkwA/+o0kzovHhXCY4i0LGqEGEA5BqYQSKTvQoJmw9FhVUc9HgMwhnkocGA3r44VQ/+Lw26iIsSRlNCABZuwMhw3OLPQAAAABJRU5ErkJggg==),
+                auto;
+            }
+
+            .glade-has-annotations {
+              background-color: skyblue;
+              cursor: context-menu;
+            }
+          `}
+          </style>
         </Head>
         <header className={classnames('hero hero--primary', styles.heroBanner)}>
           <div className="container">
@@ -60,8 +73,8 @@ function Home() {
               <div className="row">
                 <glade-annotateable>
                   <p>
-                    This homepage content is annotateable using Glade's open annotation
-                    platform!
+                    This homepage content is annotateable using Glade's open
+                    annotation platform!
                   </p>
                 </glade-annotateable>
               </div>
