@@ -53,7 +53,7 @@ function Home() {
           <section className={styles.features}>
             <div className="container">
               <div className="row">
-                <glade-annotateable>
+                <glade-annotateable verbose>
                   <p>
                     This homepage content is annotateable using Glade's open
                     annotation platform!
