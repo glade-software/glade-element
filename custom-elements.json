@@ -6,10 +6,15 @@
       "path": "./src/glade-annotateable.ts",
       "attributes": [
         {
-          "name": "slug",
-          "description": "The slug used to fetch the Glade document",
-          "type": "string",
-          "default": "\"\""
+          "name": "verbose",
+          "description": "Verbosity of logs",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "gladeDocumentHash",
+          "type": "number",
+          "default": "0"
         },
         {
           "name": "annotationsModalOpened",
@@ -42,21 +47,21 @@
           "default": "\"\""
         },
         {
-          "name": "pendingGladeDomNodeIndex",
+          "name": "pendingGladeDomNodeHash",
           "description": "the index of the referrent DOM node for the pending annotation",
           "type": "number",
-          "default": "-1"
+          "default": "0"
         },
         {
           "name": "annotations",
           "description": "an array of all annotations for this document",
-          "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
+          "type": "{ body: string; gladeDomNodeHash: number; postedBy: string | undefined; }[]",
           "default": "[]"
         },
         {
           "name": "activeAnnotations",
           "description": "an array of all annotations that are currently listed for the selected referrent",
-          "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
+          "type": "{ body: string; gladeDomNodeHash: number; postedBy: string | undefined; }[]",
           "default": "[]"
         },
         {
@@ -68,11 +73,17 @@
       ],
       "properties": [
         {
-          "name": "slug",
-          "attribute": "slug",
-          "description": "The slug used to fetch the Glade document",
-          "type": "string",
-          "default": "\"\""
+          "name": "verbose",
+          "attribute": "verbose",
+          "description": "Verbosity of logs",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "gladeDocumentHash",
+          "attribute": "gladeDocumentHash",
+          "type": "number",
+          "default": "0"
         },
         {
           "name": "annotationsModalOpened",
@@ -130,24 +141,24 @@
           "default": "\"\""
         },
         {
-          "name": "pendingGladeDomNodeIndex",
-          "attribute": "pendingGladeDomNodeIndex",
+          "name": "pendingGladeDomNodeHash",
+          "attribute": "pendingGladeDomNodeHash",
           "description": "the index of the referrent DOM node for the pending annotation",
           "type": "number",
-          "default": "-1"
+          "default": "0"
         },
         {
           "name": "annotations",
           "attribute": "annotations",
           "description": "an array of all annotations for this document",
-          "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
+          "type": "{ body: string; gladeDomNodeHash: number; postedBy: string | undefined; }[]",
           "default": "[]"
         },
         {
           "name": "activeAnnotations",
           "attribute": "activeAnnotations",
           "description": "an array of all annotations that are currently listed for the selected referrent",
-          "type": "{ body: string; gladeDomNodeIndex: number; postedBy: string; }[]",
+          "type": "{ body: string; gladeDomNodeHash: number; postedBy: string | undefined; }[]",
           "default": "[]"
         },
         {
