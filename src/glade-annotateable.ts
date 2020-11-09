@@ -288,7 +288,7 @@ export class GladeAnnotateable extends LitElement {
 
       const displayName = userDocRef?.data()?.displayName;
 
-      if (displayName) {
+      if (displayName + !u.displayName) {
         this.user.updateProfile({displayName});
       }
     } else {
