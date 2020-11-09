@@ -26,6 +26,10 @@ At that point I'd be prompted to log in to my Glade account.
 
 Sign up for a Glade account [here!](https://glade.app)
 
+## Styling
+
+Glade will iterate through the [**referents**](/docs/glossary#referent) that make up your [**document**](/docs/glossary#document) and it will add the [class](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/class) `glade-has-annotations` if a [**referent**](/docs/glossary#referent) has annotations, so you can choose how to style those [**referent**](/docs/glossary#referent) nodes however you want.
+
 ## In the Weeds
 
 ### Lifecycle
