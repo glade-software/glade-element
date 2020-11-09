@@ -321,6 +321,7 @@ export class GladeAnnotateable extends LitElement {
 
   async connectedCallback() {
     super.connectedCallback();
+    this.log('glade-annotateable connected');
     this.initializeFirebase();
 
     let nodeHashes: string[] = [];
@@ -340,6 +341,7 @@ export class GladeAnnotateable extends LitElement {
   }
 
   processAnnotations() {
+    this.log('processing annotations');
     this.gladeContentNodes.forEach((node) => {
       const nodeHash = parseInt(
         node.getAttribute('data-glade-node-hash') || '0'
