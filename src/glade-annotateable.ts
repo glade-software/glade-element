@@ -72,13 +72,13 @@ export class GladeAnnotateable extends LitElement {
   /**
    * the email currently being used to sign in
    */
-  @property({type: String})
+  @property()
   email = '';
 
   /**
    * the password currently being used to sign in
    */
-  @property({type: String})
+  @property()
   password = '';
 
   /**
@@ -147,21 +147,6 @@ export class GladeAnnotateable extends LitElement {
     if (this.verbose) console.log(...messages);
   }
 
-  handleEmailInputChange(ev: Event) {
-    const inputEl = ev.composedPath()[0] as HTMLInputElement;
-    this.email = inputEl.value;
-  }
-
-  handlePasswordInputChange(ev: Event) {
-    const inputEl = ev.composedPath()[0] as HTMLInputElement;
-    this.password = inputEl.value;
-  }
-
-  handleAnnotationBodyChange(ev: Event) {
-    const inputEl = ev.composedPath()[0] as HTMLInputElement;
-    this.pendingAnnotationBody = inputEl.value;
-  }
-
   /**
    * hashString https://stackoverflow.com/a/8831937/2183475
    * @param stringToHash the string we wish to hash
@@ -194,17 +179,12 @@ export class GladeAnnotateable extends LitElement {
         style="border: 1px solid; margin:8px; padding:8px;"
       >
         <p>you need an account to add annotations</p>
+        <input id="email" name="email" placeholder="email" type="email" />
         <input
-          name="email"
-          placeholder="email"
-          type="email"
-          @change="${this.handleEmailInputChange}"
-        />
-        <input
+          id="password"
           name="password"
           placeholder="password"
           type="password"
-          @change="${this.handlePasswordInputChange}"
         />
       </div>
       <div style="color:red;">${this.loginErrorMessage}</div>
@@ -230,7 +210,7 @@ export class GladeAnnotateable extends LitElement {
       <mwc-textarea
         style="width:500px; margin:8px; padding:8px;"
         placeholder=""
-        @change=${this.handleAnnotationBodyChange}
+        id="annotationBody"
       ></mwc-textarea>
       <mwc-button
         slot="secondaryAction"
@@ -393,8 +373,14 @@ export class GladeAnnotateable extends LitElement {
 
   async handleClickPublishAnnotation(_: MouseEvent) {
     this.log('publish button clicked');
+    const annotationBodyElement = this.shadowRoot?.querySelector(
+      '#annotationBody'
+    ) as HTMLTextAreaElement;
+
+    const body = annotationBodyElement?.value;
+    this.pendingAnnotationBody = body;
+
     const postedBy = this.user?.displayName;
-    const body = this.pendingAnnotationBody;
 
     const gladeDomNodeHash = this.pendingGladeDomNodeHash;
     this.log('publishing annotation with nodeHash', `${gladeDomNodeHash}`);
@@ -421,9 +407,20 @@ export class GladeAnnotateable extends LitElement {
 
   async handleClickLogin(_: MouseEvent) {
     try {
+      const emailElement = this.shadowRoot?.querySelector(
+        'input#email'
+      ) as HTMLInputElement;
+      const passwordElement = this.shadowRoot?.querySelector(
+        'input#password'
+      ) as HTMLInputElement;
+
+      this.email = emailElement?.value;
+      this.password = passwordElement?.value;
+
       await firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password);
+
       this.annotationsModalOpened = false;
     } catch (error) {
       let beLouder = !!this.loginErrorMessage;
