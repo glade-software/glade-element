@@ -4,7 +4,7 @@ title: Vision
 sidebar_label: Vision
 ---
 
-The web is a collection of disparate and discrete documents, where comments are not a first party citizen. We see the potential for the web as more.
+The web is a collection of disparate and discrete documents, where comments are not a first class citizen. We see the potential for the web as more.
 
 We envision a world where the platform has annotation as a first-class citizen, where anyone could highlight a portion of the web and add their commentary in any HTML5+ medium.
 
