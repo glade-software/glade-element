@@ -1,16 +1,24 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
+import Link from 'next/link';
+import {useRouter} from 'next/router';
 
-import { grommet, Box, Button, Grommet, TextInput, FormField, Text } from "grommet";
+import {
+  grommet,
+  Box,
+  Button,
+  Grommet,
+  TextInput,
+  FormField,
+  Text,
+} from 'grommet';
 
-import { Formik } from "formik";
-import * as yup from "yup";
+import {Formik} from 'formik';
+import * as yup from 'yup';
 
-import app from "../firebase-app";
-import Header from "../components/Header";
+import app from '../firebase-app';
+import Header from '../components/Header';
 
 const theme = grommet;
-const gladeGreen = "#1A535C";
+const gladeGreen = '#1A535C';
 
 // personalize
 theme.global.colors.brand = gladeGreen;
@@ -22,8 +30,8 @@ const checkUsernameAvailability = async (username) => {
   try {
     // check if there is a single user with this username
     const snapshot = await db
-      .collection("users")
-      .where("displayName", "==", username)
+      .collection('users')
+      .where('displayName', '==', username)
       .limit(1)
       .get();
 
@@ -44,52 +52,60 @@ const validationSchema = yup.object({
     .min(3)
     .max(50)
     .test(
-      "username-unique",
-      "${path} is already taken!",
+      'username-unique',
+      '${path} is already taken!',
       checkUsernameAvailability
     ),
 });
 
 const Profile = () => {
   const router = useRouter();
+  if (!app.auth().currentUser) {
+    router.replace('/');
+    return <>{`Loading...`}</>;
+  }
   return (
     <Grommet theme={grommet}>
       <Box align="center">
         <Box width="medium" margin="large">
           <Header />
-          <Box margin={{ top: "large" }}>
+          <Box margin={{top: 'large'}}>
             {app.auth().currentUser?.displayName?.length ? (
               <Box align="center">
-                <Text>Your username is: {app.auth().currentUser?.displayName} !</Text>
+                <Text>
+                  Your username is: {app.auth().currentUser?.displayName} !
+                </Text>
               </Box>
             ) : (
               <Formik
                 initialValues={{
-                  username: "",
+                  username: '',
                 }}
                 validationSchema={validationSchema}
-                onSubmit={(data, { setSubmitting, resetForm }) => {
+                onSubmit={(data, {setSubmitting, resetForm}) => {
                   setSubmitting(true);
-                  const { username } = data;
+                  const {username} = data;
                   app
                     .auth()
                     .currentUser.updateProfile({
                       displayName: username,
                     })
                     .then(() => {
-                      console.log("displayName set");
+                      console.log('displayName set');
                       resetForm();
 
-                      db.collection("users")
+                      db.collection('users')
                         .doc(app.auth().currentUser.uid)
                         .set({
                           displayName: username,
-                        }).then(router.reload);
+                        })
+                        .then(router.reload);
+                        
                       setSubmitting(false);
                     })
                     .catch((userProfileError) => {
                       console.log(
-                        "user profile failed to update\n",
+                        'user profile failed to update\n',
                         userProfileError.code,
                         userProfileError.message
                       );
@@ -118,7 +134,7 @@ const Profile = () => {
                     </FormField>
                     <Box
                       tag="footer"
-                      margin={{ top: "medium" }}
+                      margin={{top: 'medium'}}
                       direction="row"
                       justify="between"
                     >
