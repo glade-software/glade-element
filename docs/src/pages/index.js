@@ -7,24 +7,6 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 import Head from '@docusaurus/Head';
 
-const features = [
-  {
-    title: <>Step 1</>,
-    imageUrl: 'img/undraw_docusaurus_mountain.svg',
-    description: <>Include the JS Library</>,
-  },
-  {
-    title: <>Step 2</>,
-    imageUrl: 'img/undraw_docusaurus_tree.svg',
-    description: <>Wrap your content</>,
-  },
-  {
-    title: <>Step 3</>,
-    imageUrl: 'img/undraw_docusaurus_react.svg',
-    description: <>Annotate!</>,
-  },
-];
-
 function Home() {
   const context = useDocusaurusContext();
   const {siteConfig = {}} = context;
