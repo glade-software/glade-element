@@ -75,6 +75,10 @@ const Profile = () => {
                 <Text>
                   Your username is: {app.auth().currentUser?.displayName} !
                 </Text>
+                <Button secondary label="logout" margin={{top:"medium"}} onClick={()=>{
+                    app.auth().signOut();
+                    router.replace('/');
+                  }}/>
               </Box>
             ) : (
               <Formik
