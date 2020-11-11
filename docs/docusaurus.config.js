@@ -26,6 +26,11 @@ module.exports = {
           label: 'GitHub',
           position: 'right',
         },
+        {
+          href: 'https://teespring.com/glade-awkward-dark',
+          label: 'Shirts',
+          position: 'right',
+        }
       ],
     },
     footer: {
