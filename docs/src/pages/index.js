@@ -12,15 +12,15 @@ function Home() {
   const {siteConfig = {}} = context;
   return (
     <>
-      <Layout title={`Glade`} description="Docs  <glade-annotateable>">
+      <Layout title={`Glade`} description="Docs  <glade-annotatable>">
         <Head>
           <script
             type="module"
-            src="https://unpkg.com/@glade-software/glade-annotateable"
+            src="https://unpkg.com/@glade-software/glade-annotatable"
           ></script>
           <style>
             {`
-            glade-annotateable > * {
+            glade-annotatable > * {
               cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAEqADAAQAAAABAAAAEgAAAACaqbJVAAAAQ0lEQVQ4EWNkwA/+o0kzovHhXCY4i0LGqEGEA5BqYQSKTvQoJmw9FhVUc9HgMwhnkocGA3r44VQ/+Lw26iIsSRlNCABZuwMhw3OLPQAAAABJRU5ErkJggg==),
                 auto;
             }
@@ -53,12 +53,12 @@ function Home() {
           <section className={styles.features}>
             <div className="container">
               <div className="row">
-                <glade-annotateable verbose>
+                <glade-annotatable verbose>
                   <p>
                     This homepage content is annotateable using Glade's open
                     annotation platform!
                   </p>
-                </glade-annotateable>
+                </glade-annotatable>
               </div>
             </div>
           </section>

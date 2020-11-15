@@ -9,17 +9,17 @@ To get started you just need to include our javascript library on your page like
 ```html
 <script
   type="module"
-  src="https://unpkg.com/@glade-software/glade-annotateable"
+  src="https://unpkg.com/@glade-software/glade-annotatable"
 ></script>
 ```
 
 Next, wrap your content with our newly declared custom element
 
 ```html
-<glade-annotateable>
+<glade-annotatable>
   <p>This content can be whatever you want!</p>
   <p>Users will be able to click on it, sign in, and add annotations!</p>
-</glade-annotateable>
+</glade-annotatable>
 ```
 
 Now, users will be able to click on any DOM node within that body of content to add an annotation 🎉
