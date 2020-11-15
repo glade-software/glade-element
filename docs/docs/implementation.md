@@ -13,10 +13,10 @@ Wrapping content with the Glade custom element augments that content and makes i
 That's done like this:
 
 ```html
-<glade-annotateable>
+<glade-annotatable>
   <p>Lorem Ipsum</p>
   <p>I don't know latin</p>
-</glade-annotateable>
+</glade-annotatable>
 ```
 
 ## User Experience

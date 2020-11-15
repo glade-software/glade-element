@@ -14,7 +14,7 @@ enum DialogRole {
 }
 
 @customElement('glade-annotatable')
-export class GladeAnnotatable extends LitElement {
+export class GladeElement extends LitElement {
   /**
    * The content nodes inside the tag
    */
@@ -479,6 +479,6 @@ export class GladeAnnotatable extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'glade-annotatable': GladeAnnotatable;
+    'glade-annotatable': GladeElement;
   }
 }

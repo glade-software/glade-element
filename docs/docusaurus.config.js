@@ -1,11 +1,11 @@
 module.exports = {
-  title: '<glade-annotateable>',
+  title: '<glade-annotatable>',
   tagline: 'make any webpage annotateable',
   url: 'https://docs.glade.app',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
   organizationName: 'glade-software', // Usually your GitHub org/user name.
-  projectName: 'glade-element', // Usually your repo name.
+  projectName: 'glade-annotatable', // Usually your repo name.
   themeConfig: {
     navbar: {
       title: 'Glade',
@@ -22,7 +22,7 @@ module.exports = {
         },
         {href: 'https://demos.glade.app', label: 'Demos', position: 'left'},
         {
-          href: 'https://github.com/glade-software/glade-element',
+          href: 'https://github.com/glade-software/glade-annotatable',
           label: 'GitHub',
           position: 'right',
         },
@@ -63,7 +63,7 @@ module.exports = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/glade-software/glade-element',
+              href: 'https://github.com/glade-software/glade-annotatable',
             },
           ],
         },
@@ -81,13 +81,13 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/glade-software/glade-element/edit/master/docs/',
+            'https://github.com/glade-software/glade-annotatable/edit/master/docs/',
         },
         demos: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/glade-software/glade-element/edit/master/demos/',
+            'https://github.com/glade-software/glade-annotatable/edit/master/demos/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
