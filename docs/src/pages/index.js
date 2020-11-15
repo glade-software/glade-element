@@ -55,7 +55,7 @@ function Home() {
               <div className="row">
                 <glade-annotatable verbose>
                   <p>
-                    This homepage content is annotateable using Glade's open
+                    This homepage content is annotatable using Glade's open
                     annotation platform!
                   </p>
                 </glade-annotatable>
