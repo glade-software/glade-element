@@ -1,4 +1,5 @@
 import {LitElement, html, customElement, property, css} from 'lit-element';
+import {queryAssignedNodes} from 'lit-element/lib/decorators.js';
 import '@material/mwc-dialog';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
@@ -18,7 +19,8 @@ export class GladeAnnotatable extends LitElement {
   /**
    * The content nodes inside the tag
    */
-  gladeContentNodes: NodeListOf<Element>;
+  @queryAssignedNodes()
+  gladeContentNodes?: NodeListOf<Element>;
 
   /**
    * Verbosity of logs
@@ -123,6 +125,11 @@ export class GladeAnnotatable extends LitElement {
   @property({type: String})
   dialogRole: DialogRole = DialogRole.List;
 
+  @property({type: Array})
+  nodeHashes: string[] = [];
+
+  firstUpdate = true;
+
   static styles = css`
     :host {
       display: block;
@@ -142,32 +149,25 @@ export class GladeAnnotatable extends LitElement {
 
   constructor() {
     super();
-    this.gladeContentNodes = this.querySelectorAll('glade-annotatable > *');
-  }
-
-  log(...messages: String[]) {
-    if (this.verbose) console.log(...messages);
+    this.initializeFirebase();
   }
 
   /**
-   * hashString https://stackoverflow.com/a/8831937/2183475
-   * @param stringToHash the string we wish to hash
+   * This is called everytime a lit-element property changes, including first render
    */
+  async updated() {
+    if (this.firstUpdate) {
+      this.firstUpdate = false;
 
-  hashString(stringToHash: string): string {
-    var hash = 0;
+      this.log('glade initializing');
 
-    if (stringToHash.length == 0) {
-      return `${hash}`;
+      this.setContentHashes();
+      this.log('content parsed');
+      await this.getAnnotationsFromDB();
+      this.log('annotations fetched');
+      this.processAnnotations();
+      this.log('annotations rendered');
     }
-
-    for (var i = 0; i < stringToHash.length; i++) {
-      var char = stringToHash.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash; // Convert to 32bit integer
-    }
-
-    return `${hash}`;
   }
 
   /**
@@ -263,6 +263,14 @@ export class GladeAnnotatable extends LitElement {
     }
   }
 
+  /**
+   * A console logger that only runs if the verbose attribute is truthy
+   * @param messages
+   */
+  log(...messages: String[]) {
+    if (this.verbose) console.log(...messages);
+  }
+
   annotationsForHash(domNodeHash: number) {
     return this.annotations.filter(
       (annotation) => annotation.gladeDomNodeHash === domNodeHash
@@ -321,47 +329,76 @@ export class GladeAnnotatable extends LitElement {
     });
   }
 
-  async connectedCallback() {
-    super.connectedCallback();
-    this.log('glade-annotatable connected');
-    this.initializeFirebase();
+  /**
+   * hashString https://stackoverflow.com/a/8831937/2183475
+   * @param stringToHash the string we wish to hash
+   */
+  hashString(stringToHash: string): string {
+    var hash = 0;
 
-    let nodeHashes: string[] = [];
+    if (stringToHash.length == 0) {
+      return `${hash}`;
+    }
 
-    this.gladeContentNodes.forEach((node: Element) => {
-      const gladeNodeHash = this.hashString(node.textContent || '');
-      node.setAttribute('data-glade-node-hash', gladeNodeHash);
-      nodeHashes.push(gladeNodeHash);
+    for (var i = 0; i < stringToHash.length; i++) {
+      var char = stringToHash.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+
+    return `${hash}`;
+  }
+
+  /**
+   * Hash each DOM node and set "data-glade-node-hash" attribute on each node to the new hash
+   * Then concatenate all the hashes to calculate the "gladeDocumentHash"
+   */
+  setContentHashes() {
+    const elementNodeType = 1;
+    const nodeHashes: string[] = [];
+    this.gladeContentNodes?.forEach((node: Element) => {
+      // This excludes non-element nodes like textNodes
+      if (node.nodeType === elementNodeType) {
+        const gladeNodeHash = this.hashString(node.textContent || '');
+
+        node.setAttribute('data-glade-node-hash', gladeNodeHash);
+        nodeHashes.push(gladeNodeHash);
+      }
     });
 
     const docHash: string = this.hashString(nodeHashes.join('_'));
     this.gladeDocumentHash = parseInt(docHash);
-
-    await this.getAnnotationsFromDB();
-
-    this.processAnnotations();
   }
 
+  /**
+   * Takes annotations that have been fetched from the database and applies a class to DOM nodes for which annotations exist
+   */
   processAnnotations() {
     this.log('processing annotations');
-    this.gladeContentNodes.forEach((node) => {
-      const nodeHash = parseInt(
-        node.getAttribute('data-glade-node-hash') || '0'
-      );
 
-      // aggregate all annotations for a given node index in the DOM
-      const annotationsForHash = this.annotations.filter(
-        ({gladeDomNodeHash}) => {
-          return gladeDomNodeHash == nodeHash;
+    const elementNodeType = 1;
+
+    this.gladeContentNodes?.forEach((node) => {
+      // This excludes non-element nodes like textNodes
+      if (node.nodeType === elementNodeType) {
+        const nodeHash = parseInt(
+          node.getAttribute('data-glade-node-hash') || '0'
+        );
+
+        // aggregate all annotations for a given node index in the DOM
+        const annotationsForHash = this.annotations.filter(
+          ({gladeDomNodeHash}) => {
+            return gladeDomNodeHash == nodeHash;
+          }
+        );
+
+        // if a node index has annotations, give it a class for CSS styles
+        if (annotationsForHash.length) {
+          node.classList.add('glade-has-annotations');
+        } else {
+          // clear class if it is wrongly present on a DOM node that has no annotations
+          node.classList.remove('glade-has-annotations');
         }
-      );
-
-      // if a node index has annotations, give it a class for CSS styles and a click listener
-      if (annotationsForHash.length) {
-        node.classList.add('glade-has-annotations');
-      } else {
-        // clear class if it is wrongly present on a DOM node that has no annotations
-        node.classList.remove('glade-has-annotations');
       }
     });
   }
