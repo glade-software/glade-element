@@ -26,6 +26,9 @@ export class GladeAnnotateable extends LitElement {
   @property({type: Boolean})
   verbose = false;
 
+  /**
+   * A hash of the concatenation of all gladeDomNodeHashes
+   */
   @property({type: Number, reflect: true})
   gladeDocumentHash = 0;
 
@@ -123,7 +126,6 @@ export class GladeAnnotateable extends LitElement {
   static styles = css`
     :host {
       display: block;
-      padding: 16px;
       max-width: 800px;
     }
     .create-annotation-form {
