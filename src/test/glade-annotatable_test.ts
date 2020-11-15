@@ -1,4 +1,4 @@
-import {GladeAnnotatable} from '../glade-annotatable';
+import {GladeAnnotatable} from '../glade-annotatable.js';
 
 const assert = chai.assert;
 
