@@ -3,11 +3,11 @@
 /test/
 
 # top level source
-glade-annotateable.js
-glade-annotateable.js.map
-glade-annotateable.d.ts
-glade-annotateable.d.ts.map
-glade-annotateable.bundled.js
+glade-element.js
+glade-element.js.map
+glade-element.d.ts
+glade-element.d.ts.map
+glade-element.bundled.js
 
 /app/node_modules/
 

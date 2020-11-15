@@ -2,8 +2,8 @@
   "version": "experimental",
   "tags": [
     {
-      "name": "glade-annotateable",
-      "path": "./src/glade-annotateable.ts",
+      "name": "glade-element",
+      "path": "./src/glade-element.ts",
       "attributes": [
         {
           "name": "verbose",

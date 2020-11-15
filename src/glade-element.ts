@@ -13,8 +13,8 @@ enum DialogRole {
   Login = 'LOGIN', // User authentication form
 }
 
-@customElement('glade-annotateable')
-export class GladeAnnotateable extends LitElement {
+@customElement('glade-element')
+export class GladeElement extends LitElement {
   /**
    * The content nodes inside the tag
    */
@@ -142,7 +142,7 @@ export class GladeAnnotateable extends LitElement {
 
   constructor() {
     super();
-    this.gladeContentNodes = this.querySelectorAll('glade-annotateable > *');
+    this.gladeContentNodes = this.querySelectorAll('glade-element > *');
   }
 
   log(...messages: String[]) {
@@ -323,7 +323,7 @@ export class GladeAnnotateable extends LitElement {
 
   async connectedCallback() {
     super.connectedCallback();
-    this.log('glade-annotateable connected');
+    this.log('glade-element connected');
     this.initializeFirebase();
 
     let nodeHashes: string[] = [];
@@ -479,6 +479,6 @@ export class GladeAnnotateable extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'glade-annotateable': GladeAnnotateable;
+    'glade-element': GladeElement;
   }
 }

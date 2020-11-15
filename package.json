@@ -1,18 +1,18 @@
 {
-  "name": "@glade-software/glade-annotateable",
-  "version": "1.0.7",
-  "description": "a component that makes DOM annotateable",
-  "main": "glade-annotateable.bundled.js",
-  "module": "glade-annotateable.js",
-  "unpkg": "glade-annotateable.bundled.js",
+  "name": "@glade-software/glade-element",
+  "version": "1.0.0",
+  "description": "a component that makes DOM annotatable",
+  "main": "glade-element.bundled.js",
+  "module": "glade-element.js",
+  "unpkg": "glade-element.bundled.js",
   "type": "module",
   "files": [
-    "glade-annotateable.bundled.js"
+    "glade-element.bundled.js"
   ],
   "scripts": {
     "build": "tsc && rollup -c",
     "build:watch": "tsc --watch && rollup -c -w",
-    "clean": "rimraf glade-annotateable.{d.ts,d.ts.map,js,bundled.js,js.map} test/glade-annotateable.{d.ts,d.ts.map,js,js.map} test/glade-annotateable_test.{d.ts,d.ts.map,js,js.map}",
+    "clean": "rimraf glade-element.{d.ts,d.ts.map,js,bundled.js,js.map} test/glade-element.{d.ts,d.ts.map,js,js.map} test/glade-element_test.{d.ts,d.ts.map,js,js.map}",
     "lint": "npm run lint:lit-analyzer && npm run lint:eslint",
     "lint:eslint": "eslint 'src/**/*.ts'",
     "lint:lit-analyzer": "lit-analyzer",
@@ -24,7 +24,7 @@
     "test:watch": "karma start karma.conf.cjs --auto-watch=true --single-run=false",
     "test:update-snapshots": "karma start karma.conf.cjs --update-snapshots",
     "test:prune-snapshots": "karma start karma.conf.cjs --prune-snapshots",
-    "checksize": "rollup -c ; cat glade-annotateable.bundled.js | gzip -9 | wc -c ; rm glade-annotateable.bundled.js"
+    "checksize": "rollup -c ; cat glade-element.bundled.js | gzip -9 | wc -c ; rm glade-element.bundled.js"
   },
   "keywords": [
     "web-components",

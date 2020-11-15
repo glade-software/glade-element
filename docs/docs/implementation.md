@@ -8,15 +8,15 @@ sidebar_label: How it Works
 
 Glade is built using web components, and the library itself is a custom element.
 
-Wrapping content with the Glade custom element augments that content and makes it annotateable by web users!
+Wrapping content with the Glade custom element augments that content and makes it annotatable by web users!
 
 That's done like this:
 
 ```html
-<glade-annotateable>
+<glade-element>
   <p>Lorem Ipsum</p>
   <p>I don't know latin</p>
-</glade-annotateable>
+</glade-element>
 ```
 
 ## User Experience

@@ -1,6 +1,6 @@
 module.exports = {
-  title: '<glade-annotateable>',
-  tagline: 'make any webpage annotateable',
+  title: '<glade-element>',
+  tagline: 'make any webpage annotatable',
   url: 'https://docs.glade.app',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
