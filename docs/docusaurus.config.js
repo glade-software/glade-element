@@ -22,7 +22,7 @@ module.exports = {
         },
         {href: 'https://demos.glade.app', label: 'Demos', position: 'left'},
         {
-          href: 'https://github.com/glade-software/glade-annotatable',
+          href: 'https://github.com/glade-software/glade-element',
           label: 'GitHub',
           position: 'right',
         },
@@ -63,7 +63,7 @@ module.exports = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/glade-software/glade-annotatable',
+              href: 'https://github.com/glade-software/glade-element',
             },
           ],
         },
@@ -81,13 +81,13 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/glade-software/glade-annotatable/edit/master/docs/',
+            'https://github.com/glade-software/glade-element/edit/master/docs/',
         },
         demos: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/glade-software/glade-annotatable/edit/master/demos/',
+            'https://github.com/glade-software/glade-element/edit/master/demos/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
