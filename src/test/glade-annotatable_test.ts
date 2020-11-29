@@ -59,7 +59,7 @@ suite('glade-annotatable', () => {
         <p>This homepage content is annotatable using Glade's open annotation platform!</p>
       </glade-annotatable>
     `);
-    await aTimeout(1000);
+    await aTimeout(2000);
     expect(el.annotations.length).to.be.greaterThan(0);
   });
 
