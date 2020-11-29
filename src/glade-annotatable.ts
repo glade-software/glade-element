@@ -366,13 +366,6 @@ export class GladeAnnotatable extends LitElement {
         nodeHashes.push(gladeNodeHash);
       }
     });
-
-    this.log(JSON.stringify(nodeHashes, null, 2));
-    this.log(
-      this.hashString(
-        "This homepage content is annotatable using Glade's open annotation platform!"
-      )
-    );
     const docHash: string = this.hashString(nodeHashes.join('_'));
     this.gladeDocumentHash = parseInt(docHash);
   }
