@@ -62,4 +62,11 @@ suite('glade-annotatable', () => {
     await aTimeout(1000);
     expect(el.annotations.length).to.be.greaterThan(0);
   });
+
+  test('hashString does what we expect', async () => {
+    const el: GladeAnnotatable = await fixture(
+      html`<glade-annotatable></glade-annotatable>`
+    );
+    expect(el.hashString('')).to.equal('0');
+  });
 });
