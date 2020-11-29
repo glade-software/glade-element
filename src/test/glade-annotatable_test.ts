@@ -18,7 +18,7 @@ suite('glade-annotatable', () => {
     );
   });
 
-  test('constant hashes are generated as expected', async () => {
+  test('constant content hashes are generated as expected', async () => {
     const knownGladeDomNodeHash = 138399344; // hashString('<p>some known content</p>')
     const knownGladeDocumentHash = -6866858; // hashString('<p data-glade-node-hash="138399344">some known content</p>')
 
@@ -59,14 +59,44 @@ suite('glade-annotatable', () => {
         <p>This homepage content is annotatable using Glade's open annotation platform!</p>
       </glade-annotatable>
     `);
-    await aTimeout(2000);
+    await aTimeout(1900);
     expect(el.annotations.length).to.be.greaterThan(0);
   });
 
-  test('hashString does what we expect', async () => {
+  test('hashString returns "0" if it hashed an empty string', async () => {
     const el: GladeAnnotatable = await fixture(
       html`<glade-annotatable></glade-annotatable>`
     );
     expect(el.hashString('')).to.equal('0');
+  });
+
+  test('hashString("foo") returns "101574"', async () => {
+    const el: GladeAnnotatable = await fixture(
+      html`<glade-annotatable></glade-annotatable>`
+    );
+    expect(el.hashString('foo')).to.equal('101574');
+  });
+
+  test('gladeContentNodes should be length 0 when there is no content', async () => {
+    const el: GladeAnnotatable = await fixture(
+      html`<glade-annotatable></glade-annotatable>`
+    );
+    expect(el.gladeContentNodes).to.have.lengthOf(0);
+  });
+
+  test('gladeContentNodes should be length 2 when there is 2 content nodes', async () => {
+    // prettier-ignore
+    const el: GladeAnnotatable = await fixture(
+      html`<glade-annotatable><p>1</p><p>2</p></glade-annotatable>`
+    );
+    expect(el.gladeContentNodes).to.have.lengthOf(2);
+  });
+
+  test('gladeContentNodes should be length 2 when there is 2 content nodes', async () => {
+    // prettier-ignore
+    const el: GladeAnnotatable = await fixture(
+      html`<glade-annotatable><p>1</p><p>2</p></glade-annotatable>`
+    );
+    expect(el.gladeContentNodes).to.have.lengthOf(2);
   });
 });
