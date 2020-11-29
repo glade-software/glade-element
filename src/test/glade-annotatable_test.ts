@@ -52,16 +52,14 @@ suite('glade-annotatable', () => {
   });
 
   test('annotations are present for the homepage content', async () => {
+    // prettier adds linebreaks here that break our hashing if we let it
+    // prettier-ignore
     const el: GladeAnnotatable = await fixture(html`
-      <glade-annotatable verbose>
-        <p>
-          This homepage content is annotatable using Glade's open annotation
-          platform!
-        </p>
+      <glade-annotatable>
+        <p>This homepage content is annotatable using Glade's open annotation platform!</p>
       </glade-annotatable>
     `);
     await aTimeout(1000);
-    console.log(el.annotations);
     expect(el.annotations.length).to.be.greaterThan(0);
   });
 });
