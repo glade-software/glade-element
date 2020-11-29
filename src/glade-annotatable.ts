@@ -327,7 +327,6 @@ export class GladeAnnotatable extends LitElement {
         gladeDomNodeHash,
       });
     });
-    this.log(JSON.stringify(this.annotations, null, 2));
   }
 
   /**
