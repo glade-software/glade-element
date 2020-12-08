@@ -133,7 +133,6 @@ export class GladeAnnotatable extends LitElement {
   static styles = css`
     :host {
       display: block;
-      max-width: 800px;
     }
     .create-annotation-form {
       min-width: 320px;

@@ -91,12 +91,4 @@ suite('glade-annotatable', () => {
     );
     expect(el.gladeContentNodes).to.have.lengthOf(2);
   });
-
-  test('gladeContentNodes should be length 2 when there is 2 content nodes', async () => {
-    // prettier-ignore
-    const el: GladeAnnotatable = await fixture(
-      html`<glade-annotatable><p>1</p><p>2</p></glade-annotatable>`
-    );
-    expect(el.gladeContentNodes).to.have.lengthOf(2);
-  });
 });
