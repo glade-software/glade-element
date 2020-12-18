@@ -366,12 +366,16 @@ export class GladeAnnotatable extends LitElement {
   }
 
   async getHtmlFromMarkdown(markdownStrings: string[]): Promise<string[]> {
+    this.log(`getting html for ${markdownStrings.length} markdown documents`);
     const getHtmlFromMd = firebase
       .functions()
       .httpsCallable('getHTMLFromMarkdown');
 
     try {
       const result = await getHtmlFromMd({markdownStrings});
+      this.log(
+        `${result.data.htmlStrings.length} html documents rendered from markdown`
+      );
       return result.data.htmlStrings;
     } catch (error) {
       console.error(error);
