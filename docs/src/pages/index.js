@@ -52,7 +52,7 @@ function Home() {
         <main>
           <section className={styles.features}>
             <div className="container">
-              <div className="row">
+              <div className="row" style={{justifyContent:'center'}}>
                 <glade-annotatable verbose>
                   <p>
                     This homepage content is annotatable using Glade's open
