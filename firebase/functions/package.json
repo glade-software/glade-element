@@ -12,8 +12,12 @@
     "node": "12"
   },
   "dependencies": {
+    "@remark-embedder/core": "^1.2.1",
+    "@remark-embedder/transformer-oembed": "^1.0.0",
     "firebase-admin": "^9.4.1",
-    "firebase-functions": "^3.11.0"
+    "firebase-functions": "^3.11.0",
+    "remark": "^13.0.0",
+    "remark-html": "^13.0.1"
   },
   "devDependencies": {
     "eslint": "^5.12.0",

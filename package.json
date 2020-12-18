@@ -1,6 +1,6 @@
 {
   "name": "@glade-software/glade-annotatable",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "a component that makes DOM annotatable",
   "main": "glade-annotatable.bundled.js",
   "module": "glade-annotatable.js",
@@ -39,7 +39,11 @@
     "@material/mwc-textarea": "^0.15.0",
     "@material/mwc-textfield": "^0.15.0",
     "firebase": "^7.23.0",
-    "lit-element": "^2.4.0"
+    "lit-element": "^2.4.0",
+    "micromark": "^2.11.2",
+    "rehype-stringify": "^8.0.0",
+    "remark-parse": "^9.0.0",
+    "remark-rehype": "^8.0.0"
   },
   "devDependencies": {
     "@open-wc/testing": "^2.5.29",
