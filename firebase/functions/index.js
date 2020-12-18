@@ -2,8 +2,10 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const remark = require('remark');
 const htmlify = require('remark-html');
-const remarkEmbedder = require('@remark-embedder/core');
-const oembedTransformer = require('@remark-embedder/transformer-oembed');
+const {default: remarkEmbedder} = require('@remark-embedder/core');
+const {
+  default: oembedTransformer,
+} = require('@remark-embedder/transformer-oembed');
 
 admin.initializeApp();
 
@@ -22,9 +24,8 @@ exports.getHTMLFromMarkdown = functions.https.onCall(
     let htmlStrings = [];
 
     if (Array.isArray(markdownStrings)) {
-
-      markdownStrings.forEach((markdownString, index) => {
-        // Checking attribute.
+      for (let index = 0; index < markdownStrings.length; index++) {
+        let markdownString = markdownStrings[index];
         if (
           !(typeof markdownString === 'string') ||
           markdownString.length === 0
@@ -38,22 +39,28 @@ exports.getHTMLFromMarkdown = functions.https.onCall(
 
         try {
           // convert the current markdownString into an htmlString
-          const htmlResult = remark()
+          const htmlResult = await remark()
             .use(remarkEmbedder, {
               transformers: [oembedTransformer],
             })
             .use(htmlify)
-            .processSync(markdownString);
-            // add the new htmlString to the response Array
-            htmlStrings.push(htmlResult.toString())
+            .process(markdownString);
+          // add the new htmlString to the response Array
+          htmlStrings.push(htmlResult.toString());
         } catch (error) {
-          throw new functions.https.HttpsError('internal', `markdownString[${index}]\n ${error}`);
+          throw new functions.https.HttpsError(
+            'internal',
+            `markdownString[${index}]\n ${error}`
+          );
         }
-      });
+      }
     }
 
-    if(htmlStrings.length != markdownStrings.length){
-      throw new functions.https.HttpsError('internal', `failed to process all markdownStrings`);
+    if (htmlStrings.length !== markdownStrings.length) {
+      throw new functions.https.HttpsError(
+        'internal',
+        `failed to process all markdownStrings \nm${markdownStrings.length}\nh${htmlStrings.length}`
+      );
     }
     // return all new htmlStrings
     return {htmlStrings};

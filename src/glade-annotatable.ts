@@ -495,11 +495,15 @@ export class GladeAnnotatable extends LitElement {
       '#annotationBody'
     ) as HTMLTextAreaElement;
 
-    this.pendingAnnotationBody = annotationBodyElement?.value;
+    // The annotationBody element is out of the DOM in preview mode, so we get the annotationBody from the preview
+    this.pendingAnnotationBody = this.showPreview
+      ? this.annotationPreview
+      : annotationBodyElement?.value;
 
     const postedBy = this.user?.displayName;
     const body = this.pendingAnnotationBody;
     const gladeDomNodeHash = this.pendingGladeDomNodeHash;
+
     this.log('publishing annotation with nodeHash', `${gladeDomNodeHash}`);
 
     const [htmlString] = await this.getHtmlFromMarkdown([body]);
@@ -522,6 +526,11 @@ export class GladeAnnotatable extends LitElement {
 
     this.annotations.push(annotationDocument);
     this.processAnnotations();
+
+    // reset form
+    this.showPreview = false;
+    this.pendingAnnotationBody = '';
+    this.annotationPreview = '';
   }
 
   async handleClickLogin(_: MouseEvent) {
