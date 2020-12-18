@@ -4,7 +4,6 @@ import '@material/mwc-dialog';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
 import '@material/mwc-textarea';
-import '@github/markdown-toolbar-element';
 
 import firebase from 'firebase';
 // Different views the modal may reflect
@@ -220,10 +219,6 @@ export class GladeAnnotatable extends LitElement {
    */
   get createAnnotationTemplate() {
     const editor = html`
-      <markdown-toolbar for="annotationBody">
-        <md-link>link</md-link>
-        <md-image>image</md-image>
-      </markdown-toolbar>
       <textarea
         style="width:500px; margin:8px; padding:8px;"
         placeholder=""
