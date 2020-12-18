@@ -18,16 +18,8 @@ exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
 });
 
 exports.getHTMLFromMarkdown = functions.https.onCall(
-  async ({markdownStrings}, context) => {
+  async ({markdownStrings}) => {
     let htmlStrings = [];
-
-    if (!context.auth) {
-      // Throwing an HttpsError so that the client gets the error details.
-      throw new functions.https.HttpsError(
-        'failed-precondition',
-        'The function must be called while authenticated.'
-      );
-    }
 
     if (Array.isArray(markdownStrings)) {
 
