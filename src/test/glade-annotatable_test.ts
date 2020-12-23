@@ -51,18 +51,6 @@ suite('glade-annotatable', () => {
     expect(el.verbose).to.be.true;
   });
 
-  test('annotations are present for the homepage content', async () => {
-    // prettier adds linebreaks here that break our hashing if we let it
-    // prettier-ignore
-    const el: GladeAnnotatable = await fixture(html`
-      <glade-annotatable>
-        <p>This homepage content is annotatable using Glade's open annotation platform!</p>
-      </glade-annotatable>
-    `);
-    await aTimeout(1900);
-    expect(el.annotations.length).to.be.greaterThan(0);
-  });
-
   test('hashString returns "0" if it hashed an empty string', async () => {
     const el: GladeAnnotatable = await fixture(
       html`<glade-annotatable></glade-annotatable>`
