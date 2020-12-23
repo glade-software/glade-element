@@ -15,6 +15,7 @@
   --ifm-color-primary-lighter: rgb(33, 90, 99);
   --ifm-color-primary-lightest: rgb(43, 100, 109);
   --ifm-code-font-size: 95%;
+  --ifm-z-index-fixed: 6; /* magic number because mwc-dialog is at z-index 7 for some reason, mwc-dialog should be configurable imo  */
 }
 
 .docusaurus-highlight-code-line {
