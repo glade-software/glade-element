@@ -20,7 +20,7 @@ exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
 });
 
 exports.getHTMLFromMarkdown = functions.https.onCall(
-  async ({markdownStrings}) => {
+  async ({markdownStrings}, context) => {
     let htmlStrings = [];
 
     if (Array.isArray(markdownStrings)) {
@@ -41,7 +41,9 @@ exports.getHTMLFromMarkdown = functions.https.onCall(
           // convert the current markdownString into an htmlString
           const htmlResult = await remark()
             .use(remarkEmbedder, {
-              transformers: [oembedTransformer],
+              transformers: [
+                [oembedTransformer, {params: { maxwidth: 800 }}]
+              ],
             })
             .use(htmlify)
             .process(markdownString);
