@@ -10,6 +10,6 @@ We envision a world where the web platform has annotation as a first-class citiz
 
 Annotations are just more online content. They can be any approved format of online document, provided the format is deemed safe and supported.
 
-The first annotation type supported is pure text, but it is easy to see how the annotation editor could enable other types of media uploads.
+Annotations are [created](creating-annotations) using **Markdown** and can also render embeds from all known [oembed providers](https://oembed.com/providers.json)!
 
 The vision is to enable users to see and create annotations on every webpage, but we'd love to start with just yours <3
