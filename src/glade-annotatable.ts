@@ -177,7 +177,6 @@ export class GladeAnnotatable extends LitElement {
       this.log('content parsed');
       await this.getAnnotationsFromDB();
       this.log('annotations fetched');
-      //await this.getHtmlFromMarkdownAnnotations();
       this.processAnnotations();
       this.log('annotations rendered');
     }
