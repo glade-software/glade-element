@@ -14,4 +14,4 @@ A **referent** is a given portion of DOM that an annotation refers to. Currently
 
 ### Annotation
 
-An **annotation** is a piece of content a user creates in the Glade GUI, which is attached to a specific **referent**.
+An **annotation** is a piece of content a user creates in the Glade GUI, which is attached to a specific **referent**, these annotations are [created](creating-annotations) using **markdown** or plain text.
