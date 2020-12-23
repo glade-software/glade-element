@@ -41,7 +41,9 @@ exports.getHTMLFromMarkdown = functions.https.onCall(
           // convert the current markdownString into an htmlString
           const htmlResult = await remark()
             .use(remarkEmbedder, {
-              transformers: [oembedTransformer],
+              transformers: [
+                [oembedTransformer, {params: { maxwidth: 800 }}]
+              ],
             })
             .use(htmlify)
             .process(markdownString);
