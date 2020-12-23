@@ -86,10 +86,16 @@ export class GladeAnnotatable extends LitElement {
   password = '';
 
   /**
-   * the body of the annotation that is currently being composed
+   * the plain text body of the annotation as it is currently being composed in the textfield
    */
   @property({type: String})
-  pendingAnnotationBody = '';
+  pendingAnnotationInput = '';
+
+  /**
+   * the html body of the annotation after it is rendered to markup
+   */
+  @property({type: String})
+  pendingAnnotationHtmlString: string = '';
 
   /**
    * the index of the referrent DOM node for the pending annotation
@@ -102,21 +108,18 @@ export class GladeAnnotatable extends LitElement {
    */
   @property({type: Array})
   annotations: Array<{
-    body: string;
+    plainTextBody: string;
     gladeDomNodeHash: number;
     postedBy: string | undefined;
     htmlString: string | null;
   }> = [];
-
-  @property({type: String})
-  annotationPreview: string = '';
 
   /**
    * an array of all annotations that are currently listed for the selected referrent
    */
   @property({type: Array})
   activeAnnotations: Array<{
-    body: string;
+    plainTextBody: string;
     gladeDomNodeHash: number;
     postedBy: string | undefined;
     htmlString: string | null;
@@ -174,7 +177,7 @@ export class GladeAnnotatable extends LitElement {
       this.log('content parsed');
       await this.getAnnotationsFromDB();
       this.log('annotations fetched');
-      await this.getHtmlFromMarkdownAnnotations();
+      //await this.getHtmlFromMarkdownAnnotations();
       this.processAnnotations();
       this.log('annotations rendered');
     }
@@ -219,26 +222,22 @@ export class GladeAnnotatable extends LitElement {
    */
   get createAnnotationTemplate() {
     const editor = html`
-      <textarea
-        style="width:500px; margin:8px; padding:8px;"
-        placeholder=""
-        .value=${this.pendingAnnotationBody}
-        id="annotationBody"
-      ></textarea>
       <mwc-button
         slot="secondaryAction"
         @click=${async () => {
           this.showPreview = true;
 
           const annotationBodyElement = this.shadowRoot?.querySelector(
-            '#annotationBody'
+            '#annotationBodyInputEl'
           ) as HTMLTextAreaElement;
 
-          this.pendingAnnotationBody = annotationBodyElement?.value;
-          const [annotationPreview] = await this.getHtmlFromMarkdown([
-            this.pendingAnnotationBody,
+          this.pendingAnnotationInput = annotationBodyElement?.value;
+
+          const [renderedAnnotationHtml] = await this.getHtmlFromMarkdown([
+            this.pendingAnnotationInput,
           ]);
-          this.annotationPreview = annotationPreview;
+
+          this.pendingAnnotationHtmlString = renderedAnnotationHtml;
         }}
       >
         Preview!
@@ -246,7 +245,9 @@ export class GladeAnnotatable extends LitElement {
     `;
 
     // this innerHTML thing is considered a vulnerability with lit-element... lol
-    let preview = html` <div .innerHTML=${this.annotationPreview}></div>
+    let preview = html`<div
+        .innerHTML=${this.pendingAnnotationHtmlString}
+      ></div>
       <mwc-button
         slot="secondaryAction"
         @click=${() => {
@@ -257,6 +258,13 @@ export class GladeAnnotatable extends LitElement {
       </mwc-button>`;
 
     return html`
+      <textarea
+        .hidden=${!!this.showPreview}
+        style="width:500px; margin:8px; padding:8px;"
+        placeholder=""
+        .value=${this.pendingAnnotationInput}
+        id="annotationBodyInputEl"
+      ></textarea>
       ${this.showPreview ? preview : editor}
       <mwc-button
         slot="primaryAction"
@@ -354,19 +362,8 @@ export class GladeAnnotatable extends LitElement {
     this.requestUpdate();
   }
 
-  async getHtmlFromMarkdownAnnotations() {
-    const htmlStrings = await this.getHtmlFromMarkdown(
-      this.annotations.map((a) => a.body)
-    );
-
-    this.annotations = this.annotations.map((annotation, idx) => ({
-      ...annotation,
-      htmlString: htmlStrings[idx],
-    }));
-  }
-
   async getHtmlFromMarkdown(markdownStrings: string[]): Promise<string[]> {
-    this.log(`getting html for ${markdownStrings.length} markdown documents`);
+    this.log(`getting html for ${markdownStrings.length} markdown document(s)`);
     const getHtmlFromMd = firebase
       .functions()
       .httpsCallable('getHTMLFromMarkdown');
@@ -396,12 +393,18 @@ export class GladeAnnotatable extends LitElement {
       .get();
 
     annotationSnapshots.forEach((document) => {
-      const {body, postedBy, gladeDomNodeHash} = document.data();
-      this.annotations.push({
-        body,
+      const {
+        plainTextBody,
         postedBy,
         gladeDomNodeHash,
-        htmlString: null,
+        htmlString,
+      } = document.data();
+
+      this.annotations.push({
+        plainTextBody,
+        postedBy,
+        gladeDomNodeHash,
+        htmlString,
       });
     });
   }
@@ -492,25 +495,23 @@ export class GladeAnnotatable extends LitElement {
     this.log('publish button clicked');
 
     const annotationBodyElement = this.shadowRoot?.querySelector(
-      '#annotationBody'
+      '#annotationBodyInputEl'
     ) as HTMLTextAreaElement;
 
-    // The annotationBody element is out of the DOM in preview mode, so we get the annotationBody from the preview
-    this.pendingAnnotationBody = this.showPreview
-      ? this.annotationPreview
-      : annotationBodyElement?.value;
+    this.pendingAnnotationInput = annotationBodyElement?.value;
 
     const postedBy = this.user?.displayName;
-    const body = this.pendingAnnotationBody;
+    const plainTextBody = this.pendingAnnotationInput;
     const gladeDomNodeHash = this.pendingGladeDomNodeHash;
 
     this.log('publishing annotation with nodeHash', `${gladeDomNodeHash}`);
 
-    const [htmlString] = await this.getHtmlFromMarkdown([body]);
+    // suboptimal because it is likely already fetched for the preview
+    const [htmlString] = await this.getHtmlFromMarkdown([plainTextBody]);
 
     let annotationDocument = {
       postedBy: postedBy || undefined,
-      body,
+      plainTextBody,
       gladeDomNodeHash,
       htmlString,
     };
@@ -529,8 +530,8 @@ export class GladeAnnotatable extends LitElement {
 
     // reset form
     this.showPreview = false;
-    this.pendingAnnotationBody = '';
-    this.annotationPreview = '';
+    this.pendingAnnotationInput = '';
+    this.pendingAnnotationHtmlString = '';
   }
 
   async handleClickLogin(_: MouseEvent) {

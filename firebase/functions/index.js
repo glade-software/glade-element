@@ -20,7 +20,7 @@ exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
 });
 
 exports.getHTMLFromMarkdown = functions.https.onCall(
-  async ({markdownStrings}) => {
+  async ({markdownStrings}, context) => {
     let htmlStrings = [];
 
     if (Array.isArray(markdownStrings)) {
