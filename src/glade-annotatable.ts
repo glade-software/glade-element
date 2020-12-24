@@ -157,6 +157,41 @@ export class GladeAnnotatable extends LitElement {
     img {
       width: 100%;
     }
+
+    /*Twitter */
+    blockquote.twitter-tweet {
+      display: inline-block;
+      font-family: 'Helvetica Neue', Roboto, 'Segoe UI', Calibri, sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 16px;
+      border-color: #eee #ddd #bbb;
+      border-radius: 5px;
+      border-style: solid;
+      border-width: 1px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      margin: 10px 5px;
+      padding: 0 16px 16px 16px;
+      max-width: 468px;
+    }
+
+    blockquote.twitter-tweet p {
+      font-size: 16px;
+      font-weight: normal;
+      line-height: 20px;
+    }
+
+    blockquote.twitter-tweet a {
+      color: inherit;
+      font-weight: normal;
+      text-decoration: none;
+      outline: 0 none;
+    }
+
+    blockquote.twitter-tweet a:hover,
+    blockquote.twitter-tweet a:focus {
+      text-decoration: underline;
+    }
   `;
 
   constructor() {
@@ -190,7 +225,7 @@ export class GladeAnnotatable extends LitElement {
     return html`
       <div
         id="loginTemplate"
-        style="border: 1px solid; margin:8px; padding:8px;"
+        style="border: 1px solid #c4cfd6; margin:8px; padding:8px; border-radius: 4px;"
       >
         <p>you need an account to add annotations</p>
         <input id="email" name="email" placeholder="email" type="email" />
@@ -280,11 +315,11 @@ export class GladeAnnotatable extends LitElement {
         ${this.activeAnnotations.length
           ? this.activeAnnotations.map((annotation) => {
               return html`<div
-                style="border: 1px solid; margin:8px; padding:8px;"
+                style="border: 1px solid #c4cfd6; margin:8px; padding:8px; border-radius: 8px;"
               >
                 <span style="color: #1A535C;"
-                  >${annotation.postedBy || 'anonymous'}</span
-                >:
+                  >@${annotation.postedBy || 'anonymous'}</span
+                >
                 <div
                   style="max-width: 800px; object-fit: contain;"
                   .innerHTML=${annotation.htmlString || ''}
