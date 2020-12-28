@@ -32,7 +32,8 @@ const validationSchema = yup.object({
 const Signup = () => {
   const router = useRouter();
   const { currentUser } = useContext(AuthContext);
-
+  const qs = router.query?.from ? `?from=${encodeURIComponent(router.query?.from)}` : '';
+  console.log(qs)
   return (
     <Grommet theme={grommet}>
       <Box align="center">
@@ -54,7 +55,7 @@ const Signup = () => {
                   .createUserWithEmailAndPassword(email, password)
                   .then(() => {
                     console.log("user created");
-                    router.replace('/profile');
+                    router.replace(`/profile${qs}`);
                   })
                   .catch(function (error) {
                     // Handle Errors here.
