@@ -60,6 +60,8 @@ const validationSchema = yup.object({
 
 const Profile = () => {
   const router = useRouter();
+  const from = router.query?.from;
+
   if (!app.auth().currentUser) {
     router.replace('/');
     return <>{`Loading...`}</>;
@@ -106,6 +108,11 @@ const Profile = () => {
                         .then(router.reload);
                         
                       setSubmitting(false);
+                      if(from){
+                        console.log(`attempting redirect to`,from);
+                        router.replace(decodeURIComponent(from))
+                      }
+
                     })
                     .catch((userProfileError) => {
                       console.log(
