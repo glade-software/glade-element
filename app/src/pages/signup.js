@@ -33,7 +33,6 @@ const Signup = () => {
   const router = useRouter();
   const { currentUser } = useContext(AuthContext);
   const qs = router.query?.from ? `?from=${encodeURIComponent(router.query?.from)}` : '';
-  console.log(qs)
   return (
     <Grommet theme={grommet}>
       <Box align="center">
