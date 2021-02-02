@@ -15,6 +15,7 @@ const {
 admin.initializeApp();
 
 const db = admin.firestore();
+const auth = admin.auth();
 
 exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
   try {
@@ -24,8 +25,9 @@ exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
       separator: '-anonymous-',
       length: 2,
     }); // optimistically: scandalous-anonymous-rhinocerous
-    console.log('initializing user in firestore with displayName', displayName,'🎉');
+    console.log('initializing user',user.uid,' in firestore with displayName', displayName,'🎉');
     await db.collection('users').doc(user.uid).set({displayName});
+    await auth.updateUser(user.uid,{displayName});
   } catch (error) {
     console.log('error persisting user to firestore:\n', error);
   }
