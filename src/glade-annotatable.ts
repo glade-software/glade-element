@@ -485,7 +485,8 @@ export class GladeAnnotatable extends LitElement {
         .doc(u.uid)
         .onSnapshot((doc) => {
           const displayName = doc.data()?.displayName;
-          if (displayName && this.user?.displayName !== displayName) {
+          const displayNameMismatch = this.user?.displayName !== displayName;
+          if (displayName && displayNameMismatch) {
             this.user?.updateProfile({displayName});
           }
         });
