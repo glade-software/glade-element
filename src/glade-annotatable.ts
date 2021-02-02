@@ -237,16 +237,20 @@ export class GladeAnnotatable extends LitElement {
         />
       </div>
       <div style="color:red;">${this.loginErrorMessage}</div>
+
       <mwc-button slot="secondaryAction"
         ><a
           href="https://glade.app/signup?from=${encodeURIComponent(
             window.location.href
           )}"
-          >sign up?</a
+          >sign up</a
         ></mwc-button
       >
+      <mwc-button slot="secondaryAction">
+        <a @click="${this.handleClickUseAnonymously}"> use anonymously</a>
+      </mwc-button>
       <mwc-button slot="primaryAction" @click=${this.handleClickLogin}
-        >Sign in!</mwc-button
+        >sign in</mwc-button
       >
     `;
   }
@@ -380,15 +384,21 @@ export class GladeAnnotatable extends LitElement {
   async handleAuthStateChanged(u: firebase.User | null) {
     if (u) {
       this.user = u;
+
+      if (this.user.isAnonymous) {
+        this.log('anonyomus user logged in🕵️');
+      }
+
       const userDocRef = await this.db
         .collection('users')
         .doc(this.user.uid)
         .get();
 
       const displayName = userDocRef?.data()?.displayName;
+      this.log(`${displayName} logged in!`);
 
-      if (displayName + !u.displayName) {
-        this.user.updateProfile({displayName});
+      if (displayName && !u.displayName) {
+        await this.user.updateProfile({displayName});
       }
     } else {
       this.user = null;
@@ -566,6 +576,23 @@ export class GladeAnnotatable extends LitElement {
     this.showPreview = false;
     this.pendingAnnotationInput = '';
     this.pendingAnnotationHtmlString = '';
+  }
+
+  async handleClickUseAnonymously(_: MouseEvent) {
+    try {
+      await firebase.auth().signInAnonymously();
+      this.dialogRole = DialogRole.Create;
+    } catch (error) {
+      let beLouder = !!this.loginErrorMessage;
+
+      if (error.code === 'auth/too-many-requests') {
+        this.loginErrorMessage = 'too many attempts, try again later';
+      }
+      if (beLouder) {
+        this.loginErrorMessage += '!';
+      }
+    }
+    this.requestUpdate();
   }
 
   async handleClickLogin(_: MouseEvent) {
