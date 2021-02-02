@@ -64,9 +64,6 @@ function Home() {
                   <p>
                     Leave an annotation here, or checkout the docs to put it on your site for free!
                   </p>
-                  <p>
-                    Glade is open source software forever, we want the internet to support annotations natively and developing this together is the best way to make that happen.
-                  </p>
                 </glade-annotatable>
               </div>
             </div>
