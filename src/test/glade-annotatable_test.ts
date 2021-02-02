@@ -57,6 +57,8 @@ suite('glade-annotatable', () => {
     const el: GladeAnnotatable = await fixture(html`
       <glade-annotatable>
         <p>This homepage content is annotatable using Glade's open annotation platform!</p>
+        <p>With Glade, instead of having comments at the bottom, users can create comments on any part of your content.</p>
+        <p>Leave an annotation here, or checkout the docs to put it on your site for free!</p>
       </glade-annotatable>
     `);
     await aTimeout(1900);
