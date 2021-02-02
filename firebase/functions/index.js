@@ -6,6 +6,11 @@ const {default: remarkEmbedder} = require('@remark-embedder/core');
 const {
   default: oembedTransformer,
 } = require('@remark-embedder/transformer-oembed');
+const {
+  uniqueNamesGenerator,
+  adjectives,
+  animals,
+} = require('unique-names-generator');
 
 admin.initializeApp();
 
@@ -13,7 +18,14 @@ const db = admin.firestore();
 
 exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
   try {
-    await db.collection('users').doc(user.uid).set({displayName: ''});
+    const displayName = uniqueNamesGenerator({
+      dictionaries: [adjectives, animals],
+      style: 'lowerCase',
+      separator: '-anonymous-',
+      length: 2,
+    }); // optimistically: scandalous-anonymous-rhinocerous
+    console.log('initializing user in firestore with displayName', displayName,'🎉');
+    await db.collection('users').doc(user.uid).set({displayName});
   } catch (error) {
     console.log('error persisting user to firestore:\n', error);
   }
@@ -41,9 +53,7 @@ exports.getHTMLFromMarkdown = functions.https.onCall(
           // convert the current markdownString into an htmlString
           const htmlResult = await remark()
             .use(remarkEmbedder, {
-              transformers: [
-                [oembedTransformer, {params: { maxwidth: 800 }}]
-              ],
+              transformers: [[oembedTransformer, {params: {maxwidth: 800}}]],
             })
             .use(htmlify)
             .process(markdownString);
