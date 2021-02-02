@@ -33,13 +33,13 @@ function Home() {
           <meta name="og:title" property="og:title" content="Glade Docs | Open Source Annotation Platform"/>
           <meta name="og:description" property="og:description" content="Check out the docs for our open source annotation system, it's like a comments system - but directly on your content!"/>
           <meta name="og:type" property="og:type" content="website"/>
-          <meta name="og:image" property="og:image" content="https://docs.glade.app/img/glade-rounded.png"/>
+          <meta name="og:image" property="og:image" content="https://docs.glade.app/img/glade-rounded-on-white_2x1.png"/>
           <meta name="og:image:alt" property="og:image:alt" content="An app icon featuring a snow covered tree on a forest green background"/>
           <meta name="twitter:site" property="twitter:site" content="gladesoftware"/>
           <meta name="twitter:card" property="twitter:card" content="summary_large_image"/>
           <meta name="twitter:title" property="twitter:title" content="Glade Docs | Open Source Annotation Platform"/>
           <meta name="twitter:description" property="twitter:description" content="Check out the docs for our open source annotation system, it's like a comments system - but directly on your content!"/>
-          <meta name="twitter:image" property="twitter:image" content="https://docs.glade.app/img/glade-rounded.png"/>
+          <meta name="twitter:image" property="twitter:image" content="https://docs.glade.app/img/glade-rounded-on-white_2x1.png"/>
           <meta name="twitter:image:alt" property="twitter:image:alt" content="An app icon featuring a snow covered tree on a forest green background"/>
           <link rel="canonical" href="https://docs.glade.app" />
           <style>
