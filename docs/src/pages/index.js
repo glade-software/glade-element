@@ -58,6 +58,15 @@ function Home() {
                     This homepage content is annotatable using Glade's open
                     annotation platform!
                   </p>
+                  <p>
+                    With Glade, instead of having comments at the bottom, users can create comments on any part of your content.
+                  </p>
+                  <p>
+                    Leave an annotation here, or checkout the docs to put it on your site for free!
+                  </p>
+                  <p>
+                    Glade is open source software forever, we want the internet to support annotations natively and developing this together is the best way to make that happen.
+                  </p>
                 </glade-annotatable>
               </div>
             </div>
