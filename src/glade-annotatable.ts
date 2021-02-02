@@ -11,6 +11,7 @@ enum DialogRole {
   List = 'LIST', // Listing annotations in the modal
   Create = 'CREATE', // Annotation creation form
   Login = 'LOGIN', // User authentication form
+  Settings = 'SETTINGS',
 }
 
 @customElement('glade-annotatable')
@@ -156,6 +157,54 @@ export class GladeAnnotatable extends LitElement {
     }
     img {
       width: 100%;
+    }
+
+    .accountOptions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      vertical-align: center;
+      padding: 8px;
+      margin: 8px;
+    }
+
+    .noSettingsMsg {
+      padding: 8px;
+      margin: 8px;
+    }
+
+    .title {
+      font-style: thin;
+      display: flex;
+      -webkit-font-smoothing: antialiased;
+      font-family: Roboto, sans-serif;
+      border-bottom: 1px solid transparent;
+      color: rgba(0, 0, 0, 0.87);
+      font-size: 1.25rem;
+      letter-spacing: 0.0125rem;
+    }
+
+    .heading {
+      display: flex;
+      height: 40px;
+      vertical-align: 0;
+      justify-content: space-around;
+    }
+
+    .settingsIcon {
+      display: flex;
+      justify-self: self-end;
+      font-size: 1.15rem;
+    }
+
+    .settingsIcon:hover {
+      color: #6200f3;
+      cursor: pointer;
+    }
+
+    .shamelessSpacer {
+      display: flex;
     }
 
     /*Twitter */
@@ -330,7 +379,9 @@ export class GladeAnnotatable extends LitElement {
                 ></div>
               </div>`;
             })
-          : 'No annotations here yet!'}
+          : html`<div style="padding: 8px; margin: 8px;">
+              No annotations here yet!
+            </div>`}
       </div>
       <mwc-button
         class="button-cta"
@@ -340,6 +391,49 @@ export class GladeAnnotatable extends LitElement {
       > `;
   }
 
+  /**
+   * the template to display when in Settings DialogRole
+   */
+  get settingsTemplate() {
+    if (this.user) {
+      return html` <div class="accountOptions">
+          <mwc-button
+            @click=${async () => {
+              try {
+                await firebase.auth().signOut();
+                this.user = null;
+                this.dialogRole = DialogRole.List;
+                console.log('user signed out');
+              } catch (e) {
+                this.log(`error signing out`, JSON.stringify(e));
+              }
+            }}
+            >sign out!</mwc-button
+          >
+        </div>
+        <mwc-button
+          class="button-cta"
+          slot="primaryAction"
+          @click=${() => {
+            this.dialogRole = DialogRole.List;
+          }}
+          >go back!</mwc-button
+        >`;
+    }
+    return html`
+      <div class="noSettingsMsg">
+        there are no settings for logged out users!
+      </div>
+      <mwc-button
+        class="button-cta"
+        slot="primaryAction"
+        @click=${() => {
+          this.dialogRole = DialogRole.List;
+        }}
+        >go back!</mwc-button
+      >
+    `;
+  }
   /**
    * the current template to display in the dialog
    */
@@ -351,6 +445,8 @@ export class GladeAnnotatable extends LitElement {
         return this.loginTemplate;
       case DialogRole.Create:
         return this.createAnnotationTemplate;
+      case DialogRole.Settings:
+        return this.settingsTemplate;
       default:
         return html`DialogRole Error`;
     }
@@ -384,22 +480,15 @@ export class GladeAnnotatable extends LitElement {
   async handleAuthStateChanged(u: firebase.User | null) {
     if (u) {
       this.user = u;
-
-      if (this.user.isAnonymous) {
-        this.log('anonyomus user logged in🕵️');
-      }
-
-      const userDocRef = await this.db
+      this.db
         .collection('users')
-        .doc(this.user.uid)
-        .get();
-
-      const displayName = userDocRef?.data()?.displayName;
-      this.log(`${displayName} logged in!`);
-
-      if (displayName && !u.displayName) {
-        await this.user.updateProfile({displayName});
-      }
+        .doc(u.uid)
+        .onSnapshot((doc) => {
+          const displayName = doc.data()?.displayName;
+          if (displayName && this.user?.displayName !== displayName) {
+            this.user?.updateProfile({displayName});
+          }
+        });
     } else {
       this.user = null;
     }
@@ -591,6 +680,7 @@ export class GladeAnnotatable extends LitElement {
       if (beLouder) {
         this.loginErrorMessage += '!';
       }
+      console.error(this.loginErrorMessage);
     }
     this.requestUpdate();
   }
@@ -649,14 +739,30 @@ export class GladeAnnotatable extends LitElement {
   }
 
   render() {
+    const title =
+      this.dialogRole === DialogRole.Settings ? 'settings' : 'annotations';
     return html`<mwc-dialog
         @closed=${() => {
           this.annotationsModalOpened = false;
           this.dialogRole = DialogRole.List;
         }}
-        heading="annotations"
         ?open=${this.annotationsModalOpened}
       >
+        <div class="heading">
+          <div class="title">${title}</div>
+          <span class="shamelessSpacer"></span>
+          <div
+            class="settingsIcon"
+            @click=${() => {
+              this.dialogRole = DialogRole.Settings;
+            }}
+          >
+            ⚙
+          </div>
+        </div>
+        <hr
+          style="width: 100%; margin: 0; padding: 0 10; color: rgba(0,0,0,0.6)"
+        />
         ${this.modalContent}
       </mwc-dialog>
       <slot @mouseup=${this.handleMouseUpOnChildren.bind(this)}></slot>`;
