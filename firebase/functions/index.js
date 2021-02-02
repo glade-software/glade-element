@@ -18,30 +18,27 @@ const db = admin.firestore();
 const auth = admin.auth();
 
 exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
-  // we are persisting user profile information here, if the user is not anon, we leave an empty record only in firestore
-  let displayName = '';
   try {
-    // if the user is anon, we create a username for them
+    // as a placeholder we create a username for the new user
     // optimistically: scandalous-anonymous-rhinocerous
-    if (user.isAnonymous) {
-      displayName = uniqueNamesGenerator({
-        dictionaries: [adjectives, animals],
-        style: 'lowerCase',
-        separator: '-anonymous-',
-        length: 2,
-      }); 
-      await auth.updateUser(user.uid, {displayName});
-    }
+    const displayName = uniqueNamesGenerator({
+      dictionaries: [adjectives, animals],
+      style: 'lowerCase',
+      separator: '-anonymous-',
+      length: 2,
+    });
 
     console.log(
       'initializing user',
       user.uid,
       ' in firestore with displayName',
-      displayName || null,
+      displayName,
       '🎉'
     );
-
-    await db.collection('users').doc(user.uid).set({displayName});
+    await Promise.all([
+      auth.updateUser(user.uid, {displayName}),
+      db.collection('users').doc(user.uid).set({displayName})
+    ]);
   } catch (error) {
     console.log('error persisting user to firestore:\n', error);
   }
