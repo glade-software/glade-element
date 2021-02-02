@@ -18,6 +18,30 @@ function Home() {
             type="module"
             src="https://unpkg.com/@glade-software/glade-annotatable"
           ></script>
+          <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+          <meta name="apple-mobile-web-app-title" content="Glade Docs"/>
+          <meta name="application-name" content="Glade Docs"/>
+          <meta name="theme-color" content="#1A535C"/>
+          <meta name="msapplication-TileColor" content="#1A535C"/>
+          <meta name="url" property="url" content="https://docs.glade.app"/>
+          <meta name="robots" property="robots" content="index,follow"/>
+          <meta name="keywords" property="keywords" content="glade,glade software,annotations,glade-element,glade docs,glade-annotatable,comments,open comments"/>
+          <meta name="description" content="Open source annotation system, it's like a comments system - but directly on your content!"/>
+          <meta name="og:url" property="og:url" content="https://docs.glade.app"/>
+          <meta name="og:locale" property="og:locale" content="en-US"/>
+          <meta name="og:site_name" property="og:site_name" content="Glade Docs"/>
+          <meta name="og:title" property="og:title" content="Glade Docs | Open Source Annotation Platform"/>
+          <meta name="og:description" property="og:description" content="Check out the docs for our open source annotation system, it's like a comments system - but directly on your content!"/>
+          <meta name="og:type" property="og:type" content="website"/>
+          <meta name="og:image" property="og:image" content="https://docs.glade.app/glade-rounded.png"/>
+          <meta name="og:image:alt" property="og:image:alt" content="An app icon featuring a snow covered tree on a forest green background"/>
+          <meta name="twitter:site" property="twitter:site" content="gladesoftware"/>
+          <meta name="twitter:card" property="twitter:card" content="summary_large_image"/>
+          <meta name="twitter:title" property="twitter:title" content="Glade Docs | Open Source Annotation Platform"/>
+          <meta name="twitter:description" property="twitter:description" content="Check out the docs for our open source annotation system, it's like a comments system - but directly on your content!"/>
+          <meta name="twitter:image" property="twitter:image" content="https://docs.glade.app/glade-rounded.png"/>
+          <meta name="twitter:image:alt" property="twitter:image:alt" content="An app icon featuring a snow covered tree on a forest green background"/>
+          <link rel="canonical" href="https://docs.glade.app" />
           <style>
             {`
             glade-annotatable > * {
