@@ -4,7 +4,7 @@ const currentTypeOf = require('current-type-of');
  * @param {*} data The annotation to run validation checks on
  * @returns {Erric[]} An array of validation errors
  */
-export default function validateAnnotation(data) {
+module.exports = function validateAnnotation(data) {
   let validationErrors = [];
   const {htmlString, postedBy, plainTextBody, gladeDOMNodeHash} = data;
 
