@@ -10,11 +10,11 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "prepublishOnly": "PRE_PUBLISH=true npm run build",
-    "start": "npm run build && node ./dev/serve",
-    "dev": "npm-watch build",
-    "test": "",
-    "semantic-release": "semantic-release"
+    "build:watch": "npm-watch build",
+    "dev": "concurrently \"npm-watch build\" \"npm-watch serve\"",
+    "serve": "node ./dev/serve",
+    "semantic-release": "semantic-release",
+    "prepublishOnly": "PRE_PUBLISH=true npm run build"
   },
   "watch": {
     "build": {
@@ -25,12 +25,23 @@
         "svelte",
         "ts"
       ]
-    }
+    },
+    "serve": {
+      "patterns": [
+        "dev"
+      ]
+    },
+    "extensions": [
+      "js",
+      "html"
+    ]
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^11.1.1",
     "@tsconfig/svelte": "^1.0.10",
+    "concurrently": "^5.3.0",
     "cz-conventional-changelog": "^3.3.0",
+    "express": "*",
     "husky": "^4.3.8",
     "rollup": "^2.0.0",
     "rollup-plugin-svelte": "^6.0.0",
@@ -59,7 +70,6 @@
     "builtin-modules": "^3.2.0",
     "deepmerge": "^4.2.2",
     "estree-walker": "^1.0.1",
-    "express": "^4.17.1",
     "firebase": "^8.2.6",
     "fsevents": "^2.3.2",
     "function-bind": "^1.1.1",

@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Specify host, port and path for GraphQL endpoint
 const port = process.env.PORT || 3080;
-const host = process.env.DEV_HOST || "0.0.0.0";
+const host = process.env.DEV_HOST || "localhost";
 
 const devServerUrl = `http://${host}:${port}`;
 
