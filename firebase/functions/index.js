@@ -6,11 +6,14 @@ const {default: remarkEmbedder} = require('@remark-embedder/core');
 const {
   default: oembedTransformer,
 } = require('@remark-embedder/transformer-oembed');
+
 const {
   uniqueNamesGenerator,
   adjectives,
   animals,
 } = require('unique-names-generator');
+
+const validateAnnotation = require('./validateAnnotation');
 
 admin.initializeApp();
 
@@ -37,7 +40,7 @@ exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
     );
     await Promise.all([
       auth.updateUser(user.uid, {displayName}),
-      db.collection('users').doc(user.uid).set({displayName})
+      db.collection('users').doc(user.uid).set({displayName}),
     ]);
   } catch (error) {
     console.log('error persisting user to firestore:\n', error);
@@ -89,5 +92,35 @@ exports.getHTMLFromMarkdown = functions.https.onCall(
     }
     // return all new htmlStrings
     return {htmlStrings};
+  }
+);
+
+exports.publishAnnotation = functions.https.onCall(
+  async (annotation, context) => {
+    const {postedBy, plainTextBody, htmlString, gladeDOMNodeHash} = annotation;
+
+    const validationErrors = validateAnnotation({
+      postedBy,
+      plainTextBody,
+      htmlString,
+      gladeDOMNodeHash,
+    });
+
+    if (validationErrors.length) {
+      throw new functions.https.HttpsError(
+        'publishAnnotation.validationFailed',
+        `Annotaion failed ${validationErrors.length} validation check(s)!`,
+        {validationErrors}
+      );
+    }
+
+   await admin
+      .firestore()
+      .collection('glade-trees')
+      .doc(gladeDOMNodeHash)
+      .collection('annotations')
+      .add({postedBy, plainTextBody, htmlString, gladeDOMNodeHash});
+
+    return {};
   }
 );
