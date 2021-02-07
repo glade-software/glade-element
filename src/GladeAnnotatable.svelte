@@ -22,7 +22,7 @@
   import { hashForString, getSemanticHashForDOMNode } from "./semanticHashing";
 
   // Datastore
-  import firebase, { database } from "firebase/app";
+  import firebase from "firebase/app";
   import "@firebase/functions";
   import initializeFirebase from "./initializeFirebase";
   initializeFirebase();
@@ -38,7 +38,8 @@
   }
 
   // Set the default view to the ListAnnotationsView
-  let activeView: DialogView = DialogView.List;
+  let activeView: DialogView;
+  activeView = DialogView.List;
   console.log("initalized");
 
   // if this is true, we show the Glade UI
@@ -48,14 +49,7 @@
   let focusedGladeDOMNodeHash: number = 0;
 
   // all Annotations for the current article live in this array
-  let annotations: Annotation[] = [
-    new Annotation({
-      gladeDOMNodeHash: -1039869147,
-      plainTextBody: "foo",
-      htmlString: "<p>foo</p>",
-      postedBy: "matt",
-    }),
-  ];
+  let annotations: Annotation[] = [];
 
   // all focused Annotations for the current article live in this array
   let activeAnnotations: Annotation[] = [];
@@ -127,8 +121,9 @@
       );
 
       focusedGladeDOMNodeHash = gladeDOMNodeHash;
-
-      activeAnnotations = annotationsForGladeDOMNodeHash(gladeDOMNodeHash);
+      activeAnnotations = annotationsForGladeDOMNodeHash(
+        focusedGladeDOMNodeHash
+      );
       showGladeUI = true;
       console.log("activeAnnotations");
       console.log(activeAnnotations);
@@ -147,7 +142,6 @@
     activeView = DialogView.Settings;
   };
 
-  const title = activeView === DialogView.Settings ? "settings" : "annotations";
   console.log(annotations);
   export { gladedocumenthash };
 </script>
@@ -163,7 +157,10 @@
 
 <!--Glade's UI-->
 <mwc-dialog open={showGladeUI} on:closed={handleCloseDialog}>
-  <Header {title} {handleClickSettings} />
+  <Header
+    title={activeView === DialogView.Settings ? "settings" : "annotations"}
+    {handleClickSettings}
+  />
   {#if activeView === DialogView.List}
     <ListAnnotationsView annotations={activeAnnotations} />
   {:else if activeView === DialogView.Create}

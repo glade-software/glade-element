@@ -17,22 +17,18 @@ export default {
   input: "src/index.ts",
   output: [{ file: pkg.module, format: "es", sourcemap: !production }],
   plugins: [
-    svelte(svelteConfig),
+    svelte({ ...svelteConfig, customElement: true }),
     typescript(),
     replace({
       "Reflect.decorate": "undefined",
     }),
     resolve({
       // Below is the important line!
-      dedupe: [
-        "svelte",
-        "svelte/transition",
-        "svelte/internal",
-      ],
+      dedupe: ["svelte", "svelte/transition", "svelte/internal"],
       browser: true,
-      main:true
+      main: true,
     }),
     commonjs(),
-    json()
+    json(),
   ],
 };
