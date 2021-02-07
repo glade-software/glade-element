@@ -2,7 +2,7 @@ import svelte from "rollup-plugin-svelte";
 import resolve from "@rollup/plugin-node-resolve";
 import pkg from "./package.json";
 import typescript from "@rollup/plugin-typescript";
-import svelteConfig from "./svelte.config";
+import svelteConfig from "./svelte.config.ts";
 import replace from "@rollup/plugin-replace";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
