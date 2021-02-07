@@ -1,5 +1,21 @@
-# glade-annotatable [![Published on npm](https://img.shields.io/npm/v/@glade-software/glade-annotatable.svg)](https://www.npmjs.com/package/@glade-software/glade-annotatable) [![tests passing (hopefully)](https://github.com/glade-software/glade-element/workflows/glade-annotatable%20tests/badge.svg)](https://github.com/glade-software/glade-element/actions?query=workflow%3A%22glade-annotatable+tests%22)
+# glade-annotatable, but svelted
 
-### Glade's vision for the internet is that every webpage can be annotated by any user.
+Your component's source code lives in `src/Component.svelte`.
 
-Check out the docs at [docs.glade.app](https://docs.glade.app), maintained here in the [docs](/docs/docs) folder!
+You can create a package that exports multiple components by adding them to the `src` directory and editing `src/index.js` to reexport them as named exports.
+
+TODO
+
+* [ ] some firm opinions about the best way to test components
+* [ ] update `degit` so that it automates some of the setup work
+
+
+## Setting up
+
+* Run `npm init` (or `yarn init`)
+* Replace this README with your own
+
+
+## Consuming components
+
+`npm run build` will bundle your component's source code into a plain JavaScript module (`dist/index.mjs`) and a UMD script (`dist/index.js`). This will happen automatically when you publish your component to npm, courtesy of the `prepublishOnly` hook in package.json.

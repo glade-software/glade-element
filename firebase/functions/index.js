@@ -20,6 +20,8 @@ admin.initializeApp();
 const db = admin.firestore();
 const auth = admin.auth();
 
+const ANNOTATION_LIMIT = 10000; // I guess?
+
 exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
   try {
     // as a placeholder we create a username for the new user
@@ -95,32 +97,97 @@ exports.getHTMLFromMarkdown = functions.https.onCall(
   }
 );
 
+exports.getAnnotations = functions.https.onCall(async (query, context) => {
+  if (query.gladeDocumentHash) {
+    // get all annotations for tree
+    const annotationsSnapshot = await db
+      .collection('glade-trees')
+      .doc(`${query.gladeDocumentHash}`)
+      .collection('annotations')
+      .orderBy('updatedAt', 'desc')
+      .limit(query.limit || ANNOTATION_LIMIT)
+      .get();
+
+    if (annotationsSnapshot.empty) {
+      return {
+        annotations: [],
+      };
+    } else {
+      let annotations = [];
+      annotationsSnapshot.forEach((doc) => {
+        annotations.push(doc.data());
+      });
+      return {annotations};
+    }
+  } else {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'you need to specify query.gladeDocumentHash!',
+      query
+    );
+  }
+});
+
+exports.modifyAllAnnotations = functions.https.onCall(
+  async ({gladeDocumentHash, newProperties}, context) => {
+    const annotationsSnapshot = await db
+      .collection('glade-trees')
+      .doc(`${gladeDocumentHash}`)
+      .collection('annotations')
+      .get();
+    const response = {
+      edited: [],
+    };
+    annotationsSnapshot.forEach(async (snap) => {
+      const data = snap.data();
+      snap.ref.update({gladeDOMNodeHash: data.gladeDomNodeHash});
+    });
+    return response;
+  }
+);
+
 exports.publishAnnotation = functions.https.onCall(
   async (annotation, context) => {
-    const {postedBy, plainTextBody, htmlString, gladeDOMNodeHash} = annotation;
+    const {
+      postedBy,
+      plainTextBody,
+      htmlString,
+      gladeDOMNodeHash,
+      gladeDocumentHash,
+    } = annotation;
 
     const validationErrors = validateAnnotation({
       postedBy,
       plainTextBody,
       htmlString,
       gladeDOMNodeHash,
+      gladeDocumentHash,
     });
 
     if (validationErrors.length) {
       throw new functions.https.HttpsError(
-        'publishAnnotation.validationFailed',
+        'invalid-argument',
         `Annotaion failed ${validationErrors.length} validation check(s)!`,
         {validationErrors}
       );
     }
 
-   await admin
-      .firestore()
-      .collection('glade-trees')
-      .doc(gladeDOMNodeHash)
-      .collection('annotations')
-      .add({postedBy, plainTextBody, htmlString, gladeDOMNodeHash});
-
-    return {};
+    try {
+      const response = await db
+        .collection('glade-trees')
+        .doc(`${gladeDocumentHash}`)
+        .collection('annotations')
+        .add({
+          postedBy,
+          plainTextBody,
+          htmlString,
+          gladeDOMNodeHash,
+          updatedAt: admin.firestore.Timestamp.now(),
+        });
+    } catch (firestoreError) {
+      console.log('⚠️ failed to persist annotation to firestore');
+      throw new functions.https.HttpsError(firestoreError);
+    }
+    return {response};
   }
 );

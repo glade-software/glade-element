@@ -6,7 +6,13 @@ const currentTypeOf = require('current-type-of');
  */
 module.exports = function validateAnnotation(data) {
   let validationErrors = [];
-  const {htmlString, postedBy, plainTextBody, gladeDOMNodeHash} = data;
+  const {
+    htmlString,
+    postedBy,
+    plainTextBody,
+    gladeDOMNodeHash,
+    gladeDocumentHash,
+  } = data;
 
   /*
    * Validate annotation.htmlString
@@ -78,5 +84,18 @@ module.exports = function validateAnnotation(data) {
     }
   }
 
+  /*
+   * Validate annotation.gladeDocumentHash
+   */
+  if (gladeDocumentHash) {
+    if (currentTypeOf(gladeDocumentHash) !== 'number') {
+      validationErrors.push({
+        code: 'Annotation.gladeDocumentHash.notNumber',
+        message: 'Your annotation got corrupted, sorry!',
+        metadata: {gladeDocumentHash},
+      });
+    }
+  }
+
   return validationErrors;
-}
+};
