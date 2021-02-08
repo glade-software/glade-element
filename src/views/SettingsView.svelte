@@ -1,6 +1,6 @@
 <svelte:options tag="glade-annotatable-settings-view" />
 
-<script>
+<script lang="ts">
   console.log("SettingsView initialized");
 </script>
 

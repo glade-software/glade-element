@@ -11,7 +11,7 @@
   "scripts": {
     "build": "rollup -c",
     "build:watch": "npm-watch build",
-    "dev": "concurrently \"npm-watch build\" \"npm-watch serve\"",
+    "dev": "concurrently \"npm-watch build\" \"npm run serve\"",
     "serve": "node ./dev/serve",
     "semantic-release": "semantic-release",
     "prepublishOnly": "PRE_PUBLISH=true npm run build"
@@ -26,14 +26,8 @@
         "ts"
       ]
     },
-    "serve": {
-      "patterns": [
-        "dev"
-      ]
-    },
     "extensions": [
-      "js",
-      "html"
+      "js"
     ]
   },
   "devDependencies": {

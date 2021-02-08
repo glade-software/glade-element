@@ -1,6 +1,6 @@
 <svelte:options tag="glade-annotatable-login-view" />
 
-<script>
+<script lang="ts">
   console.log("LoginView initialized");
 </script>
 

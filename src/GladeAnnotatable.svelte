@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   // UI Components
   import "@material/mwc-dialog";
+  import "@material/mwc-button";
 
   // VIEWS
   import ListAnnotationsView from "./views/ListAnnotationsView.svelte";
@@ -25,9 +26,14 @@
   import firebase from "firebase/app";
   import "@firebase/functions";
   import initializeFirebase from "./initializeFirebase";
+  import Logger from "./Logger";
   initializeFirebase();
 
   export let article: HTMLElement;
+  export let verbose: string;
+
+  const ifVerbose = new Logger(verbose);
+
   let gladedocumenthash: string;
 
   enum DialogView {
@@ -40,7 +46,7 @@
   // Set the default view to the ListAnnotationsView
   let activeView: DialogView;
   activeView = DialogView.List;
-  console.log("initalized");
+  ifVerbose.log("initalized");
 
   // if this is true, we show the Glade UI
   let showGladeUI = false;
@@ -74,24 +80,14 @@
     });
     // Recursive hashing for document ID
     gladedocumenthash = hashForString(gladeDOMNodeHashes.join("_"));
+    ifVerbose.log("glade-document-hash", gladedocumenthash);
   };
 
-  /**
-   * Called when the Slot content exists
-   */
-  onMount(() => {
-    console.log("mounted");
-    // TODO: investigate: for some reason the element isn't actually in the DOM until a ms later
-    setTimeout(startGlade, 1);
-  });
-
-  const startGlade = async () => {
-    setSematicContentHashes();
+  const getAnnotations = async () => {
     try {
       const fetchAnnotationsForDocumentHash = firebase
         .functions()
         .httpsCallable("getAnnotations");
-      console.log(gladedocumenthash);
 
       let response = await fetchAnnotationsForDocumentHash({
         gladeDocumentHash: gladedocumenthash,
@@ -104,6 +100,39 @@
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const processAnnotations = () => {
+    const articleContent = article.querySelector("slot") as HTMLSlotElement;
+    const children = Array.from(articleContent.assignedElements());
+    children.forEach((node) => {
+      const gladeDOMNodeHash = parseInt(
+        node.getAttribute("data-glade-node-hash") || "0"
+      );
+
+      const annotations = annotationsForGladeDOMNodeHash(gladeDOMNodeHash);
+
+      if (annotations.length) {
+        node.classList.add("glade-has-annotations");
+      } else {
+        node.classList.remove("glade-has-annotations");
+      }
+    });
+  };
+
+  /**
+   * Called when the Slot content exists
+   */
+  onMount(() => {
+    ifVerbose.log("mounted");
+    // TODO: investigate: for some reason the element isn't actually in the DOM until a ms later
+    setTimeout(startGlade, 1);
+  });
+
+  const startGlade = async () => {
+    setSematicContentHashes();
+    await getAnnotations();
+    processAnnotations();
   };
 
   /**
@@ -142,7 +171,14 @@
     activeView = DialogView.Settings;
   };
 
+  const handleClickCreateAnnotation = () => {
+    activeView = DialogView.Create;
+  };
+
   console.log(annotations);
+
+  $: title = activeView === DialogView.Settings ? "settings" : "annotations";
+
   export { gladedocumenthash };
 </script>
 
@@ -157,18 +193,15 @@
 
 <!--Glade's UI-->
 <mwc-dialog open={showGladeUI} on:closed={handleCloseDialog}>
-  <Header
-    title={activeView === DialogView.Settings ? "settings" : "annotations"}
-    {handleClickSettings}
-  />
+  <Header {title} {handleClickSettings} />
   {#if activeView === DialogView.List}
-    <ListAnnotationsView annotations={activeAnnotations} />
+    <ListAnnotationsView annotations={activeAnnotations} {ifVerbose} />
   {:else if activeView === DialogView.Create}
-    <CreateAnnotationView />
+    <CreateAnnotationView {ifVerbose} {focusedGladeDOMNodeHash} />
   {:else if activeView === DialogView.Login}
-    <LoginView />
+    <LoginView {ifVerbose} />
   {:else if activeView === DialogView.Settings}
-    <SettingsView />
+    <SettingsView {ifVerbose} />
   {:else}
     <div>Never let it get this far.</div>
   {/if}

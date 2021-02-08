@@ -8,10 +8,10 @@ type Timestamp = {
 
 type AnnotationData = {
   plainTextBody: string;
-  htmlString: string;
+  htmlString?: string;
   postedBy: string;
   gladeDOMNodeHash: number;
-  updatedAt: Timestamp;
+  updatedAt?: Timestamp;
 };
 
 export default class Annotation {
@@ -29,6 +29,22 @@ export default class Annotation {
     this.htmlString = annotationData.htmlString;
     this.updatedAt = annotationData.updatedAt;
     this.isSaving = false;
+  }
+
+  async getHtmlString() {
+    const getHTMLFromMarkdown = firebase
+      .functions()
+      .httpsCallable("getHTMLFromMarkdown");
+
+    try {
+      const result = await getHTMLFromMarkdown({
+        markdownStrings: [this.plainTextBody],
+      });
+      this.htmlString = result.data.htmlStrings[0];
+      return this.htmlString;
+    } catch (getHTMLFromMarkdownError) {
+      console.error(getHTMLFromMarkdownError);
+    }
   }
 
   async save() {
