@@ -8,8 +8,8 @@
   <style>
     .annotation {
       border: 1px solid #c4cfd6;
-      margin: 8px;
-      padding: 8px;
+      padding: 6px;
+      margin: 8px 0px;
       border-radius: 8px;
       min-width: 500px;
     }

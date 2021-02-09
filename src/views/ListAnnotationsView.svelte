@@ -30,13 +30,6 @@
 
 <div>
   <style>
-    .annotation {
-      border: 1px solid #c4cfd6;
-      margin: 8px;
-      padding: 8px;
-      border-radius: 8px;
-    }
-
     .htmlContent {
       max-width: 800px;
       object-fit: contain;
@@ -48,8 +41,9 @@
 
     .noAnnotationsMsg {
       margin: 8;
-      padding: 8;
+      padding-top: 8;
     }
+
     .buttonShelf {
       display: flex;
       justify-content: flex-end;

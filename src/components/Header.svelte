@@ -13,8 +13,7 @@
   <style>
     hr {
       width: 100%;
-      margin: 0;
-      padding: 0 10;
+      margin: 0px;
       color: rgba(0, 0, 0, 0.6);
     }
     .title {

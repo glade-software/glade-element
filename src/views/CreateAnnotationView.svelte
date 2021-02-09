@@ -83,8 +83,8 @@
   <style>
     mwc-textarea {
       min-width: 500px;
-      margin: 8px;
-      padding: 8px;
+      margin: 8px 3px;
+      padding: 0px 3px;
     }
     .buttonShelf {
       display: flex;
