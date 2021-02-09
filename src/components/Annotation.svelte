@@ -11,6 +11,7 @@
       margin: 8px;
       padding: 8px;
       border-radius: 8px;
+      min-width: 500px;
     }
 
     .htmlContent {

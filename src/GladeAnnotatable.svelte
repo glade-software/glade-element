@@ -26,30 +26,23 @@
   import firebase from "firebase/app";
   import "@firebase/functions";
   import initializeFirebase from "./initializeFirebase";
-  import Logger from "./Logger";
+  import { DialogView } from "./DialogView";
   initializeFirebase();
 
   export let article: HTMLElement;
   export let verbose: string;
 
-  const ifVerbose = new Logger(verbose);
-
   let gladedocumenthash: string;
-
-  enum DialogView {
-    List,
-    Create,
-    Login,
-    Settings,
-  }
 
   // Set the default view to the ListAnnotationsView
   let activeView: DialogView;
   activeView = DialogView.List;
-  ifVerbose.log("initalized");
+  console.debug("initalized");
 
   // if this is true, we show the Glade UI
   let showGladeUI = false;
+
+  $: error = null;
 
   // the "semantic hash" of the refferent Glade DOM node (subject of annotations)
   let focusedGladeDOMNodeHash: number = 0;
@@ -80,7 +73,7 @@
     });
     // Recursive hashing for document ID
     gladedocumenthash = hashForString(gladeDOMNodeHashes.join("_"));
-    ifVerbose.log("glade-document-hash", gladedocumenthash);
+    console.debug("glade-document-hash", gladedocumenthash);
   };
 
   const getAnnotations = async () => {
@@ -124,7 +117,7 @@
    * Called when the Slot content exists
    */
   onMount(() => {
-    ifVerbose.log("mounted");
+    console.debug("mounted");
     // TODO: investigate: for some reason the element isn't actually in the DOM until a ms later
     setTimeout(startGlade, 1);
   });
@@ -175,6 +168,19 @@
     activeView = DialogView.Create;
   };
 
+  const handleError = (ev: Err) => {
+    console.error(ev.detail);
+    error = ev.detail;
+    setTimeout(() => {
+      error = null;
+    }, 3000);
+  };
+
+  const handleSetView = (ev: { detail: { nextView: DialogView } }) => {
+    console.log("handleChangeView", ev);
+    activeView = ev.detail.nextView;
+  };
+
   console.log(annotations);
 
   $: title = activeView === DialogView.Settings ? "settings" : "annotations";
@@ -192,16 +198,38 @@
 </article>
 
 <!--Glade's UI-->
-<mwc-dialog open={showGladeUI} on:closed={handleCloseDialog}>
+<mwc-dialog open={showGladeUI} on:closed={handleCloseDialog} hideActions>
+  <style>
+    .error {
+      border: solid 1px red;
+      color: red;
+      border-radius: 8px;
+      padding: 8px;
+      margin: 8px;
+    }
+  </style>
   <Header {title} {handleClickSettings} />
+  {#if error}
+    <div />
+    <div class="error">
+      {"  " + error.message}
+    </div>
+  {/if}
   {#if activeView === DialogView.List}
-    <ListAnnotationsView annotations={activeAnnotations} {ifVerbose} />
+    <ListAnnotationsView
+      on:set-view={handleSetView}
+      annotations={activeAnnotations}
+    />
   {:else if activeView === DialogView.Create}
-    <CreateAnnotationView {ifVerbose} {focusedGladeDOMNodeHash} />
+    <CreateAnnotationView
+      on:error={handleError}
+      on:set-view={handleSetView}
+      {focusedGladeDOMNodeHash}
+    />
   {:else if activeView === DialogView.Login}
-    <LoginView {ifVerbose} />
+    <LoginView on:set-view={handleSetView} />
   {:else if activeView === DialogView.Settings}
-    <SettingsView {ifVerbose} />
+    <SettingsView on:set-view={handleSetView} />
   {:else}
     <div>Never let it get this far.</div>
   {/if}

@@ -2,10 +2,36 @@
 
 <script lang="ts">
   import "@material/mwc-button";
+  import "@material/mwc-textarea";
   import firebase from "@firebase/app";
   import "@firebase/auth";
   import Annotation from "../Annotation";
   import AnnotationComponent from "../components/Annotation.svelte";
+  import type { DialogView } from "../DialogView";
+  import type { Err } from "../Err";
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
+
+  /**
+   * Sets the activeView in GladeAnnotatable
+   * @param nextView
+   */
+  function setView(nextView: DialogView) {
+    console.log("dispatching change-view");
+    dispatch("set-view", {
+      nextView,
+    });
+  }
+
+  /**
+   * Sets an error for GladeAnnotatable to react to
+   * @param setError
+   */
+  function setError(err: Err) {
+    console.debug("dispatching", err.code);
+    dispatch("error", err);
+  }
 
   export let focusedGladeDOMNodeHash = 0;
   let htmlString: string | undefined = "";
@@ -22,19 +48,41 @@
   });
 
   async function handleClickPreview(ev: MouseEvent) {
+    if (!plainTextBody) {
+      setError({
+        message: "You need to add content before previewing!",
+        code: "CreateAnnotationView.handleClickPreview.nothingToPreview",
+      });
+      return;
+    }
     showPreview = true;
     htmlString = (await pendingAnnotation.getHtmlString()) || undefined;
+  }
+
+  function handlePlainTextBodyChange(ev: { target: HTMLTextAreaElement }) {
+    plainTextBody = ev.target.value;
   }
 
   function handleClickEdit(ev: MouseEvent) {
     showPreview = false;
   }
+  async function handleClickPublish() {
+    if (!plainTextBody) {
+      setError({
+        message: "You need to add content before posting!",
+        code: "CreateAnnotationView.handleClickPreview.nothingToPost",
+      });
+      return;
+    }
+    htmlString = (await pendingAnnotation.getHtmlString()) || undefined;
+    await pendingAnnotation.save();
+  }
 </script>
 
 <div>
   <style>
-    textarea {
-      width: 500px;
+    mwc-textarea {
+      min-width: 500px;
       margin: 8px;
       padding: 8px;
     }
@@ -45,7 +93,11 @@
   </style>{#if showPreview}
     <div><AnnotationComponent annotation={pendingAnnotation} /></div>
   {:else}
-    <textarea bind:value={plainTextBody} placeholder="" />
+    <mwc-textarea
+      value={plainTextBody}
+      placeholder=""
+      on:change={handlePlainTextBodyChange}
+    />
   {/if}
   <div class="buttonShelf">
     {#if showPreview}
@@ -53,6 +105,6 @@
     {:else}
       <mwc-button on:click={handleClickPreview}>show preview!</mwc-button>
     {/if}
-    <mwc-button>publish!</mwc-button>
+    <mwc-button on:click={handleClickPublish}>publish!</mwc-button>
   </div>
 </div>
