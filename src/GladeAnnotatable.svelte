@@ -161,7 +161,10 @@
   };
 
   const handleClickSettings = () => {
-    activeView = DialogView.Settings;
+    activeView =
+      activeView !== DialogView.Settings
+        ? DialogView.Settings
+        : DialogView.List;
   };
 
   const handleClickCreateAnnotation = () => {
@@ -176,8 +179,13 @@
     }, 3000);
   };
 
-  const handleSetView = (ev: { detail: { nextView: DialogView } }) => {
-    console.log("handleChangeView", ev);
+  const handleSetView = (ev: {
+    detail: { nextView: DialogView; dismissModal: Boolean };
+  }) => {
+    console.debug("handleChangeView", ev);
+    if (ev.detail.dismissModal) {
+      showGladeUI = false;
+    }
     activeView = ev.detail.nextView;
   };
 

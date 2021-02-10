@@ -1,6 +1,7 @@
 <svelte:options tag="glade-annotatable-annotation" />
 
 <script lang="ts">
+  import type Annotation from "../Annotation";
   export let annotation: Annotation;
 </script>
 

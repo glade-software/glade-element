@@ -7,7 +7,7 @@
   import "@firebase/auth";
   import Annotation from "../Annotation";
   import AnnotationComponent from "../components/Annotation.svelte";
-  import type { DialogView } from "../DialogView";
+  import { DialogView } from "../DialogView";
   import type { Err } from "../Err";
   import { createEventDispatcher } from "svelte";
 
@@ -17,10 +17,11 @@
    * Sets the activeView in GladeAnnotatable
    * @param nextView
    */
-  function setView(nextView: DialogView) {
+  function setView(nextView: DialogView, dismissModal?: Boolean) {
     console.log("dispatching change-view");
     dispatch("set-view", {
       nextView,
+      dismissModal,
     });
   }
 
@@ -66,6 +67,13 @@
   function handleClickEdit(ev: MouseEvent) {
     showPreview = false;
   }
+
+  function handleClickDiscard() {
+    pendingAnnotation.htmlString = "";
+    pendingAnnotation.plainTextBody = "";
+    setView(DialogView.List);
+  }
+
   async function handleClickPublish() {
     if (!plainTextBody) {
       setError({
@@ -76,6 +84,7 @@
     }
     htmlString = (await pendingAnnotation.getHtmlString()) || undefined;
     await pendingAnnotation.save();
+    setView(DialogView.List, true);
   }
 </script>
 
@@ -88,7 +97,10 @@
     }
     .buttonShelf {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+    }
+    .cancel {
+      --mdc-theme-primary: red;
     }
   </style>{#if showPreview}
     <div><AnnotationComponent annotation={pendingAnnotation} /></div>
@@ -100,11 +112,15 @@
     />
   {/if}
   <div class="buttonShelf">
-    {#if showPreview}
-      <mwc-button on:click={handleClickEdit}>edit!</mwc-button>
-    {:else}
-      <mwc-button on:click={handleClickPreview}>show preview!</mwc-button>
-    {/if}
-    <mwc-button on:click={handleClickPublish}>publish!</mwc-button>
+    <mwc-button class="cancel" on:click={handleClickDiscard}>discard</mwc-button
+    >
+    <div>
+      {#if showPreview}
+        <mwc-button on:click={handleClickEdit}>edit!</mwc-button>
+      {:else}
+        <mwc-button on:click={handleClickPreview}>show preview!</mwc-button>
+      {/if}
+      <mwc-button on:click={handleClickPublish}>publish!</mwc-button>
+    </div>
   </div>
 </div>
