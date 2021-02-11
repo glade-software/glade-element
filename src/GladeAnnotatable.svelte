@@ -27,6 +27,7 @@
   import "@firebase/functions";
   import initializeFirebase from "./initializeFirebase";
   import { DialogView } from "./DialogView";
+  import type { Err } from "./Err";
   initializeFirebase();
 
   export let article: HTMLElement;
@@ -41,8 +42,8 @@
 
   // if this is true, we show the Glade UI
   let showGladeUI = false;
-
-  $: error = null;
+  let err: Err | null = null;
+  $: error = err;
 
   // the "semantic hash" of the refferent Glade DOM node (subject of annotations)
   let focusedGladeDOMNodeHash: number = 0;
@@ -171,7 +172,7 @@
     activeView = DialogView.Create;
   };
 
-  const handleError = (ev: Err) => {
+  const handleError = (ev: { detail: Err }) => {
     console.error(ev.detail);
     error = ev.detail;
     setTimeout(() => {
@@ -189,7 +190,7 @@
     activeView = ev.detail.nextView;
   };
 
-  console.log(annotations);
+  console.debug(annotations);
 
   $: title = activeView === DialogView.Settings ? "settings" : "annotations";
 
@@ -220,7 +221,7 @@
   {#if error}
     <div />
     <div class="error">
-      {"  " + error.message}
+      {`  ${error.message}`}
     </div>
   {/if}
   {#if activeView === DialogView.List}

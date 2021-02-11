@@ -1,12 +1,8 @@
 <svelte:options tag="glade-annotatable-dialog-header" />
 
 <script lang="ts">
-  export let title;
-  export let activeView;
-  console.log("activeView");
-  console.log(activeView);
-
-  export let handleClickSettings;
+  export let title: string;
+  export let handleClickSettings: svelte.JSX.EventHandler;
 </script>
 
 <div>

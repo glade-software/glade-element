@@ -106,6 +106,7 @@
     <div><AnnotationComponent annotation={pendingAnnotation} /></div>
   {:else}
     <mwc-textarea
+      outlined="true"
       value={plainTextBody}
       placeholder=""
       on:change={handlePlainTextBodyChange}

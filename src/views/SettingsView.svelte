@@ -13,10 +13,11 @@
    * Sets the activeView in GladeAnnotatable
    * @param nextView
    */
-  function setView(nextView: DialogView, dismissModal: Boolean) {
+  function setView(nextView: DialogView, dismissModal?: Boolean) {
     console.log("dispatching change-view");
     dispatch("set-view", {
       nextView,
+      dismissModal,
     });
   }
   async function handleClickSignOut() {

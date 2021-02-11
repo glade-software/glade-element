@@ -14,7 +14,8 @@
     "dev": "concurrently \"npm-watch build\" \"npm run serve\"",
     "serve": "node ./dev/serve",
     "semantic-release": "semantic-release",
-    "prepublishOnly": "PRE_PUBLISH=true npm run build"
+    "prepublishOnly": "PRE_PUBLISH=true npm run build",
+    "check": "svelte-check --fail-on-warnings --compiler-warnings missing-custom-element-compile-options:ignore"
   },
   "watch": {
     "build": {
@@ -92,7 +93,7 @@
   "homepage": "https://github.com/glade-software/glade-element#readme",
   "husky": {
     "hooks": {
-      "pre-commit": "svelte-check --fail-on-warnings --compiler-warnings missing-custom-element-compile-options:ignore",
+      "pre-commit": "npm run check",
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
     }
   },
