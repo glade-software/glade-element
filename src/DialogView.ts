@@ -1,6 +1,8 @@
 export enum DialogView {
   List,
   Create,
-  Login,
+  LoginForm,
+  SignupForm,
   Settings,
+  AuthenticationMenu,
 }

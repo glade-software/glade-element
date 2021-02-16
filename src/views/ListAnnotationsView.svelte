@@ -3,9 +3,11 @@
 <script lang="ts">
   import { DialogView } from "../DialogView";
   import { createEventDispatcher } from "svelte";
+  import firebase from "@firebase/app";
+  import "@firebase/auth";
   import AnnotationComponent from "../components/Annotation.svelte";
   import type Annotation from "../Annotation";
-
+  import type { Err } from "../Err";
   export let annotations: Annotation[];
 
   const dispatch = createEventDispatcher();
@@ -20,8 +22,25 @@
       nextView,
     });
   }
+  /**
+   * Sets an error for GladeAnnotatable to react to
+   * @param setError
+   */
+  function setError(err: Err) {
+    console.debug("dispatching", err.code);
+    dispatch("error", err);
+  }
 
   const handleClickCreateAnnotation = () => {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      setError({
+        code: "ListAnnotationsView.handleClickCreateAnnotation.notLoggedIn",
+        message: "You need to login to create an annotation!",
+      });
+      setView(DialogView.AuthenticationMenu);
+      return;
+    }
     setView(DialogView.Create);
   };
 
@@ -40,8 +59,8 @@
     }
 
     .noAnnotationsMsg {
-      margin: 8;
-      padding-top: 8;
+      margin: 8px;
+      padding-top: 8px;
     }
 
     .buttonShelf {

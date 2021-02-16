@@ -11,7 +11,9 @@
   import ListAnnotationsView from "./views/ListAnnotationsView.svelte";
   import CreateAnnotationView from "./views/CreateAnnotationView.svelte";
   import SettingsView from "./views/SettingsView.svelte";
-  import LoginView from "./views/LoginView.svelte";
+  import LoginFormView from "./views/LoginFormView.svelte";
+  import SignupFormView from "./views/SignupFormView.svelte";
+  import AuthenticationMenuView from "./views/AnthenticationMenuView.svelte";
 
   // COMPONENTS
   import Header from "./components/Header.svelte";
@@ -31,7 +33,6 @@
   initializeFirebase();
 
   export let article: HTMLElement;
-  export let verbose: string;
 
   let gladedocumenthash: string;
 
@@ -90,7 +91,6 @@
       annotations = response?.data?.annotations.map(
         (a: any) => new Annotation(a)
       );
-      console.log(annotations);
     } catch (err) {
       console.error(err);
     }
@@ -134,7 +134,7 @@
    * @param {MouseEvent} ev The "mouseup" event that might trigger the opening of the Glade UI
    */
   const handleArticleMouseUp = (ev: MouseEvent) => {
-    console.log(document.querySelector("glade-annotatable"));
+    console.debug(document.querySelector("glade-annotatable"));
     if (ev.button === 0) {
       // deepest node in DOM tree that recieved this event
       const targetNode = ev?.composedPath()[0] as Element;
@@ -148,8 +148,6 @@
         focusedGladeDOMNodeHash
       );
       showGladeUI = true;
-      console.log("activeAnnotations");
-      console.log(activeAnnotations);
     }
   };
 
@@ -172,9 +170,9 @@
     activeView = DialogView.Create;
   };
 
-  const handleError = (ev: { detail: Err }) => {
-    console.error(ev.detail);
+  const handleError = (ev: { detail: Err | null }) => {
     error = ev.detail;
+    console.debug(`error ${error}`);
     setTimeout(() => {
       error = null;
     }, 3000);
@@ -226,6 +224,7 @@
   {/if}
   {#if activeView === DialogView.List}
     <ListAnnotationsView
+      on:error={handleError}
       on:set-view={handleSetView}
       annotations={activeAnnotations}
     />
@@ -235,10 +234,17 @@
       on:set-view={handleSetView}
       {focusedGladeDOMNodeHash}
     />
-  {:else if activeView === DialogView.Login}
-    <LoginView on:set-view={handleSetView} />
+  {:else if activeView === DialogView.AuthenticationMenu}
+    <AuthenticationMenuView
+      on:set-view={handleSetView}
+      on:error={handleError}
+    />
+  {:else if activeView === DialogView.LoginForm}
+    <LoginFormView on:set-view={handleSetView} on:error={handleError} />
+  {:else if activeView === DialogView.SignupForm}
+    <SignupFormView on:set-view={handleSetView} on:error={handleError} />
   {:else if activeView === DialogView.Settings}
-    <SettingsView on:set-view={handleSetView} />
+    <SettingsView on:set-view={handleSetView} on:error={handleError} />
   {:else}
     <div>Never let it get this far.</div>
   {/if}

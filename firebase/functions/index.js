@@ -1,19 +1,19 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-const remark = require('remark');
-const htmlify = require('remark-html');
-const {default: remarkEmbedder} = require('@remark-embedder/core');
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+const remark = require("remark");
+const htmlify = require("remark-html");
+const { default: remarkEmbedder } = require("@remark-embedder/core");
 const {
   default: oembedTransformer,
-} = require('@remark-embedder/transformer-oembed');
+} = require("@remark-embedder/transformer-oembed");
 
 const {
   uniqueNamesGenerator,
   adjectives,
   animals,
-} = require('unique-names-generator');
+} = require("unique-names-generator");
 
-const validateAnnotation = require('./validateAnnotation');
+const validateAnnotation = require("./validateAnnotation");
 
 admin.initializeApp();
 
@@ -28,41 +28,63 @@ exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
     // optimistically: scandalous-anonymous-rhinocerous
     const displayName = uniqueNamesGenerator({
       dictionaries: [adjectives, animals],
-      style: 'lowerCase',
-      separator: '-anonymous-',
+      style: "lowerCase",
+      separator: "-anonymous-",
       length: 2,
     });
 
     console.log(
-      'initializing user',
+      "initializing user",
       user.uid,
-      ' in firestore with displayName',
+      " in firestore with displayName",
       displayName,
-      '🎉'
+      "🎉"
     );
     await Promise.all([
-      auth.updateUser(user.uid, {displayName}),
-      db.collection('users').doc(user.uid).set({displayName}),
+      auth.updateUser(user.uid, { displayName }),
+      db.collection("users").doc(user.uid).set({ displayName }),
     ]);
   } catch (error) {
-    console.log('error persisting user to firestore:\n', error);
+    console.log("error persisting user to firestore:\n", error);
   }
 });
 
+exports.checkUsernameAvailability = functions.https.onCall(
+  async (usernameToCheck) => {
+    try {
+      const userQuerySnapshot = await db
+        .collection("users")
+        .where("displayName", "==", usernameToCheck)
+        .get();
+      let usernameAvailable = true;
+      userQuerySnapshot.forEach(() => {
+        usernameAvailable = false;
+      });
+      return { usernameAvailable };
+    } catch (firestorError) {
+      throw new functions.https.HttpsError(
+        "internal",
+        "failed to check username availability",
+        { firestoreError }
+      );
+    }
+  }
+);
+
 exports.getHTMLFromMarkdown = functions.https.onCall(
-  async ({markdownStrings}, context) => {
+  async ({ markdownStrings }, context) => {
     let htmlStrings = [];
 
     if (Array.isArray(markdownStrings)) {
       for (let index = 0; index < markdownStrings.length; index++) {
         let markdownString = markdownStrings[index];
         if (
-          !(typeof markdownString === 'string') ||
+          !(typeof markdownString === "string") ||
           markdownString.length === 0
         ) {
           // Throwing an HttpsError so that the client gets the error details.
           throw new functions.https.HttpsError(
-            'invalid-argument',
+            "invalid-argument",
             'The "markdownStrings" Array items each must be non-empty strings'
           );
         }
@@ -71,7 +93,9 @@ exports.getHTMLFromMarkdown = functions.https.onCall(
           // convert the current markdownString into an htmlString
           const htmlResult = await remark()
             .use(remarkEmbedder, {
-              transformers: [[oembedTransformer, {params: {maxwidth: 800}}]],
+              transformers: [
+                [oembedTransformer, { params: { maxwidth: 800 } }],
+              ],
             })
             .use(htmlify)
             .process(markdownString);
@@ -79,7 +103,7 @@ exports.getHTMLFromMarkdown = functions.https.onCall(
           htmlStrings.push(htmlResult.toString());
         } catch (error) {
           throw new functions.https.HttpsError(
-            'internal',
+            "internal",
             `markdownString[${index}]\n ${error}`
           );
         }
@@ -88,12 +112,12 @@ exports.getHTMLFromMarkdown = functions.https.onCall(
 
     if (htmlStrings.length !== markdownStrings.length) {
       throw new functions.https.HttpsError(
-        'internal',
+        "internal",
         `failed to process all markdownStrings \nm${markdownStrings.length}\nh${htmlStrings.length}`
       );
     }
     // return all new htmlStrings
-    return {htmlStrings};
+    return { htmlStrings };
   }
 );
 
@@ -101,10 +125,10 @@ exports.getAnnotations = functions.https.onCall(async (query, context) => {
   if (query.gladeDocumentHash) {
     // get all annotations for tree
     const annotationsSnapshot = await db
-      .collection('glade-trees')
+      .collection("glade-trees")
       .doc(`${query.gladeDocumentHash}`)
-      .collection('annotations')
-      .orderBy('updatedAt', 'desc')
+      .collection("annotations")
+      .orderBy("updatedAt", "desc")
       .limit(query.limit || ANNOTATION_LIMIT)
       .get();
 
@@ -117,30 +141,30 @@ exports.getAnnotations = functions.https.onCall(async (query, context) => {
       annotationsSnapshot.forEach((doc) => {
         annotations.push(doc.data());
       });
-      return {annotations};
+      return { annotations };
     }
   } else {
     throw new functions.https.HttpsError(
-      'invalid-argument',
-      'you need to specify query.gladeDocumentHash!',
+      "invalid-argument",
+      "you need to specify query.gladeDocumentHash!",
       query
     );
   }
 });
 
 exports.modifyAllAnnotations = functions.https.onCall(
-  async ({gladeDocumentHash, newProperties}, context) => {
+  async ({ gladeDocumentHash, newProperties }, context) => {
     const annotationsSnapshot = await db
-      .collection('glade-trees')
+      .collection("glade-trees")
       .doc(`${gladeDocumentHash}`)
-      .collection('annotations')
+      .collection("annotations")
       .get();
     const response = {
       edited: [],
     };
     annotationsSnapshot.forEach(async (snap) => {
       const data = snap.data();
-      snap.ref.update({gladeDOMNodeHash: data.gladeDomNodeHash});
+      snap.ref.update({ gladeDOMNodeHash: data.gladeDomNodeHash });
     });
     return response;
   }
@@ -166,17 +190,17 @@ exports.publishAnnotation = functions.https.onCall(
 
     if (validationErrors.length) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
+        "invalid-argument",
         `Annotaion failed ${validationErrors.length} validation check(s)!`,
-        {validationErrors}
+        { validationErrors }
       );
     }
 
     try {
       const response = await db
-        .collection('glade-trees')
+        .collection("glade-trees")
         .doc(`${gladeDocumentHash}`)
-        .collection('annotations')
+        .collection("annotations")
         .add({
           postedBy,
           plainTextBody,
@@ -185,9 +209,9 @@ exports.publishAnnotation = functions.https.onCall(
           updatedAt: admin.firestore.Timestamp.now(),
         });
     } catch (firestoreError) {
-      console.log('⚠️ failed to persist annotation to firestore');
+      console.log("⚠️ failed to persist annotation to firestore");
       throw new functions.https.HttpsError(firestoreError);
     }
-    return {response};
+    return { response };
   }
 );

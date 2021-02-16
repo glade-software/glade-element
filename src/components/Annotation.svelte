@@ -53,7 +53,9 @@
     }
   </style>
   <div class="annotation">
-    <span class="postedBy">@{annotation?.postedBy}</span>
+    <span class="postedBy"
+      >@{annotation?.postedBy || "accidental-anonymous-anteater"}</span
+    >
     {#if annotation && !annotation?.htmlString}
       <div class="htmlContent loading">{annotation.plainTextBody || ""}</div>
     {/if}
