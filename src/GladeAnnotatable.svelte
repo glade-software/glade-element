@@ -230,6 +230,7 @@
     />
   {:else if activeView === DialogView.Create}
     <CreateAnnotationView
+      {gladedocumenthash}
       on:error={handleError}
       on:set-view={handleSetView}
       {focusedGladeDOMNodeHash}

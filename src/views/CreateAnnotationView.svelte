@@ -33,7 +33,7 @@
     console.debug("dispatching", err.code);
     dispatch("error", err);
   }
-
+  export let gladedocumenthash = "0";
   export let focusedGladeDOMNodeHash = 0;
   let htmlString: string | undefined = "";
   $: showPreview = false;
@@ -83,7 +83,8 @@
       return;
     }
     htmlString = (await pendingAnnotation.getHtmlString()) || undefined;
-    await pendingAnnotation.save();
+    const published = await pendingAnnotation.save(gladedocumenthash);
+    processNewAnnotation(published);
     setView(DialogView.List, true);
   }
 </script>

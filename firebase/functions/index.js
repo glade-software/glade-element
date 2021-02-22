@@ -208,10 +208,10 @@ exports.publishAnnotation = functions.https.onCall(
           gladeDOMNodeHash,
           updatedAt: admin.firestore.Timestamp.now(),
         });
+      return { response };
     } catch (firestoreError) {
       console.log("⚠️ failed to persist annotation to firestore");
       throw new functions.https.HttpsError(firestoreError);
     }
-    return { response };
   }
 );

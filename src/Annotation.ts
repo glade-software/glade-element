@@ -47,7 +47,7 @@ export default class Annotation {
     }
   }
 
-  async save() {
+  async save(gladeDocumentHash: string) {
     this.isSaving = true;
 
     const annotation = {
@@ -55,6 +55,7 @@ export default class Annotation {
       gladeDOMNodeHash: this.gladeDOMNodeHash,
       postedBy: this.postedBy,
       htmlString: this.htmlString,
+      gladeDocumentHash: parseInt(gladeDocumentHash),
     };
 
     const publishAnnotation = firebase
@@ -65,6 +66,7 @@ export default class Annotation {
       const response = await publishAnnotation(annotation);
       this.isSaving = false;
       console.log("annotation published!", response);
+      return annotation;
     } catch (publishingError) {
       console.error(publishingError);
       this.isSaving = false;

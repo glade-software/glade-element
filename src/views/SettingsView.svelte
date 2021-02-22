@@ -8,7 +8,7 @@
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
-
+  const user = firebase.auth().currentUser;
   /**
    * Sets the activeView in GladeAnnotatable
    * @param nextView
@@ -36,8 +36,12 @@
     }
   </style>
   <div class="settings">
-    <mwc-button class="settingsButton" on:click={handleClickSignOut}
-      >sign out!</mwc-button
-    >
+    {#if user}
+      <mwc-button class="settingsButton" on:click={handleClickSignOut}
+        >sign out!</mwc-button
+      >
+    {:else}
+      <div>there are no settings for signed out users!</div>
+    {/if}
   </div>
 </div>
