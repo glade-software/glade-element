@@ -3,11 +3,7 @@
 /test/
 
 # top level source
-glade-annotatable.js
-glade-annotatable.js.map
-glade-annotatable.d.ts
-glade-annotatable.d.ts.map
-glade-annotatable.bundled.js
+/dist/
 
 /app/node_modules/
 

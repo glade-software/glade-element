@@ -1,0 +1,6 @@
+{
+  "svelte.plugin.svelte.compilerWarnings": {
+    // this is bugged, because we are using customElement in svelte.config.ts
+    "missing-custom-element-compile-options": "ignore"
+  }
+}
