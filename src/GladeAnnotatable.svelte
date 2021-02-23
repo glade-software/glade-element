@@ -166,10 +166,6 @@
         : DialogView.List;
   };
 
-  const handleClickCreateAnnotation = () => {
-    activeView = DialogView.Create;
-  };
-
   const handleError = (ev: { detail: Err | null }) => {
     error = ev.detail;
     console.debug(`error ${error}`);
@@ -188,7 +184,11 @@
     activeView = ev.detail.nextView;
   };
 
-  console.debug(annotations);
+  const handlePublish = (ev: { detail: { annotation: Annotation } }) => {
+    const { annotation } = ev.detail;
+    annotations.push(annotation);
+    processAnnotations();
+  };
 
   $: title = activeView === DialogView.Settings ? "settings" : "annotations";
 
@@ -233,6 +233,7 @@
       {gladedocumenthash}
       on:error={handleError}
       on:set-view={handleSetView}
+      on:publish={handlePublish}
       {focusedGladeDOMNodeHash}
     />
   {:else if activeView === DialogView.AuthenticationMenu}

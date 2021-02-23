@@ -33,16 +33,16 @@
     dispatch("error", err);
   }
 
-  async function handleClickUseAnonymously(ev: MouseEvent) {
+  async function handleClickUseAnonymously() {
     await firebase.auth().signInAnonymously();
     setView(DialogView.List);
   }
 
-  function handleClickSignin(ev: MouseEvent) {
+  function handleClickSignin() {
     setView(DialogView.LoginForm);
   }
 
-  function handleClickCreateAccount(ev: MouseEvent) {
+  function handleClickCreateAccount() {
     setError(null);
     setView(DialogView.SignupForm);
   }

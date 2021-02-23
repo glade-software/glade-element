@@ -58,7 +58,7 @@
     }
   }
 
-  async function handleClickCreateAccount(ev: MouseEvent) {
+  async function handleClickCreateAccount() {
     const username = usernameTextField.value;
     const checkUsernameAvailability = firebase
       .functions()

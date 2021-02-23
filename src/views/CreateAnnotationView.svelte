@@ -33,6 +33,7 @@
     console.debug("dispatching", err.code);
     dispatch("error", err);
   }
+
   export let gladedocumenthash = "0";
   export let focusedGladeDOMNodeHash = 0;
   let htmlString: string | undefined = "";
@@ -48,7 +49,7 @@
     postedBy: user?.displayName || "anonymous",
   });
 
-  async function handleClickPreview(ev: MouseEvent) {
+  async function handleClickPreview() {
     if (!plainTextBody) {
       setError({
         message: "You need to add content before previewing!",
@@ -60,11 +61,16 @@
     htmlString = (await pendingAnnotation.getHtmlString()) || undefined;
   }
 
+  function processNewAnnotation(pendingAnnotation: any) {
+    dispatch("publish", { annotation: pendingAnnotation });
+    setView(DialogView.List, true);
+  }
+
   function handlePlainTextBodyChange(ev: { target: HTMLTextAreaElement }) {
     plainTextBody = ev.target.value;
   }
 
-  function handleClickEdit(ev: MouseEvent) {
+  function handleClickEdit() {
     showPreview = false;
   }
 
