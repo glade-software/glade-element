@@ -30,6 +30,10 @@
   import initializeFirebase from "./initializeFirebase";
   import { DialogView } from "./DialogView";
   import type { Err } from "./Err";
+  import Cohere from "cohere-js";
+
+  Cohere.init("0bEMs-b6UkqjiNepPJ1M4gZ9");
+
   initializeFirebase();
 
   export let article: HTMLElement;
