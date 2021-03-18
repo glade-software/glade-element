@@ -36,6 +36,15 @@
 
   initializeFirebase();
 
+  firebase.auth().onAuthStateChanged((u) => {
+    if (u) {
+      Cohere.identify(u.uid, {
+        email: u.email || "",
+        displayName: u.displayName || "",
+      });
+    }
+  });
+
   export let article: HTMLElement;
 
   let gladedocumenthash: string;
