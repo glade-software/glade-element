@@ -14,8 +14,9 @@ import {
 import {Formik} from 'formik';
 import * as yup from 'yup';
 
-import app from '../firebase-app';
+import {app} from '../firebase-app';
 import Header from '../components/Header';
+import { AuthAction, useAuthUser, withAuthUser } from 'next-firebase-auth';
 
 const theme = grommet;
 const gladeGreen = '#1A535C';
@@ -61,24 +62,21 @@ const validationSchema = yup.object({
 const Profile = () => {
   const router = useRouter();
   const from = router.query?.from;
+  const currentUser = useAuthUser();
 
-  if (!app.auth().currentUser) {
-    router.replace('/');
-    return <>{`Loading...`}</>;
-  }
   return (
     <Grommet theme={grommet}>
       <Box align="center">
         <Box width="medium" margin="large">
           <Header />
           <Box margin={{top: 'large'}}>
-            {app.auth().currentUser?.displayName?.length ? (
+            {currentUser.firebaseUser ? (
               <Box align="center">
                 <Text>
-                  Your username is: {app.auth().currentUser?.displayName} !
+                  Your username is: {currentUser?.firebaseUser?.displayName} !
                 </Text>
                 <Button secondary label="logout" margin={{top:"medium"}} onClick={()=>{
-                    app.auth().signOut();
+                    currentUser.signOut();
                     router.replace('/');
                   }}/>
               </Box>
@@ -165,4 +163,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default withAuthUser({whenUnauthedAfterInit:AuthAction.REDIRECT_TO_LOGIN})(Profile);

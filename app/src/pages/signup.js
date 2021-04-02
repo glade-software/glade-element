@@ -3,20 +3,13 @@ import { useRouter } from "next/router";
 import { Formik } from "formik";
 import * as yup from "yup";
 
-import {
-  grommet,
-  Box,
-  Button,
-  Grommet,
-  FormField,
-  TextInput
-} from "grommet";
+import { grommet, Box, Button, Grommet, FormField, TextInput } from "grommet";
 
-import app from "../firebase-app";
+import { app } from "../firebase-app";
 
 import { useContext } from "react";
-import { AuthContext } from "../components/AuthProvider";
 import Header from "../components/Header";
+import { useAuthUser, withAuthUser } from "next-firebase-auth";
 
 const theme = grommet;
 const gladeGreen = "#1A535C";
@@ -29,10 +22,14 @@ const validationSchema = yup.object({
   password: yup.string().required().min(8).max(65),
 });
 
+const EMAIL_IN_USE_ERROR = "auth/email-already-in-use";
+
 const Signup = () => {
   const router = useRouter();
-  const { currentUser } = useContext(AuthContext);
-  const qs = router.query?.from ? `?from=${encodeURIComponent(router.query?.from)}` : '';
+  const currentUser = useAuthUser();
+  const qs = router.query?.from
+    ? `?from=${encodeURIComponent(router.query?.from)}`
+    : "";
   return (
     <Grommet theme={grommet}>
       <Box align="center">
@@ -46,7 +43,7 @@ const Signup = () => {
                 password: "",
               }}
               validationSchema={validationSchema}
-              onSubmit={(data, { setSubmitting, resetForm }) => {
+              onSubmit={(data, { setSubmitting, resetForm, setStatus }) => {
                 setSubmitting(true);
                 const { email, password } = data;
                 app
@@ -60,6 +57,11 @@ const Signup = () => {
                     // Handle Errors here.
                     var errorCode = error.code;
                     var errorMessage = error.message;
+                    if (errorCode === EMAIL_IN_USE_ERROR) {
+                      console.log("email in use", setStatus);
+                      // hack as per formik author https://github.com/formium/formik/issues/150
+                      setStatus({ emailInUse: "this email is already in use" });
+                    }
                     console.log("e", errorCode, "\n", errorMessage);
                   });
               }}
@@ -70,24 +72,31 @@ const Signup = () => {
                 handleBlur,
                 handleSubmit,
                 errors,
-                touched,
+                dirty,
+                status,
               }) => (
                 <form onSubmit={handleSubmit}>
                   <FormField
                     label="Email"
-                    error={touched.email ? errors.email : null}
+                    error={dirty.email ? errors.email : status?.emailInUse}
                   >
                     <TextInput
                       name="email"
                       value={values.email}
                       type="email"
                       onBlur={handleBlur}
-                      onChange={handleChange}
+                      onChange={(...args) => {
+                        // call change handler and clear email in use warning when email changes
+                        handleChange(...args);
+                        if (status?.emailInUse) {
+                          status.emailInUse = null;
+                        }
+                      }}
                     />
                   </FormField>
                   <FormField
                     label="Password"
-                    error={touched.password ? errors.password : null}
+                    error={dirty.password ? errors.password : null}
                   >
                     <TextInput
                       name="password"
@@ -118,4 +127,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default withAuthUser()(Signup);

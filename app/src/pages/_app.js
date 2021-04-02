@@ -1,10 +1,10 @@
 // import App from 'next/app'
-import { AuthProvider } from "../components/AuthProvider";
+import initAuth from "../lib/initAuth";
+initAuth();
+
 function MyApp({ Component, pageProps }) {
   return (
-    <AuthProvider>
       <Component {...pageProps} />
-    </AuthProvider>
   );
 }
 
