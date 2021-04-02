@@ -3,19 +3,16 @@ import { useRouter } from "next/router";
 import { Formik } from "formik";
 import * as yup from "yup";
 
-import { grommet, Box, Button, Grommet, FormField, TextInput } from "grommet";
+import { Box, Button, FormField, TextInput } from "grommet";
 
 import { app } from "../firebase-app";
 
 import { useContext } from "react";
-import Header from "../components/Header";
+import SplashHeader from "../components/SplashHeader";
+import Page from "../components/Page";
+
 import { useAuthUser, withAuthUser } from "next-firebase-auth";
 
-const theme = grommet;
-const gladeGreen = "#1A535C";
-
-// personalize
-theme.global.colors.brand = gladeGreen;
 
 const validationSchema = yup.object({
   email: yup.string().required().email(),
@@ -31,10 +28,10 @@ const Signup = () => {
     ? `?from=${encodeURIComponent(router.query?.from)}`
     : "";
   return (
-    <Grommet theme={grommet}>
+    <Page title="Signup">
       <Box align="center">
         <Box width="medium" margin="large">
-          <Header />
+          <SplashHeader />
           <Box margin={{ top: "large" }}>
             <Formik
               initialValues={{
@@ -86,7 +83,7 @@ const Signup = () => {
                       type="email"
                       onBlur={handleBlur}
                       onChange={(...args) => {
-                        // call change handler and clear email in use warning when email changes
+                        // call change handler and clear "email in use warning" when email changes
                         handleChange(...args);
                         if (status?.emailInUse) {
                           status.emailInUse = null;
@@ -123,7 +120,7 @@ const Signup = () => {
           </Box>
         </Box>
       </Box>
-    </Grommet>
+    </Page>
   );
 };
 

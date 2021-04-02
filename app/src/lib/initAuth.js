@@ -11,8 +11,6 @@ const initAuth = () => {
     firebasePrivateKey = process?.env?.FIREBASE_PRIVATE_KEY;
   }
 
-  console.log(firebasePrivateKey);
-
   init({
     authPageURL: "/login",
     appPageURL: "/",

@@ -8,7 +8,7 @@ import { grommet, Box, Button, Grommet, FormField, TextInput } from "grommet";
 import {app} from "../../firebase-app";
 
 import { useContext, useEffect } from "react";
-import Header from "../../components/Header";
+import SplashHeader from "../../components/SplashHeader";
 import { withAuthUser,useAuthUser } from "next-firebase-auth";
 
 const db = app.firestore();

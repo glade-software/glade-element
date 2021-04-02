@@ -6,7 +6,7 @@ const theme = grommet;
 const gladeGreen = "#1A535C";
 
 import { useContext } from "react";
-import Header from "../components/Header";
+import SplashHeader from "../components/SplashHeader";
 
 // personalize
 theme.global.colors.brand = gladeGreen;
@@ -26,7 +26,7 @@ const Landing = () => {
       <Grommet theme={grommet}>
         <Box align="center">
           <Box width="medium" margin="large">
-            <Header />
+            <SplashHeader />
             <Box margin={{ top: "large" }} align="center">
               {currentUser.firebaseUser ? (
                 <Link href="/profile">

@@ -15,14 +15,8 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 
 import {app} from '../firebase-app';
-import Header from '../components/Header';
+import SplashHeader from '../components/SplashHeader';
 import { AuthAction, useAuthUser, withAuthUser } from 'next-firebase-auth';
-
-const theme = grommet;
-const gladeGreen = '#1A535C';
-
-// personalize
-theme.global.colors.brand = gladeGreen;
 
 const db = app.firestore();
 
@@ -68,7 +62,7 @@ const Profile = () => {
     <Grommet theme={grommet}>
       <Box align="center">
         <Box width="medium" margin="large">
-          <Header />
+          <SplashHeader />
           <Box margin={{top: 'large'}}>
             {currentUser.firebaseUser ? (
               <Box align="center">
