@@ -55,7 +55,7 @@
     "web-components"
   ],
   "description": "a component that makes DOM annotatable",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "dependencies": {
     "@material/mwc-button": "^0.20.0",
     "@material/mwc-dialog": "^0.20.0",
