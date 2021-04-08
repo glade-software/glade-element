@@ -155,24 +155,6 @@ exports.getAnnotations = functions.https.onCall(async (query, context) => {
   }
 });
 
-exports.modifyAllAnnotations = functions.https.onCall(
-  async ({ gladeDocumentHash, newProperties }, context) => {
-    const annotationsSnapshot = await db
-      .collection("glade-trees")
-      .doc(`${gladeDocumentHash}`)
-      .collection("annotations")
-      .get();
-    const response = {
-      edited: [],
-    };
-    annotationsSnapshot.forEach(async (snap) => {
-      const data = snap.data();
-      snap.ref.update({ gladeDOMNodeHash: data.gladeDomNodeHash });
-    });
-    return response;
-  }
-);
-
 exports.publishAnnotation = functions.https.onCall(
   async (annotation, context) => {
     const {
