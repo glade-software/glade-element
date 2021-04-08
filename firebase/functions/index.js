@@ -6,7 +6,7 @@ const { default: remarkEmbedder } = require("@remark-embedder/core");
 const {
   default: oembedTransformer,
 } = require("@remark-embedder/transformer-oembed");
-
+const SHA256 = require('crypto-js/sha256')
 const {
   uniqueNamesGenerator,
   adjectives,
@@ -155,6 +155,20 @@ exports.getAnnotations = functions.https.onCall(async (query, context) => {
   }
 });
 
+exports.getFreeAPIKeyForUser = functions.https.onCall(
+  async (_, context) => {
+    if(context.auth){
+      const {uid} = context.auth;
+      const source = `v0/free/users/${uid}`;
+      return SHA256(source).toString();
+    }else{
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        `You need to be authenticated to get an API Key!`
+      );
+    }
+  }
+);
 exports.publishAnnotation = functions.https.onCall(
   async (annotation, context) => {
     const {
