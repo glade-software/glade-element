@@ -42,7 +42,10 @@ exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
     );
     await Promise.all([
       auth.updateUser(user.uid, { displayName }),
-      db.collection("users").doc(user.uid).set({ displayName }),
+      db
+        .collection("users")
+        .doc(user.uid)
+        .set({ displayName, isAnonymous: true }),
     ]);
   } catch (error) {
     console.log("error persisting user to firestore:\n", error);
@@ -61,7 +64,7 @@ exports.checkUsernameAvailability = functions.https.onCall(
         usernameAvailable = false;
       });
       return { usernameAvailable };
-    } catch (firestorError) {
+    } catch (firestoreError) {
       throw new functions.https.HttpsError(
         "internal",
         "failed to check username availability",
