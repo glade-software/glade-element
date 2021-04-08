@@ -2,21 +2,44 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Formik } from "formik";
 import * as yup from "yup";
-
+import debounce from "../lib/yupDebounceIt";
 import { Box, Button, FormField, TextInput } from "grommet";
-
+import firebase from "firebase/app";
 import { app } from "../firebase-app";
 
 import { useContext } from "react";
 import SplashHeader from "../components/SplashHeader";
 import Page from "../components/Page";
 
-import { useAuthUser, withAuthUser } from "next-firebase-auth";
-
-
+import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
+const USERNAME_VALIDITY_CHECK_COOLDOWN = 350; //number of ms to wait until we recheck if the username is valid
 const validationSchema = yup.object({
   email: yup.string().required().email(),
   password: yup.string().required().min(8).max(65),
+  username: yup
+    .string()
+    .required()
+    .min(2)
+    .test(
+      "username-is-available",
+      "${path} is already taken!",
+      debounce(async (username) => {
+        const checkUsernameAvailability = app
+          .functions()
+          .httpsCallable("checkUsernameAvailability");
+        try {
+          const usernameIsAvailableResponse = await checkUsernameAvailability(
+            username
+          );
+          const isAvailable =
+            usernameIsAvailableResponse.data.usernameAvailable;
+          console.log(`username ${isAvailable ? "is" : "is not"} available`);
+          return isAvailable;
+        } catch (errorCheckingUsername) {
+          console.error("error checking username", errorCheckingUsername);
+        }
+      }, USERNAME_VALIDITY_CHECK_COOLDOWN)
+    ),
 });
 
 const EMAIL_IN_USE_ERROR = "auth/email-already-in-use";
@@ -27,6 +50,7 @@ const Signup = () => {
   const qs = router.query?.from
     ? `?from=${encodeURIComponent(router.query?.from)}`
     : "";
+
   return (
     <Page title="Signup">
       <Box align="center">
@@ -42,13 +66,27 @@ const Signup = () => {
               validationSchema={validationSchema}
               onSubmit={(data, { setSubmitting, resetForm, setStatus }) => {
                 setSubmitting(true);
-                const { email, password } = data;
+                const { email, password, username } = data;
                 app
                   .auth()
                   .createUserWithEmailAndPassword(email, password)
-                  .then(() => {
+                  .then(async ({ user }) => {
                     console.log("user created");
-                    router.replace(`/profile${qs}`);
+                    const createdAt = firebase.firestore.Timestamp.fromDate(
+                      new Date()
+                    );
+                    try {
+                        await app.firestore().doc(`users/${user.uid}`).set({
+                          displayName: username,
+                          isAnonymous: false,
+                          createdAt,
+                        }).then(router.push(`/account${qs}`))
+                    } catch (e) {
+                      console.error(
+                        "failed to persist user, this is the darkest timeline",
+                        e
+                      );
+                    }
                   })
                   .catch(function (error) {
                     // Handle Errors here.
@@ -69,13 +107,25 @@ const Signup = () => {
                 handleBlur,
                 handleSubmit,
                 errors,
-                dirty,
+                touched,
                 status,
               }) => (
                 <form onSubmit={handleSubmit}>
                   <FormField
+                    label="Username"
+                    error={touched.username ? errors.username : null}
+                  >
+                    <TextInput
+                      name="username"
+                      value={values.username}
+                      type="username"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                    />
+                  </FormField>
+                  <FormField
                     label="Email"
-                    error={dirty.email ? errors.email : status?.emailInUse}
+                    error={touched.email ? errors.email : status?.emailInUse}
                   >
                     <TextInput
                       name="email"
@@ -93,7 +143,7 @@ const Signup = () => {
                   </FormField>
                   <FormField
                     label="Password"
-                    error={dirty.password ? errors.password : null}
+                    error={touched.password ? errors.password : null}
                   >
                     <TextInput
                       name="password"
@@ -124,4 +174,6 @@ const Signup = () => {
   );
 };
 
-export default withAuthUser()(Signup);
+export default withAuthUser(
+  {whenAuthed: AuthAction.REDIRECT_TO_APP}
+)(Signup);

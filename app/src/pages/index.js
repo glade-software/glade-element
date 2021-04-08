@@ -28,26 +28,18 @@ const Landing = () => {
           <Box width="medium" margin="large">
             <SplashHeader />
             <Box margin={{ top: "large" }} align="center">
-              {currentUser.firebaseUser ? (
-                <Link href="/profile">
-                  <Button label="Show profile!" fill primary size="large" />
-                </Link>
-              ) : (
-                <>
-                  <Link href="/signup">
-                    <Button
-                      label="Reserve your username!"
-                      fill
-                      primary
-                      size="large"
-                    />
-                  </Link>
-                  <Box>or</Box>
-                  <Link href="/login">
-                    <Button label="Login!" secondary size="large" />
-                  </Link>
-                </>
-              )}
+              <Link href="/signup">
+                <Button
+                  label="Reserve your username!"
+                  fill
+                  primary
+                  size="large"
+                />
+              </Link>
+              <Box>or</Box>
+              <Link href="/login">
+                <Button label="Login!" secondary size="large" />
+              </Link>
             </Box>
           </Box>
         </Box>

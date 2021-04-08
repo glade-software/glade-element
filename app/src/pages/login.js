@@ -43,7 +43,7 @@ const Login = () => {
                   .signInWithEmailAndPassword(email, password)
                   .then(() => {
                     console.log("user logged in");
-                    router.replace("/profile");
+                    router.replace("/account");
                   })
                   .catch(function (error) {
                     // Handle Errors here.

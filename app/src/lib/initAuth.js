@@ -12,8 +12,8 @@ const initAuth = () => {
   }
 
   init({
-    authPageURL: "/login",
-    appPageURL: "/",
+    authPageURL: "/",
+    appPageURL: "/account",
     loginAPIEndpoint: "/api/login", // required
     logoutAPIEndpoint: "/api/logout", // required
     // Required in most cases.
