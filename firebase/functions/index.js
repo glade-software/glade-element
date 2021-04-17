@@ -6,7 +6,7 @@ const { default: remarkEmbedder } = require("@remark-embedder/core");
 const {
   default: oembedTransformer,
 } = require("@remark-embedder/transformer-oembed");
-const SHA256 = require('crypto-js/sha256')
+const SHA256 = require("crypto-js/sha256");
 const {
   uniqueNamesGenerator,
   adjectives,
@@ -76,6 +76,14 @@ exports.checkUsernameAvailability = functions.https.onCall(
 
 exports.getHTMLFromMarkdown = functions.https.onCall(
   async ({ markdownStrings }, context) => {
+
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        `You need to be authenticated to getHTMLFromMarkdown!`
+      );
+    }
+
     let htmlStrings = [];
 
     if (Array.isArray(markdownStrings)) {
@@ -155,22 +163,38 @@ exports.getAnnotations = functions.https.onCall(async (query, context) => {
   }
 });
 
-exports.getFreeAPIKeyForUser = functions.https.onCall(
-  async (_, context) => {
-    if(context.auth){
-      const {uid} = context.auth;
-      const source = `v0/free/users/${uid}`;
-      return SHA256(source).toString();
-    }else{
+exports.getFreeAPIKeyForUser = functions.https.onCall(async (_, context) => {
+  if (context.auth) {
+    const { uid } = context.auth;
+    const source = `v0/free/users/${uid}`;
+    const apiKey = `v0fu.${SHA256(source).toString()}`;
+    try {
+      await db.collection("users").doc(uid).update({ apiKey });
+      return apiKey;
+    } catch (errorSettingKeyOnU) {
       throw new functions.https.HttpsError(
-        'unauthenticated',
-        `You need to be authenticated to get an API Key!`
+        "internal",
+        "error setting apiKey on user",
+        errorSettingKeyOnU
       );
     }
+  } else {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      `You need to be authenticated to get an API Key!`
+    );
   }
-);
+});
 exports.publishAnnotation = functions.https.onCall(
   async (annotation, context) => {
+
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        `You need to be authenticated to post an annotation!`
+      );
+    }
+
     const {
       postedBy,
       plainTextBody,

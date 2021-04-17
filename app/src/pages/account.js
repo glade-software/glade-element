@@ -35,42 +35,45 @@ const Account = () => {
       listen: true,
     }
   );
+  const getFreeAPIKey = app.functions().httpsCallable("getFreeAPIKeyForUser");
 
-  useEffect(() => {
-    const getFreeAPIKey = app.functions().httpsCallable("getFreeAPIKeyForUser");
-    const doGetFreeAPIKey = async () => {
-      try {
-        const getFreeAPIKeyResponse = await getFreeAPIKey({});
-        setFreeAPIKey(getFreeAPIKeyResponse.data);
-        console.debug(`apiKey="${getFreeAPIKeyResponse.data}"`);
-      } catch (errorGettingFreeAPIKey) {
-        setFreeAPIKeyError(errorGettingFreeAPIKey);
-      }
-    };
-    doGetFreeAPIKey();
-  });
+  const doGetFreeAPIKey = async () => {
+    try {
+      const getFreeAPIKeyResponse = await getFreeAPIKey({});
+      setFreeAPIKey(getFreeAPIKeyResponse.data);
+      console.debug(`apiKey="${getFreeAPIKeyResponse.data}"`);
+    } catch (errorGettingFreeAPIKey) {
+      setFreeAPIKeyError(errorGettingFreeAPIKey);
+    }
+  };
 
   const u = data;
 
   return (
-    <Page>
+    <Page title="Account">
       <Nav />
       <Box align="center" margin="large">
         <h2>
           hey <span style={{ color: "#1A535C" }}>@{u?.displayName}</span>,
           welcome to the discussion 🌲
         </h2>
-        <p>Glade is a library generally installed on other websites instead of this one</p>
+        <p>
+          Glade is a library generally installed on other websites instead of
+          this one
+        </p>
         <h4>
-          If you have a website and want to learn how to do that check out the docs at{" "}
+          If you have a website and want to learn how to do that check out the
+          docs at{" "}
           <a href="https://docs.glade.app/docs/getting-started">
             docs.glade.app/getting-started
           </a>
         </h4>
         <p>
-          If you want to moderate the annotations on your site, you'll need this
-          🔑
+          If you want to moderate the annotations on your site, you'll need a
+          key
         </p>
+
+        <Button secondary label="Get API Key 🔑" onClick={doGetFreeAPIKey}/>
         <pre>
           {freeAPIKey ? `apiKey="${freeAPIKey}"` : freeAPIKeyError || null}
         </pre>
