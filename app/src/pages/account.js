@@ -29,6 +29,8 @@ const Account = () => {
   const currentUser = useAuthUser();
   const [freeAPIKey, setFreeAPIKey] = useState(null);
   const [freeAPIKeyError, setFreeAPIKeyError] = useState(null);
+  const [loadingAPIKey, setLoadingAPIKey] = useState(false);
+  console.log('uid root:',currentUser?.firebaseUser?.uid)
   const { data, update, error } = useDocument(
     `users/${currentUser?.firebaseUser?.uid}`,
     {
@@ -39,7 +41,9 @@ const Account = () => {
 
   const doGetFreeAPIKey = async () => {
     try {
+      setLoadingAPIKey(true);
       const getFreeAPIKeyResponse = await getFreeAPIKey({});
+      setLoadingAPIKey(false);
       setFreeAPIKey(getFreeAPIKeyResponse.data);
       console.debug(`apiKey="${getFreeAPIKeyResponse.data}"`);
     } catch (errorGettingFreeAPIKey) {
@@ -51,10 +55,10 @@ const Account = () => {
 
   return (
     <Page title="Account">
-      <Nav />
+      <Nav currentUser={currentUser}/>
       <Box align="center" margin="large">
         <h2>
-          hey <span style={{ color: "#1A535C" }}>@{u?.displayName}</span>,
+          hey <span style={{ color: "#1A535C" }}>@{currentUser.firebaseUser.displayName}</span>,
           welcome to the discussion 🌲
         </h2>
         <p>
@@ -74,6 +78,7 @@ const Account = () => {
         </p>
 
         <Button secondary label="Get API Key 🔑" onClick={doGetFreeAPIKey}/>
+        {loadingAPIKey ? <Spinner style={{margin:'2rem'}}/> : null}
         <pre>
           {freeAPIKey ? `apiKey="${freeAPIKey}"` : freeAPIKeyError || null}
         </pre>

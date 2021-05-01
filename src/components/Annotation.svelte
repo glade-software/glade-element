@@ -2,7 +2,22 @@
 
 <script lang="ts">
   import type Annotation from "../Annotation";
+  import currentUser from "../stores/user";
+
   export let annotation: Annotation;
+
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
+
+  /**
+   * Sets the activeView in GladeAnnotatable
+   * @param nextView
+   */
+  function deleteAnnotation() {
+    console.log("annotation", JSON.stringify(annotation));
+    console.log("dispatching delete-annotation", annotation.uid);
+    dispatch("delete-annotation", { annotation });
+  }
 </script>
 
 <div>
@@ -14,7 +29,10 @@
       border-radius: 8px;
       min-width: 500px;
     }
-
+    .deleteButton {
+      color: #ff0000;
+      float: right;
+    }
     .htmlContent {
       max-width: 800px;
       object-fit: contain;
@@ -54,8 +72,12 @@
   </style>
   <div class="annotation">
     <span class="postedBy"
-      >@{annotation?.postedBy || "accidental-anonymous-anteater"}</span
+      >@{annotation?.postedBy.displayName ||
+        "accidental-anonymous-anteater"}</span
     >
+    {#if ($currentUser && annotation?.postedBy.uid == $currentUser.uid) || $currentUser.isForestOwner}
+      <button class="deleteButton" on:click={deleteAnnotation}>x</button>
+    {/if}
     {#if annotation && !annotation?.htmlString}
       <div class="htmlContent loading">{annotation.plainTextBody || ""}</div>
     {/if}

@@ -15,6 +15,7 @@
   import SignupFormView from "./views/SignupFormView.svelte";
   import AuthenticationMenuView from "./views/AnthenticationMenuView.svelte";
 
+  import userStore from "./stores/user";
   // COMPONENTS
   import Header from "./components/Header.svelte";
 
@@ -32,16 +33,45 @@
   import type { Err } from "./Err";
   import Cohere from "cohere-js";
 
-  Cohere.init("0bEMs-b6UkqjiNepPJ1M4gZ9");
+  const ROOT_API_KEY =
+    "v0ru.379031335f10b4cb40cff8f6feeb3d598db6529d52aa98637549ca8b63694c10";
+  const COHERE_API_KEY = "0bEMs-b6UkqjiNepPJ1M4gZ9";
+
+  Cohere.init(COHERE_API_KEY);
 
   initializeFirebase();
 
+  let currentUser = null;
+
+  // const user = {
+  //    uid: firebase.auth().currentUser.uid,
+  //    displayName: firebase.auth().currentUser.displayName,
+  //    email: firebase.auth().currentUser.email
+  // }
+
+  // userStore.set(user)
+
+  userStore.subscribe((u) => {
+    currentUser = u;
+  });
+
   firebase.auth().onAuthStateChanged((u) => {
     if (u) {
+      console.log("logged in");
+      const user = {
+        uid: u.uid,
+        email: u.email,
+        displayName: u.displayName,
+      };
+
+      userStore.set(user);
+
       Cohere.identify(u.uid, {
         email: u.email || "",
         displayName: u.displayName || "",
       });
+    } else {
+      userStore.set(null);
     }
   });
 
@@ -54,10 +84,60 @@
   activeView = DialogView.List;
   console.debug("initalized");
 
+  // this comes from the attribute "apikey" on glade-annotatable
+  export let apikey: string;
+
+  console.log("apikey supplied", apikey);
+
+  if (!apikey) {
+    apikey = ROOT_API_KEY;
+  }
+
+  console.log("final apikey", apikey);
+
+  const doAPIKeyValidation = async () => {
+    if (apikey) {
+      const validateAPIKey = firebase
+        .functions()
+        .httpsCallable("validateAPIKey");
+
+      try {
+        const validity = await validateAPIKey({ apiKey: apikey });
+        const { isValid, forest } = validity.data;
+        if (isValid) {
+          console.log("apikey is valid", forest);
+
+          const isForestOwner = currentUser?.uid === forest.ownerUid;
+
+          userStore.update((u) => {
+            if (!u) {
+              return null;
+            }
+            return {
+              ...u,
+              isForestOwner,
+            };
+          });
+
+          console.log("currentUser.isForestOwner", isForestOwner);
+        } else {
+          console.error("apikey is not valid");
+        }
+      } catch (errorCheckingValidity) {
+        console.error(errorCheckingValidity);
+      }
+    }
+  };
+
+  doAPIKeyValidation();
+
+  console.debug(`apiKey:${apikey}`);
+
   // if this is true, we show the Glade UI
   let showGladeUI = false;
+
   let err: Err | null = null;
-  $: error = err;
+  $: error = err; // wat
 
   // the "semantic hash" of the refferent Glade DOM node (subject of annotations)
   let focusedGladeDOMNodeHash: number = 0;
@@ -72,7 +152,9 @@
     referentGladeDomNodeHash: number
   ): Annotation[] =>
     annotations.filter(
-      (annotation) => annotation.gladeDOMNodeHash === referentGladeDomNodeHash
+      (annotation) =>
+        annotation.gladeDOMNodeHash === referentGladeDomNodeHash &&
+        !annotation.hidden
     );
 
   const setSematicContentHashes = () => {
@@ -95,10 +177,11 @@
     try {
       const fetchAnnotationsForDocumentHash = firebase
         .functions()
-        .httpsCallable("getAnnotations");
+        .httpsCallable("getAnnotationsV2");
 
       let response = await fetchAnnotationsForDocumentHash({
         gladeDocumentHash: gladedocumenthash,
+        gladeAPIKey: apikey,
       });
 
       annotations = response?.data?.annotations.map(
@@ -147,7 +230,6 @@
    * @param {MouseEvent} ev The "mouseup" event that might trigger the opening of the Glade UI
    */
   const handleArticleMouseUp = (ev: MouseEvent) => {
-    console.debug(document.querySelector("glade-annotatable"));
     if (ev.button === 0) {
       // deepest node in DOM tree that recieved this event
       const targetNode = ev?.composedPath()[0] as Element;
@@ -244,6 +326,7 @@
   {:else if activeView === DialogView.Create}
     <CreateAnnotationView
       {gladedocumenthash}
+      {apikey}
       on:error={handleError}
       on:set-view={handleSetView}
       on:publish={handlePublish}

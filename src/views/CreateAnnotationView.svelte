@@ -10,7 +10,6 @@
   import { DialogView } from "../DialogView";
   import type { Err } from "../Err";
   import { createEventDispatcher } from "svelte";
-
   const dispatch = createEventDispatcher();
 
   /**
@@ -34,19 +33,22 @@
     dispatch("error", err);
   }
 
-  export let gladedocumenthash = "0";
-  export let focusedGladeDOMNodeHash = 0;
+  export let gladedocumenthash: string = "0";
+  export let focusedGladeDOMNodeHash: number = 0;
+  export let apikey: string;
+
   let htmlString: string | undefined = "";
   $: showPreview = false;
   let plainTextBody: string = "";
-
-  const user = firebase.auth().currentUser;
 
   $: pendingAnnotation = new Annotation({
     gladeDOMNodeHash: focusedGladeDOMNodeHash,
     plainTextBody,
     htmlString,
-    postedBy: user?.displayName || "anonymous",
+    postedBy: {
+      displayName: firebase.auth().currentUser?.displayName,
+      uid: firebase.auth().currentUser?.uid,
+    },
   });
 
   async function handleClickPreview() {
@@ -89,9 +91,17 @@
       return;
     }
     htmlString = (await pendingAnnotation.getHtmlString()) || undefined;
-    const published = await pendingAnnotation.save(gladedocumenthash);
-    processNewAnnotation(published);
-    setView(DialogView.List, true);
+    const published = await pendingAnnotation.save(gladedocumenthash, apikey);
+    if (published) {
+      processNewAnnotation(published);
+      setView(DialogView.List, true);
+    } else {
+      console.log("failed to publish!\nare you sure your API key is correct?");
+      setError({
+        message: "Oh no! we couldn't publish your annotation",
+        code: "CreateAnnotationView.handleClickPublish.failedToSave",
+      });
+    }
   }
 </script>
 

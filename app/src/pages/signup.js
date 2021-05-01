@@ -80,6 +80,7 @@ const Signup = () => {
                           displayName: username,
                           isAnonymous: false,
                           createdAt,
+                          email
                         }).then(router.push(`/account${qs}`))
                     } catch (e) {
                       console.error(

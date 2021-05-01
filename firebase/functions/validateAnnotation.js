@@ -56,9 +56,30 @@ module.exports = function validateAnnotation(data) {
    * Validate annotation.postedBy
    */
   if (postedBy) {
-    if (currentTypeOf(postedBy) !== 'string') {
+    if(!postedBy.uid){
       validationErrors.push({
-        code: 'Annotation.postedBy.notString',
+        code: 'Annotation.postedBy.uid.falsy',
+        message: 'Could not post annotation! Are you logged in?',
+        metadata: {postedBy},
+      });
+    }
+    if(!postedBy.displayName){
+      validationErrors.push({
+        code: 'Annotation.postedBy.displayName.falsy',
+        message: 'Could not post annotation! Are you logged in?',
+        metadata: {postedBy},
+      });
+    }
+    if (currentTypeOf(postedBy.displayName) !== 'string') {
+      validationErrors.push({
+        code: 'Annotation.postedBy.displayName.notString',
+        message: 'Could not post annotation! Are you logged in?',
+        metadata: {postedBy},
+      });
+    }
+    if (currentTypeOf(postedBy.uid) !== 'string') {
+      validationErrors.push({
+        code: 'Annotation.postedBy.uid.notString',
         message: 'Could not post annotation! Are you logged in?',
         metadata: {postedBy},
       });

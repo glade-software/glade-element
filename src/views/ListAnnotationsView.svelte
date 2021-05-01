@@ -5,11 +5,19 @@
   import { createEventDispatcher } from "svelte";
   import firebase from "@firebase/app";
   import "@firebase/auth";
+  import userStore from "../stores/user";
   import AnnotationComponent from "../components/Annotation.svelte";
   import type Annotation from "../Annotation";
   import type { Err } from "../Err";
   export let annotations: Annotation[];
 
+  $: currentUser = null;
+
+  userStore.subscribe((u) => {
+    currentUser = u;
+  });
+
+  console.log("currentUser ListAnnotationView", currentUser);
   const dispatch = createEventDispatcher();
 
   /**

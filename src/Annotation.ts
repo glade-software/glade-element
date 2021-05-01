@@ -6,12 +6,19 @@ type Timestamp = {
   _nanoseconds: number;
 };
 
+type PostedBy = {
+  uid: string;
+  displayName: string;
+};
+
 type AnnotationData = {
   plainTextBody: string;
   htmlString?: string;
-  postedBy: string;
+  postedBy: PostedBy;
   gladeDOMNodeHash: number;
   updatedAt?: Timestamp;
+  hidden?: boolean;
+  uid?: string;
 };
 
 export default class Annotation {
@@ -21,6 +28,8 @@ export default class Annotation {
   htmlString;
   isSaving;
   updatedAt;
+  hidden;
+  uid;
 
   constructor(annotationData: AnnotationData) {
     this.plainTextBody = annotationData.plainTextBody;
@@ -28,6 +37,8 @@ export default class Annotation {
     this.postedBy = annotationData.postedBy;
     this.htmlString = annotationData.htmlString;
     this.updatedAt = annotationData.updatedAt;
+    this.hidden = annotationData.hidden;
+    this.uid = annotationData.uid;
     this.isSaving = false;
   }
 
@@ -47,20 +58,27 @@ export default class Annotation {
     }
   }
 
-  async save(gladeDocumentHash: string) {
+  async delete(gladeDocumentHash: string, gladeAPIKey: string) {
+    this.hidden = true;
+    this.save(gladeDocumentHash, gladeAPIKey);
+  }
+
+  async save(gladeDocumentHash: string, gladeAPIKey?: string) {
     this.isSaving = true;
 
+    console.log("gladeAPIKey", gladeAPIKey);
     const annotation = {
       plainTextBody: this.plainTextBody,
       gladeDOMNodeHash: this.gladeDOMNodeHash,
       postedBy: this.postedBy,
       htmlString: this.htmlString,
       gladeDocumentHash: parseInt(gladeDocumentHash),
+      gladeAPIKey,
     };
 
     const publishAnnotation = firebase
       .functions()
-      .httpsCallable("publishAnnotation");
+      .httpsCallable("publishAnnotationV2");
 
     try {
       const response = await publishAnnotation(annotation);
@@ -68,8 +86,9 @@ export default class Annotation {
       console.log("annotation published!", response);
       return annotation;
     } catch (publishingError) {
-      console.error(publishingError);
+      console.error(publishingError.code, publishingError.message);
       this.isSaving = false;
+      return null;
     }
   }
 }

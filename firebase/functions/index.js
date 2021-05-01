@@ -21,6 +21,8 @@ const db = admin.firestore();
 const auth = admin.auth();
 
 const ANNOTATION_LIMIT = 10000; // I guess?
+const ROOT_API_KEY =
+  "v0ru.379031335f10b4cb40cff8f6feeb3d598db6529d52aa98637549ca8b63694c10";
 
 exports.addUserToFirestore = functions.auth.user().onCreate(async (user) => {
   try {
@@ -76,7 +78,6 @@ exports.checkUsernameAvailability = functions.https.onCall(
 
 exports.getHTMLFromMarkdown = functions.https.onCall(
   async ({ markdownStrings }, context) => {
-
     if (!context.auth) {
       throw new functions.https.HttpsError(
         "unauthenticated",
@@ -132,6 +133,43 @@ exports.getHTMLFromMarkdown = functions.https.onCall(
   }
 );
 
+exports.getAnnotationsV2 = functions.https.onCall(async (query, context) => {
+  if (query.gladeDocumentHash) {
+    // get all annotations for tree
+
+    const annotationsSnapshot = await db
+      .collection("forests")
+      .doc(query.gladeAPIKey || ROOT_API_KEY) // a bad gladeAPIKey *should* just explode
+      .collection("trees")
+      .doc(`${query.gladeDocumentHash}`)
+      .collection("annotations")
+      .orderBy("updatedAt", "desc")
+      .limit(query.limit || ANNOTATION_LIMIT)
+      .get();
+
+    if (annotationsSnapshot.empty) {
+      return {
+        annotations: [],
+      };
+    } else {
+      let annotations = [];
+      annotationsSnapshot.forEach((doc) => {
+        annotations.push({
+          ...doc.data(),
+          uid: doc.id
+        });
+      });
+      return { annotations };
+    }
+  } else {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "you need to specify query.gladeDocumentHash!",
+      query
+    );
+  }
+});
+
 exports.getAnnotations = functions.https.onCall(async (query, context) => {
   if (query.gladeDocumentHash) {
     // get all annotations for tree
@@ -166,10 +204,16 @@ exports.getAnnotations = functions.https.onCall(async (query, context) => {
 exports.getFreeAPIKeyForUser = functions.https.onCall(async (_, context) => {
   if (context.auth) {
     const { uid } = context.auth;
+    const { email } = context.auth.token;
     const source = `v0/free/users/${uid}`;
     const apiKey = `v0fu.${SHA256(source).toString()}`;
     try {
       await db.collection("users").doc(uid).update({ apiKey });
+      await db.collection("forests").doc(apiKey).set({
+        ownerUid: uid,
+        ownerEmail: email,
+        shouldNotify: false,
+      });
       return apiKey;
     } catch (errorSettingKeyOnU) {
       throw new functions.https.HttpsError(
@@ -187,7 +231,6 @@ exports.getFreeAPIKeyForUser = functions.https.onCall(async (_, context) => {
 });
 exports.publishAnnotation = functions.https.onCall(
   async (annotation, context) => {
-
     if (!context.auth) {
       throw new functions.https.HttpsError(
         "unauthenticated",
@@ -235,6 +278,120 @@ exports.publishAnnotation = functions.https.onCall(
     } catch (firestoreError) {
       console.log("⚠️ failed to persist annotation to firestore");
       throw new functions.https.HttpsError(firestoreError);
+    }
+  }
+);
+
+exports.validateAPIKey = functions.https.onCall(async ({ apiKey }, context) => {
+  try {
+    const forest = await db.collection("forests").doc(apiKey).get();
+    if (forest.exists) {
+      return {
+        isValid: true,
+        forest: {
+          ownerUid: forest.data().ownerUid,
+          shouldNotify: forest.data().shouldNotify,
+        },
+      };
+    }
+  } catch (errorFindingForest) {
+    throw new functions.https.HttpsError("internal", errorFindingForest);
+  }
+  // Else
+  return {
+    isValid: false,
+  };
+});
+
+exports.publishAnnotationV2 = functions.https.onCall(
+  async (annotation, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        `You need to be authenticated to post an annotation!`
+      );
+    }
+
+    const {
+      postedBy, // displayName
+      plainTextBody,
+      htmlString,
+      gladeDOMNodeHash,
+      gladeDocumentHash,
+      gladeAPIKey,
+    } = annotation;
+
+    const validationErrors = validateAnnotation({
+      postedBy,
+      plainTextBody,
+      htmlString,
+      gladeDOMNodeHash,
+      gladeDocumentHash,
+    });
+
+    if (validationErrors.length) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        `Annotaion failed ${validationErrors.length} validation check(s)!`,
+        { validationErrors }
+      );
+    }
+
+    // the user has supplied an API key
+    if (gladeAPIKey) {
+      // if key is valid and there is an entry in the DB save the annotation under the key
+
+      const forest = await db.collection("forests").doc(gladeAPIKey).get();
+
+      if (forest.exists) {
+        console.log(`forest "${gladeAPIKey}" exists`);
+        let response = await db
+          .collection("forests")
+          .doc(gladeAPIKey)
+          .collection("trees")
+          .doc(`${gladeDocumentHash}`)
+          .collection("annotations")
+          .add({
+            postedBy: {
+              displayName: postedBy.displayName,
+              uid: context.auth.uid,
+            },
+            plainTextBody,
+            htmlString,
+            gladeDOMNodeHash,
+            updatedAt: admin.firestore.Timestamp.now(),
+          });
+        return { response };
+      } else {
+        console.log(`forest "${gladeAPIKey}" does not exist`);
+        throw new functions.https.HttpsError(
+          "invalid-argument",
+          `Invalid "gladeAPIKey"!`,
+          { gladeAPIKey }
+        );
+      }
+    } else {
+      try {
+        let response = await db
+          .collection("forests")
+          .doc(ROOT_API_KEY)
+          .collection("trees")
+          .doc(`${gladeDocumentHash}`)
+          .collection("annotations")
+          .add({
+            postedBy: {
+              displayName: postedBy,
+              uid: context.auth.uid,
+            },
+            plainTextBody,
+            htmlString,
+            gladeDOMNodeHash,
+            updatedAt: admin.firestore.Timestamp.now(),
+          });
+        return { response };
+      } catch (errorSavingToRoot) {
+        throw new functions.https.HttpsError(errorSavingToRoot);
+      }
     }
   }
 );
