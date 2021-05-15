@@ -13,8 +13,8 @@ const {
   animals,
 } = require("unique-names-generator");
 
-const validateAnnotation = require("./validateAnnotation");
-
+const validateAnnotationV2 = require("./validateAnnotationV2");
+const validateAnnotation = require('./validateAnnotation');
 admin.initializeApp();
 
 const db = admin.firestore();
@@ -384,7 +384,7 @@ exports.publishAnnotationV2 = functions.https.onCall(
       gladeAPIKey,
     } = annotation;
 
-    const validationErrors = validateAnnotation({
+    const validationErrors = validateAnnotationV2({
       postedBy,
       plainTextBody,
       htmlString,
