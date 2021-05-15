@@ -9,15 +9,7 @@
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
-  /**
-   * Sets the activeView in GladeAnnotatable
-   * @param nextView
-   */
-  function deleteAnnotation() {
-    console.log("annotation", JSON.stringify(annotation));
-    console.log("dispatching delete-annotation", annotation.uid);
-    dispatch("delete-annotation", { annotation });
-  }
+  function deleteAnnotation() {}
 </script>
 
 <div>

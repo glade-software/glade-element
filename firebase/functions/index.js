@@ -156,7 +156,7 @@ exports.getAnnotationsV2 = functions.https.onCall(async (query, context) => {
       annotationsSnapshot.forEach((doc) => {
         annotations.push({
           ...doc.data(),
-          uid: doc.id
+          uid: doc.id,
         });
       });
       return { annotations };
@@ -302,6 +302,69 @@ exports.validateAPIKey = functions.https.onCall(async ({ apiKey }, context) => {
     isValid: false,
   };
 });
+
+// Delete just sets the "hidden" property, if this is bad for you leave an issue on GitHub please
+exports.deleteAnnotation = functions.https.onCall(
+  async ({ annotationUid, gladeAPIKey, gladeDocumentHash }, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        `You need to be authenticated to delete an annotation!`
+      );
+    }
+
+    if (!annotationUid) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        'You need to specify an "annotationUid" for the annotation you want to delete.'
+      );
+    }
+
+    if (!gladeDocumentHash) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        'You need to specify an "gladeDocumentHash" for the annotation you want to delete.'
+      );
+    }
+
+    const forest = await db.collection("forests").doc(gladeAPIKey).get();
+    
+    if(!forest.exists){
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        `"gladeAPIKey is invalid`
+      );
+    }
+
+    let isForestOwner = forest.data().ownerUid === context.auth.uid
+
+    let annotationRef = db
+      .collection("forests")
+      .doc(gladeAPIKey)
+      .collection("trees")
+      .doc(`${gladeDocumentHash}`)
+      .collection("annotations")
+      .doc(annotationUid);
+
+    if (doc.exists) {
+      const { postedBy } = doc.data();
+      if (postedBy.uid === auth.context.uid || isForestOwner) {
+        const now = admin.firestore.Timestamp.now();
+        await annotationRef.update({
+          hidden: true,
+          deletedAt: now,
+          updatedAt: now,
+        });
+        return { deletedAt: now };
+      } else {
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          `You can not delete this annotation, you don't own it.`
+        );
+      }
+    }
+  }
+);
 
 exports.publishAnnotationV2 = functions.https.onCall(
   async (annotation, context) => {
