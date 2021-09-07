@@ -18,7 +18,7 @@
     "firebase-admin": "^9.4.1",
     "firebase-functions": "^3.11.0",
     "remark": "^13.0.0",
-    "remark-html": "^13.0.1",
+    "remark-html": "^13.0.2",
     "unique-names-generator": "^4.3.1"
   },
   "devDependencies": {
