@@ -10,6 +10,11 @@
   import type Annotation from "../Annotation";
   import type { Err } from "../Err";
   export let annotations: Annotation[];
+  export let apikey: String;
+
+  const deleteAnnotationFromDb = firebase
+    .functions()
+    .httpsCallable("deleteAnnotation");
 
   $: currentUser = null;
 
@@ -52,6 +57,11 @@
     setView(DialogView.Create);
   };
 
+  const deleteAnnotation = (uid) => {
+    console.log("deleting annotation", uid);
+    firebase.functions().httpsCallable;
+  };
+
   console.debug("ListAnnotationsView initialized");
 </script>
 
@@ -79,7 +89,7 @@
   <div>
     {#if annotations && annotations.length}
       {#each annotations as annotation}
-        <AnnotationComponent {annotation} />
+        <AnnotationComponent {annotation} {deleteAnnotation} />
       {/each}
     {:else}
       <div class="noAnnotationsMsg">No annotations here yet!</div>

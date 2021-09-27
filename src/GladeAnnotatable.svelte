@@ -319,6 +319,7 @@
   {/if}
   {#if activeView === DialogView.List}
     <ListAnnotationsView
+      {apikey}
       on:error={handleError}
       on:set-view={handleSetView}
       annotations={activeAnnotations}

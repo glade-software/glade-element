@@ -3,13 +3,15 @@
 <script lang="ts">
   import type Annotation from "../Annotation";
   import currentUser from "../stores/user";
-
   export let annotation: Annotation;
-
+  export let deleteAnnotation;
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
-  function deleteAnnotation() {}
+  function handleDeleteAnnotation() {
+    // pass back to ListAnnotationView for deletion
+    deleteAnnotation(annotation);
+  }
 </script>
 
 <div>
@@ -68,7 +70,7 @@
         "accidental-anonymous-anteater"}</span
     >
     {#if ($currentUser && annotation?.postedBy.uid == $currentUser.uid) || $currentUser.isForestOwner}
-      <button class="deleteButton" on:click={deleteAnnotation}>x</button>
+      <button class="deleteButton" on:click={handleDeleteAnnotation}>x</button>
     {/if}
     {#if annotation && !annotation?.htmlString}
       <div class="htmlContent loading">{annotation.plainTextBody || ""}</div>
