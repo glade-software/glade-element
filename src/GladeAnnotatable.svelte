@@ -285,6 +285,15 @@
     processAnnotations();
   };
 
+  const handleDeleteAnnotation = (ev: {
+    detail: { annotationUid: string };
+  }) => {
+    annotations = annotations.filter((annotation) => {
+      return annotation.uid !== ev.detail.annotationUid;
+    });
+    processAnnotations();
+  };
+
   $: title = activeView === DialogView.Settings ? "settings" : "annotations";
 
   export { gladedocumenthash };
@@ -320,8 +329,10 @@
   {#if activeView === DialogView.List}
     <ListAnnotationsView
       {apikey}
+      {gladedocumenthash}
       on:error={handleError}
       on:set-view={handleSetView}
+      on:delete-annotation={handleDeleteAnnotation}
       annotations={activeAnnotations}
     />
   {:else if activeView === DialogView.Create}

@@ -11,6 +11,7 @@
   import type { Err } from "../Err";
   export let annotations: Annotation[];
   export let apikey: String;
+  export let gladedocumenthash: String;
 
   const deleteAnnotationFromDb = firebase
     .functions()
@@ -28,13 +29,16 @@
   /**
    * Sets the activeView in GladeAnnotatable
    * @param nextView
+   * @param dismissModal
    */
-  function setView(nextView: DialogView) {
+  function setView(nextView: DialogView, dismissModal?: Boolean) {
     console.log("dispatching change-view");
     dispatch("set-view", {
       nextView,
+      dismissModal,
     });
   }
+
   /**
    * Sets an error for GladeAnnotatable to react to
    * @param setError
@@ -57,9 +61,16 @@
     setView(DialogView.Create);
   };
 
-  const deleteAnnotation = (uid) => {
+  const deleteAnnotation = async ({ uid }) => {
     console.log("deleting annotation", uid);
-    firebase.functions().httpsCallable;
+    const params = {
+      annotationUid: uid,
+      gladeAPIKey: apikey,
+      gladeDocumentHash: gladedocumenthash,
+    };
+    await deleteAnnotationFromDb(params);
+    dispatch("delete-annotation", params);
+    dispatch("set-view", { nextView: DialogView.List, dismissModal: true });
   };
 
   console.debug("ListAnnotationsView initialized");
@@ -89,7 +100,11 @@
   <div>
     {#if annotations && annotations.length}
       {#each annotations as annotation}
-        <AnnotationComponent {annotation} {deleteAnnotation} />
+        <AnnotationComponent
+          {annotation}
+          {deleteAnnotation}
+          isPreview={false}
+        />
       {/each}
     {:else}
       <div class="noAnnotationsMsg">No annotations here yet!</div>

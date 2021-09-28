@@ -120,7 +120,9 @@
       --mdc-theme-primary: red;
     }
   </style>{#if showPreview}
-    <div><AnnotationComponent annotation={pendingAnnotation} /></div>
+    <div>
+      <AnnotationComponent annotation={pendingAnnotation} isPreview={true} />
+    </div>
   {:else}
     <mwc-textarea
       outlined="true"

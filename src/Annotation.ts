@@ -74,6 +74,7 @@ export default class Annotation {
       htmlString: this.htmlString,
       gladeDocumentHash: parseInt(gladeDocumentHash),
       gladeAPIKey,
+      uid: null,
     };
 
     const publishAnnotation = firebase
@@ -83,7 +84,8 @@ export default class Annotation {
     try {
       const response = await publishAnnotation(annotation);
       this.isSaving = false;
-      console.log("annotation published!", response);
+      console.log("annotation published!", response.data);
+      annotation.uid = response.data.uid;
       return annotation;
     } catch (publishingError) {
       console.error(publishingError.code, publishingError.message);

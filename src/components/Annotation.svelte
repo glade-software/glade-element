@@ -5,11 +5,14 @@
   import currentUser from "../stores/user";
   export let annotation: Annotation;
   export let deleteAnnotation;
+  export let isPreview;
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
   function handleDeleteAnnotation() {
+    if (isPreview) return;
     // pass back to ListAnnotationView for deletion
+    console.log("handleDelete", annotation);
     deleteAnnotation(annotation);
   }
 </script>
@@ -69,7 +72,7 @@
       >@{annotation?.postedBy.displayName ||
         "accidental-anonymous-anteater"}</span
     >
-    {#if ($currentUser && annotation?.postedBy.uid == $currentUser.uid) || $currentUser.isForestOwner}
+    {#if (!isPreview && $currentUser && annotation?.postedBy.uid == $currentUser.uid) || $currentUser.isForestOwner}
       <button class="deleteButton" on:click={handleDeleteAnnotation}>x</button>
     {/if}
     {#if annotation && !annotation?.htmlString}
