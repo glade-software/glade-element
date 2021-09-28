@@ -346,9 +346,11 @@ exports.deleteAnnotation = functions.https.onCall(
       .collection("annotations")
       .doc(annotationUid);
 
+    let doc = await annotationRef.get();
+
     if (doc.exists) {
       const { postedBy } = doc.data();
-      if (postedBy.uid === auth.context.uid || isForestOwner) {
+      if (postedBy.uid === context.auth.uid || isForestOwner) {
         const now = admin.firestore.Timestamp.now();
         await annotationRef.update({
           hidden: true,
@@ -424,7 +426,7 @@ exports.publishAnnotationV2 = functions.https.onCall(
             gladeDOMNodeHash,
             updatedAt: admin.firestore.Timestamp.now(),
           });
-        return { response };
+        return { uid: response.id };
       } else {
         console.log(`forest "${gladeAPIKey}" does not exist`);
         throw new functions.https.HttpsError(
@@ -451,7 +453,7 @@ exports.publishAnnotationV2 = functions.https.onCall(
             gladeDOMNodeHash,
             updatedAt: admin.firestore.Timestamp.now(),
           });
-        return { response };
+        return { uid: response.id };
       } catch (errorSavingToRoot) {
         throw new functions.https.HttpsError(errorSavingToRoot);
       }
