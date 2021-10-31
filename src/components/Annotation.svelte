@@ -72,7 +72,7 @@
       >@{annotation?.postedBy.displayName ||
         "accidental-anonymous-anteater"}</span
     >
-    {#if (!isPreview && $currentUser && annotation?.postedBy.uid == $currentUser.uid) || $currentUser.isForestOwner}
+    {#if (!isPreview && $currentUser && annotation?.postedBy.uid == $currentUser.uid) || $currentUser?.isForestOwner}
       <button class="deleteButton" on:click={handleDeleteAnnotation}>x</button>
     {/if}
     {#if annotation && !annotation?.htmlString}
