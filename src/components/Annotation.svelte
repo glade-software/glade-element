@@ -9,11 +9,14 @@
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
-  function handleDeleteAnnotation() {
+  let isDeleting = false;
+  async function handleDeleteAnnotation() {
     if (isPreview) return;
+    isDeleting = true;
     // pass back to ListAnnotationView for deletion
     console.log("handleDelete", annotation);
-    deleteAnnotation(annotation);
+    await deleteAnnotation(annotation);
+    isDeleting = false;
   }
 </script>
 
@@ -73,7 +76,7 @@
         "accidental-anonymous-anteater"}</span
     >
     {#if (!isPreview && $currentUser && annotation?.postedBy.uid == $currentUser.uid) || $currentUser?.isForestOwner}
-      <button class="deleteButton" on:click={handleDeleteAnnotation}>x</button>
+      <button class="deleteButton" on:click={handleDeleteAnnotation} disabled={isDeleting}>x</button>
     {/if}
     {#if annotation && !annotation?.htmlString}
       <div class="htmlContent loading">{annotation.plainTextBody || ""}</div>

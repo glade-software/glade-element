@@ -3,6 +3,7 @@
 <script lang="ts">
   import "@material/mwc-button";
   import "@material/mwc-textarea";
+  import "@material/mwc-linear-progress";
   import firebase from "@firebase/app";
   import "@firebase/auth";
   import Annotation from "../Annotation";
@@ -40,6 +41,8 @@
   let htmlString: string | undefined = "";
   $: showPreview = false;
   let plainTextBody: string = "";
+
+  let publishing = false;
 
   $: pendingAnnotation = new Annotation({
     gladeDOMNodeHash: focusedGladeDOMNodeHash,
@@ -83,6 +86,7 @@
   }
 
   async function handleClickPublish() {
+    publishing = true;
     if (!plainTextBody) {
       setError({
         message: "You need to add content before posting!",
@@ -102,6 +106,7 @@
         code: "CreateAnnotationView.handleClickPublish.failedToSave",
       });
     }
+    publishing = false;
   }
 </script>
 
@@ -118,6 +123,9 @@
     }
     .cancel {
       --mdc-theme-primary: red;
+    }
+    mwc-linear-progress {
+    --mdc-theme-primary: rgb(78, 205, 196);
     }
   </style>{#if showPreview}
     <div>
@@ -142,5 +150,10 @@
       {/if}
       <mwc-button on:click={handleClickPublish}>publish!</mwc-button>
     </div>
+  </div>
+  <div>
+    {#if publishing}
+    <mwc-linear-progress indeterminate />
+    {/if}
   </div>
 </div>

@@ -59,6 +59,7 @@
   "dependencies": {
     "@material/mwc-button": "^0.20.0",
     "@material/mwc-dialog": "^0.20.0",
+    "@material/mwc-linear-progress": "^0.25.3",
     "@material/mwc-textarea": "^0.20.0",
     "@rollup/plugin-commonjs": "^17.1.0",
     "@rollup/plugin-json": "^4.1.0",
