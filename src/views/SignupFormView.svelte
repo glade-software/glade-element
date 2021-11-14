@@ -30,6 +30,13 @@
 
   console.debug("SignupFormView initialized");
 
+  async function onKeyUp(event) {
+    const enterKeyCode = 13;
+    if(event.keyCode === enterKeyCode){
+      handleClickCreateAccount();
+    }
+  }
+
   async function handleUsernameBlur(ev: { target: TextField }) {
     const usernameToCheck = ev.target.value;
     const checkUsernameAvailability = firebase
@@ -162,6 +169,7 @@
         type="password"
         label="confirm password"
         bind:this={confirmPasswordTextField}
+        on:keyup={onKeyUp}
       />
       <mwc-button class="formItem" outlined on:click={handleClickCreateAccount}
         >Create Account</mwc-button
