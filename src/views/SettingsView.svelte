@@ -24,6 +24,9 @@
     setView(DialogView.List);
     await firebase.auth().signOut();
   }
+  async function handleClickSignIn() {
+    setView(DialogView.AuthenticationMenu);
+  }
 </script>
 
 <div>
@@ -34,6 +37,9 @@
       padding-top: 8px;
       min-width: 500px;
     }
+    .signInButton {
+      display: flex;
+    }
   </style>
   <div class="settings">
     {#if user}
@@ -41,7 +47,14 @@
         >sign out!</mwc-button
       >
     {:else}
+    <div>
       <div>there are no settings for signed out users!</div>
+      <div>
+        <mwc-button class="signInButton" on:click={handleClickSignIn}
+          >sign in?</mwc-button
+        >
+      </div>
+    </div>
     {/if}
   </div>
 </div>
