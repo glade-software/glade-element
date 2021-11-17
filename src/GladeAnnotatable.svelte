@@ -43,14 +43,6 @@
 
   let currentUser = null;
 
-  // const user = {
-  //    uid: firebase.auth().currentUser.uid,
-  //    displayName: firebase.auth().currentUser.displayName,
-  //    email: firebase.auth().currentUser.email
-  // }
-
-  // userStore.set(user)
-
   userStore.subscribe((u) => {
     currentUser = u;
   });
@@ -87,13 +79,11 @@
   // this comes from the attribute "apikey" on glade-annotatable
   export let apikey: string;
 
-  console.log("apikey supplied", apikey);
 
   if (!apikey) {
     apikey = ROOT_API_KEY;
   }
 
-  console.log("final apikey", apikey);
 
   const doAPIKeyValidation = async () => {
     if (apikey) {
