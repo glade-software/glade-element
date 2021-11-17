@@ -70,7 +70,6 @@ module.exports = {
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Glade Software, Inc. Built with Docusaurus.`,
     },
-    sidebarCollapsible: false,
     colorMode: {disableSwitch: true},
   },
   presets: [
@@ -79,15 +78,11 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+    sidebarCollapsible: false,
+
           // Please change this to your repo.
           editUrl:
             'https://github.com/glade-software/glade-element/edit/master/docs/',
-        },
-        demos: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          editUrl:
-            'https://github.com/glade-software/glade-element/edit/master/demos/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
