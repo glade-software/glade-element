@@ -23,7 +23,6 @@
     currentUser = u;
   });
 
-  console.log("currentUser ListAnnotationView", currentUser);
   const dispatch = createEventDispatcher();
 
   /**

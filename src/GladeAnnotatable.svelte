@@ -49,7 +49,7 @@
 
   firebase.auth().onAuthStateChanged((u) => {
     if (u) {
-      console.log("logged in");
+      console.debug("logged in");
       const user = {
         uid: u.uid,
         email: u.email,
@@ -95,7 +95,7 @@
         const validity = await validateAPIKey({ apiKey: apikey });
         const { isValid, forest } = validity.data;
         if (isValid) {
-          console.log("apikey is valid", forest);
+          console.debug("apikey is valid", forest);
 
           const isForestOwner = currentUser?.uid === forest.ownerUid;
 
@@ -109,7 +109,7 @@
             };
           });
 
-          console.log("currentUser.isForestOwner", isForestOwner);
+          console.debug("currentUser.isForestOwner", isForestOwner);
         } else {
           console.error("apikey is not valid");
         }
