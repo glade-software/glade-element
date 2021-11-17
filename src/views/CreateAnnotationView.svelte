@@ -3,6 +3,7 @@
 <script lang="ts">
   import "@material/mwc-button";
   import "@material/mwc-textarea";
+  import "@material/mwc-linear-progress";
   import firebase from "@firebase/app";
   import "@firebase/auth";
   import Annotation from "../Annotation";
@@ -10,7 +11,6 @@
   import { DialogView } from "../DialogView";
   import type { Err } from "../Err";
   import { createEventDispatcher } from "svelte";
-
   const dispatch = createEventDispatcher();
 
   /**
@@ -34,19 +34,24 @@
     dispatch("error", err);
   }
 
-  export let gladedocumenthash = "0";
-  export let focusedGladeDOMNodeHash = 0;
+  export let gladedocumenthash: string = "0";
+  export let focusedGladeDOMNodeHash: number = 0;
+  export let apikey: string;
+
   let htmlString: string | undefined = "";
   $: showPreview = false;
   let plainTextBody: string = "";
 
-  const user = firebase.auth().currentUser;
+  let publishing = false;
 
   $: pendingAnnotation = new Annotation({
     gladeDOMNodeHash: focusedGladeDOMNodeHash,
     plainTextBody,
     htmlString,
-    postedBy: user?.displayName || "anonymous",
+    postedBy: {
+      displayName: firebase.auth().currentUser?.displayName,
+      uid: firebase.auth().currentUser?.uid,
+    },
   });
 
   async function handleClickPreview() {
@@ -81,6 +86,7 @@
   }
 
   async function handleClickPublish() {
+    publishing = true;
     if (!plainTextBody) {
       setError({
         message: "You need to add content before posting!",
@@ -89,9 +95,18 @@
       return;
     }
     htmlString = (await pendingAnnotation.getHtmlString()) || undefined;
-    const published = await pendingAnnotation.save(gladedocumenthash);
-    processNewAnnotation(published);
-    setView(DialogView.List, true);
+    const published = await pendingAnnotation.save(gladedocumenthash, apikey);
+    if (published) {
+      processNewAnnotation(published);
+      setView(DialogView.List, true);
+    } else {
+      console.log("failed to publish!\nare you sure your API key is correct?");
+      setError({
+        message: "Oh no! we couldn't publish your annotation",
+        code: "CreateAnnotationView.handleClickPublish.failedToSave",
+      });
+    }
+    publishing = false;
   }
 </script>
 
@@ -109,8 +124,13 @@
     .cancel {
       --mdc-theme-primary: red;
     }
+    mwc-linear-progress {
+    --mdc-theme-primary: rgb(78, 205, 196);
+    }
   </style>{#if showPreview}
-    <div><AnnotationComponent annotation={pendingAnnotation} /></div>
+    <div>
+      <AnnotationComponent annotation={pendingAnnotation} isPreview={true} />
+    </div>
   {:else}
     <mwc-textarea
       outlined="true"
@@ -130,5 +150,10 @@
       {/if}
       <mwc-button on:click={handleClickPublish}>publish!</mwc-button>
     </div>
+  </div>
+  <div>
+    {#if publishing}
+    <mwc-linear-progress indeterminate />
+    {/if}
   </div>
 </div>

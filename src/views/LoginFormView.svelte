@@ -46,6 +46,12 @@
       setError(signInError);
     }
   }
+  async function onKeyUp(event){
+    const enterKeyCode = 13;
+    if(event.keyCode ===  enterKeyCode){
+      handleClickSignIn();
+    }
+  }
 </script>
 
 <div>
@@ -72,6 +78,7 @@
       outlined
       type="password"
       label="password"
+      on:keyup={onKeyUp}
     />
     <mwc-button class="formRow" outlined on:click={handleClickSignIn}
       >Sign In</mwc-button

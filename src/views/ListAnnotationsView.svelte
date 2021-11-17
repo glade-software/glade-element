@@ -5,23 +5,39 @@
   import { createEventDispatcher } from "svelte";
   import firebase from "@firebase/app";
   import "@firebase/auth";
+  import userStore from "../stores/user";
   import AnnotationComponent from "../components/Annotation.svelte";
   import type Annotation from "../Annotation";
   import type { Err } from "../Err";
   export let annotations: Annotation[];
+  export let apikey: String;
+  export let gladedocumenthash: String;
+
+  const deleteAnnotationFromDb = firebase
+    .functions()
+    .httpsCallable("deleteAnnotation");
+
+  $: currentUser = null;
+
+  userStore.subscribe((u) => {
+    currentUser = u;
+  });
 
   const dispatch = createEventDispatcher();
 
   /**
    * Sets the activeView in GladeAnnotatable
    * @param nextView
+   * @param dismissModal
    */
-  function setView(nextView: DialogView) {
+  function setView(nextView: DialogView, dismissModal?: Boolean) {
     console.log("dispatching change-view");
     dispatch("set-view", {
       nextView,
+      dismissModal,
     });
   }
+
   /**
    * Sets an error for GladeAnnotatable to react to
    * @param setError
@@ -42,6 +58,18 @@
       return;
     }
     setView(DialogView.Create);
+  };
+
+  const deleteAnnotation = async ({ uid }) => {
+    console.log("deleting annotation", uid);
+    const params = {
+      annotationUid: uid,
+      gladeAPIKey: apikey,
+      gladeDocumentHash: gladedocumenthash,
+    };
+    await deleteAnnotationFromDb(params);
+    dispatch("delete-annotation", params);
+    dispatch("set-view", { nextView: DialogView.List, dismissModal: true });
   };
 
   console.debug("ListAnnotationsView initialized");
@@ -71,7 +99,11 @@
   <div>
     {#if annotations && annotations.length}
       {#each annotations as annotation}
-        <AnnotationComponent {annotation} />
+        <AnnotationComponent
+          {annotation}
+          {deleteAnnotation}
+          isPreview={false}
+        />
       {/each}
     {:else}
       <div class="noAnnotationsMsg">No annotations here yet!</div>

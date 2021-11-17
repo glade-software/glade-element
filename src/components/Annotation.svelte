@@ -2,7 +2,22 @@
 
 <script lang="ts">
   import type Annotation from "../Annotation";
+  import currentUser from "../stores/user";
   export let annotation: Annotation;
+  export let deleteAnnotation;
+  export let isPreview;
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
+
+  let isDeleting = false;
+  async function handleDeleteAnnotation() {
+    if (isPreview) return;
+    isDeleting = true;
+    // pass back to ListAnnotationView for deletion
+    console.log("handleDelete", annotation);
+    await deleteAnnotation(annotation);
+    isDeleting = false;
+  }
 </script>
 
 <div>
@@ -14,7 +29,10 @@
       border-radius: 8px;
       min-width: 500px;
     }
-
+    .deleteButton {
+      color: #ff0000;
+      float: right;
+    }
     .htmlContent {
       max-width: 800px;
       object-fit: contain;
@@ -54,8 +72,12 @@
   </style>
   <div class="annotation">
     <span class="postedBy"
-      >@{annotation?.postedBy || "accidental-anonymous-anteater"}</span
+      >@{annotation?.postedBy.displayName ||
+        "accidental-anonymous-anteater"}</span
     >
+    {#if (!isPreview && $currentUser && annotation?.postedBy.uid == $currentUser.uid) || $currentUser?.isForestOwner}
+      <button class="deleteButton" on:click={handleDeleteAnnotation} disabled={isDeleting}>x</button>
+    {/if}
     {#if annotation && !annotation?.htmlString}
       <div class="htmlContent loading">{annotation.plainTextBody || ""}</div>
     {/if}

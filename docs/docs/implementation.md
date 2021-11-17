@@ -32,9 +32,9 @@ Glade will iterate through the [**referents**](/docs/glossary#referent) that mak
 
 ## In the Weeds
 
-### lit-element
+### svelte
 
-glade-annotatable is built with a library called [lit-element](https://lit-element.polymer-project.org/) which makes the declaration of custom elements simpler, supposedly.
+glade-annotatable is built with [svelte](https://svelte.dev/) using it's [custom element mode](https://svelte.dev/docs#Custom_element_API)
 
 ### Lifecycle
 
@@ -42,22 +42,16 @@ Let's assume you've gone through the [Getting Started Guide](/docs/getting-start
 
 At that point after your page loads, the following events will occur in the browser as a result of the component being rendered to the DOM.
 
-### Constructor
 
-The constructor initializes [firebase](https://firebase.com), which is the BaaS platform that holds Glade's annotations.
+The Svelte lifecycle event [onMount](https://svelte.dev/docs#onMount) will be triggered, and we call `startGlade()`, which will perform the following 3 actions:
 
-Unlike the following steps it's initialization does not depend on any DOM content being parsed.
-
-### Updated
-
-Whenever a lit-element property is changed, lit-element will call the `updated` handler, including on first load
-
-1. Upon first load `updated` will call a function called `setContentHashes` which will hash each DOM node in the Glade [**document**](/docs/glossary#document), these nodes being hashed are also known as [**referents**](/docs/glossary#referent).
+1. Glade will `setSemanticContentHashes`, which means it will generate a unique identifier for each node within the glade document as they appear to the user.
 
    Currently it is _only_ the [textContent](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent) property of the nodes that is hashed.
-   Each DOM node hash is known as a `gladeDomNodeHash`.
+   Each DOM node hash is known as a `gladeDOMNodeHash`, and it will be reflected on the node as an attribue called `data-glade-node-hash`.
 
 2. Next, all these hashes are concatenated and hashed once more, this new hash is called the `gladeDocumentHash` and this is used as the unique identifier for the Glade [**document**](/docs/glossary#document).
 
-3. Then `getAnnotationsFromDb` is called and all Glade [**annotations**](/docs/glossary#annotations) are looked up by their `gladeDocumentHash` in [firestore](https://firebase.google.com/products/firestore), and are subsequently iterated through in the client and assigned to their [**referent**](/docs/glossary#referent) nodes by looking at their respective `gladeDomNodeHash`s and comparing them to the ones in the DOM currently.
+3. Then `getAnnotations` is called and all Glade [**annotations**](/docs/glossary#annotations) are looked up by their `gladeDocumentHash` in [firestore](https://firebase.google.com/products/firestore), and are subsequently iterated through in the client and assigned to their [**referent**](/docs/glossary#referent) nodes by looking at the annotation's `gladeDomNodeHash` property and comparing them to the ones in the DOM as attributes currently.
+
 4. If a [**referent**](/docs/glossary#referent) has annotations, the `glade-has-annotations` [class](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/class) is applied to that node so that users can style their nodes accordingly.
