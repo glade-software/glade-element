@@ -28,3 +28,4 @@
 # Environment Variables
 /app/.env
 /app/.env.build
+scratchpad/
