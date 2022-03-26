@@ -19,6 +19,7 @@
 # misc
 .DS_Store
 /app/.env*
+scratchpad/
 
 # debug
 /app/npm-debug.log*
@@ -28,4 +29,3 @@
 # Environment Variables
 /app/.env
 /app/.env.build
-scratchpad/
