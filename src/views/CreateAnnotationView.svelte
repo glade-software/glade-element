@@ -49,7 +49,7 @@
     plainTextBody,
     htmlString,
     postedBy: {
-      displayName: firebase.auth().currentUser?.displayName,
+      displayName: firebase.auth().currentUser?.displayName || 'tiny-anonymous-ocelot', // If the user is creating their first anon post, the displayName hasn't sync'd yet
       uid: firebase.auth().currentUser?.uid,
     },
   });
@@ -144,16 +144,16 @@
     >
     <div>
       {#if showPreview}
-        <mwc-button on:click={handleClickEdit}>edit!</mwc-button>
+        <mwc-button on:click={handleClickEdit} disabled={publishing}>edit!</mwc-button>
       {:else}
-        <mwc-button on:click={handleClickPreview}>show preview!</mwc-button>
+        <mwc-button on:click={handleClickPreview} disabled={publishing}>show preview!</mwc-button>
       {/if}
-      <mwc-button on:click={handleClickPublish}>publish!</mwc-button>
+      <mwc-button on:click={handleClickPublish} disabled={publishing}>publish!</mwc-button>
     </div>
   </div>
   <div>
     {#if publishing}
-    <mwc-linear-progress indeterminate />
+    <div><mwc-linear-progress indeterminate /></div>
     {/if}
   </div>
 </div>

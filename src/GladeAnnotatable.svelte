@@ -205,8 +205,7 @@
    */
   onMount(() => {
     console.debug("mounted");
-    // TODO: investigate: for some reason the element isn't actually in the DOM until a ms later
-    setTimeout(startGlade, 1);
+    startGlade()
   });
 
   const startGlade = async () => {
