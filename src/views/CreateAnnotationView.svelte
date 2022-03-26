@@ -153,7 +153,7 @@
   </div>
   <div>
     {#if publishing}
-    <mwc-linear-progress indeterminate />
+    <div><mwc-linear-progress indeterminate /></div>
     {/if}
   </div>
 </div>
