@@ -1,5 +1,5 @@
-import firebase from "firebase/app";
-import "firebase/functions";
+import { functions } from "./firebase-instance";
+import { httpsCallable } from "firebase/functions";
 
 type Timestamp = {
   _seconds: number;
@@ -11,7 +11,7 @@ type PostedBy = {
   displayName: string;
 };
 
-type AnnotationData = {
+export type AnnotationData = {
   plainTextBody: string;
   htmlString?: string;
   postedBy: PostedBy;
@@ -20,6 +20,18 @@ type AnnotationData = {
   hidden?: boolean;
   uid?: string;
 };
+
+interface GetHTMLFromMarkdownStringArrayResponse {
+  data:{
+  htmlStrings: string[];
+  }
+}
+
+interface PublishAnnotationResponse {
+  data:{
+  uid: string;
+  }
+}
 
 export default class Annotation {
   plainTextBody;
@@ -42,15 +54,15 @@ export default class Annotation {
     this.isSaving = false;
   }
 
+
+
   async getHtmlString() {
-    const getHTMLFromMarkdown = firebase
-      .functions()
-      .httpsCallable("getHTMLFromMarkdown");
+    const getHTMLFromMarkdownStringArray = httpsCallable(functions,"getHTMLFromMarkdownStringArray");
 
     try {
-      const result = await getHTMLFromMarkdown({
+      const result = await getHTMLFromMarkdownStringArray({
         markdownStrings: [this.plainTextBody],
-      });
+      }) as GetHTMLFromMarkdownStringArrayResponse;
       this.htmlString = result.data.htmlStrings[0];
       return this.htmlString;
     } catch (getHTMLFromMarkdownError) {
@@ -77,12 +89,10 @@ export default class Annotation {
       uid: null,
     };
 
-    const publishAnnotation = firebase
-      .functions()
-      .httpsCallable("publishAnnotationV2");
+    const publishAnnotation = httpsCallable(functions, "publishAnnotation");
 
     try {
-      const response = await publishAnnotation(annotation);
+      const response = await publishAnnotation(annotation) as PublishAnnotationResponse;
       this.isSaving = false;
       console.log("annotation published!", response.data);
       annotation.uid = response.data.uid;

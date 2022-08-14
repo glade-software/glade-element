@@ -4,8 +4,8 @@
   import "@material/mwc-textfield";
   import "@material/mwc-button";
   import type { TextField } from "@material/mwc-textfield";
-  import firebase from "@firebase/app";
-  import "@firebase/auth";
+  import {auth} from "../firebase-instance";
+  import { signInWithEmailAndPassword } from "firebase/auth";
   let emailTextField: TextField;
   let passwordTextField: TextField;
   import { DialogView } from "../DialogView";
@@ -27,7 +27,7 @@
 
   /**
    * Sets an error for GladeAnnotatable to react to
-   * @param setError
+   * @param err
    */
   function setError(err: Err) {
     console.debug("dispatching", err.code);
@@ -40,15 +40,14 @@
     const email = emailTextField.value;
     const password = passwordTextField.value;
     try {
-      await firebase.auth().signInWithEmailAndPassword(email, password);
+      await signInWithEmailAndPassword(auth,email, password);
       setView(DialogView.List);
     } catch (signInError) {
       setError(signInError);
     }
   }
-  async function onKeyUp(event){
-    const enterKeyCode = 13;
-    if(event.keyCode ===  enterKeyCode){
+  async function onKeyUp(event:KeyboardEvent){
+    if(event.key === "Enter"){
       handleClickSignIn();
     }
   }

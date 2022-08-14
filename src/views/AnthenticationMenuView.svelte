@@ -3,8 +3,8 @@
 <script lang="ts">
   import "@material/mwc-textfield";
   import "@material/mwc-button";
-  import firebase from "@firebase/app";
-  import "@firebase/auth";
+  import { signInAnonymously } from "firebase/auth";
+  import { auth } from "../firebase-instance";
   import type { Err } from "../Err";
   import { DialogView } from "../DialogView";
   import { createEventDispatcher } from "svelte";
@@ -27,14 +27,14 @@
 
   /**
    * Sets an error for GladeAnnotatable to react to
-   * @param setError
+   * @param err
    */
   function setError(err: Err | null) {
     dispatch("error", err);
   }
 
   async function handleClickUseAnonymously() {
-    await firebase.auth().signInAnonymously();
+    await signInAnonymously(auth);
     setView(DialogView.List);
   }
 
