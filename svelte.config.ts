@@ -1,7 +1,8 @@
 import autoPreprocess from "svelte-preprocess";
 
 export default {
-  customElement: true,
-  preprocess: autoPreprocess(),
-  css: true,
+  preprocess: autoPreprocess({ typescript: true }),
+  compilerOptions: {
+    customElement: true
+  },
 };

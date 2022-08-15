@@ -21,25 +21,33 @@
 
   // Glade Classes
   import Annotation from "./Annotation";
+  import type {AnnotationData} from './Annotation'
 
   // SemanticHash Library
   import { hashForString, getSemanticHashForDOMNode } from "./semanticHashing";
 
-  // Datastore
-  import firebase from "firebase/app";
-  import "@firebase/functions";
-  import initializeFirebase from "./initializeFirebase";
+
+  import {functions, auth} from './firebase-instance'
+  import { onAuthStateChanged } from "firebase/auth";
+  import { httpsCallable } from "firebase/functions";
+
   import { DialogView } from "./DialogView";
   import type { Err } from "./Err";
   import Cohere from "cohere-js";
 
+  let err: Err | null = null;
+  $: error = err; // wat
+
   const ROOT_API_KEY =
     "v0ru.379031335f10b4cb40cff8f6feeb3d598db6529d52aa98637549ca8b63694c10";
+
+  // this comes from the attribute "apikey" on glade-annotatable
+  export let apikey: string;
+
   const COHERE_API_KEY = "0bEMs-b6UkqjiNepPJ1M4gZ9";
 
   Cohere.init(COHERE_API_KEY);
 
-  initializeFirebase();
 
   let currentUser = null;
 
@@ -47,7 +55,7 @@
     currentUser = u;
   });
 
-  firebase.auth().onAuthStateChanged((u) => {
+  onAuthStateChanged(auth, (u) => {
     if (u) {
       console.debug("logged in");
       const user = {
@@ -76,24 +84,30 @@
   activeView = DialogView.List;
   console.debug("initalized");
 
-  // this comes from the attribute "apikey" on glade-annotatable
-  export let apikey: string;
-
-
   if (!apikey) {
     apikey = ROOT_API_KEY;
   }
 
+  interface ValidateAPIKeyResponse {
+    data: {
+      isValid: boolean;
+      forest: {
+        ownerUid: string;
+      };
+    };
+  }
 
   const doAPIKeyValidation = async () => {
     if (apikey) {
-      const validateAPIKey = firebase
-        .functions()
-        .httpsCallable("validateAPIKey");
-
+      const validateAPIKey = httpsCallable(functions, "validateAPIKey");
       try {
-        const validity = await validateAPIKey({ apiKey: apikey });
-        const { isValid, forest } = validity.data;
+        // TODO: can we share this type as a return value for the cloud function?
+        const validityResponse = (await validateAPIKey({
+          apikey,
+        })) as ValidateAPIKeyResponse;
+
+        const { isValid, forest } = validityResponse.data;
+
         if (isValid) {
           console.debug("apikey is valid", forest);
 
@@ -121,13 +135,10 @@
 
   doAPIKeyValidation();
 
-  console.debug(`apiKey:${apikey}`);
+  console.debug(`apiKey: ${apikey}`);
 
   // if this is true, we show the Glade UI
   let showGladeUI = false;
-
-  let err: Err | null = null;
-  $: error = err; // wat
 
   // the "semantic hash" of the refferent Glade DOM node (subject of annotations)
   let focusedGladeDOMNodeHash: number = 0;
@@ -150,29 +161,41 @@
   const setSematicContentHashes = () => {
     const gladeDOMNodeHashes: string[] = [];
     const articleContent = article.querySelector("slot") as HTMLSlotElement;
+
     const children = Array.from(articleContent.assignedElements());
+    
     children.forEach((node: Element) => {
       const gladeDOMNodeHash = getSemanticHashForDOMNode(node);
+
       if (gladeDOMNodeHash) {
         node.setAttribute("data-glade-node-hash", gladeDOMNodeHash);
         gladeDOMNodeHashes.push(gladeDOMNodeHash);
       }
     });
+
     // Recursive hashing for document ID
     gladedocumenthash = hashForString(gladeDOMNodeHashes.join("_"));
+
     console.debug("glade-document-hash", gladedocumenthash);
   };
 
+  interface GetAnnotationsResponse {
+    data: {
+      annotations: AnnotationData[];
+    };
+  }
+
   const getAnnotations = async () => {
     try {
-      const fetchAnnotationsForDocumentHash = firebase
-        .functions()
-        .httpsCallable("getAnnotationsV2");
+      const fetchAnnotationsForDocumentHash = httpsCallable(
+        functions,
+        "getAnnotations"
+      );
 
       let response = await fetchAnnotationsForDocumentHash({
         gladeDocumentHash: gladedocumenthash,
         gladeAPIKey: apikey,
-      });
+      }) as GetAnnotationsResponse;
 
       annotations = response?.data?.annotations.map(
         (a: any) => new Annotation(a)
@@ -205,7 +228,7 @@
    */
   onMount(() => {
     console.debug("mounted");
-    startGlade()
+    startGlade();
   });
 
   const startGlade = async () => {

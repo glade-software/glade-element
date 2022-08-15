@@ -3,8 +3,9 @@
 <script lang="ts">
   import { DialogView } from "../DialogView";
   import { createEventDispatcher } from "svelte";
-  import firebase from "@firebase/app";
-  import "@firebase/auth";
+
+  import { httpsCallable } from "@firebase/functions";
+  import { functions, auth } from "../firebase-instance";
   import userStore from "../stores/user";
   import AnnotationComponent from "../components/Annotation.svelte";
   import type Annotation from "../Annotation";
@@ -13,9 +14,20 @@
   export let apikey: String;
   export let gladedocumenthash: String;
 
-  const deleteAnnotationFromDb = firebase
-    .functions()
-    .httpsCallable("deleteAnnotation");
+  type DeleteAnnotationResponse = {
+    data: {
+      deletedAt: number;
+    };
+  };
+
+  type DeleteAnnotationFunction = (
+    a: DeleteAnnotationParams
+  ) => Promise<DeleteAnnotationResponse>;
+
+  const deleteAnnotationFromDb = httpsCallable(
+    functions,
+    "deleteAnnotation"
+  ) as DeleteAnnotationFunction;
 
   $: currentUser = null;
 
@@ -40,7 +52,7 @@
 
   /**
    * Sets an error for GladeAnnotatable to react to
-   * @param setError
+   * @param err
    */
   function setError(err: Err) {
     console.debug("dispatching", err.code);
@@ -48,7 +60,7 @@
   }
 
   const handleClickCreateAnnotation = () => {
-    const user = firebase.auth().currentUser;
+    const user = auth.currentUser;
     if (!user) {
       setError({
         code: "ListAnnotationsView.handleClickCreateAnnotation.notLoggedIn",
@@ -60,9 +72,15 @@
     setView(DialogView.Create);
   };
 
+  interface DeleteAnnotationParams {
+    annotationUid: String;
+    gladeDocumentHash: String;
+    gladeAPIKey: String;
+  }
+
   const deleteAnnotation = async ({ uid }) => {
     console.log("deleting annotation", uid);
-    const params = {
+    const params: DeleteAnnotationParams = {
       annotationUid: uid,
       gladeAPIKey: apikey,
       gladeDocumentHash: gladedocumenthash,

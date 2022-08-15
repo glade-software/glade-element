@@ -4,8 +4,9 @@
   import "@material/mwc-button";
   import "@material/mwc-textarea";
   import "@material/mwc-linear-progress";
-  import firebase from "@firebase/app";
-  import "@firebase/auth";
+
+  import {auth} from "../firebase-instance";
+
   import Annotation from "../Annotation";
   import AnnotationComponent from "../components/Annotation.svelte";
   import { DialogView } from "../DialogView";
@@ -27,7 +28,7 @@
 
   /**
    * Sets an error for GladeAnnotatable to react to
-   * @param setError
+   * @param err
    */
   function setError(err: Err) {
     console.debug("dispatching", err.code);
@@ -49,8 +50,8 @@
     plainTextBody,
     htmlString,
     postedBy: {
-      displayName: firebase.auth().currentUser?.displayName || 'tiny-anonymous-ocelot', // If the user is creating their first anon post, the displayName hasn't sync'd yet
-      uid: firebase.auth().currentUser?.uid,
+      displayName: auth.currentUser?.displayName || 'tiny-anonymous-ocelot', // If the user is creating their first anon post, the displayName hasn't sync'd yet
+      uid: auth.currentUser?.uid,
     },
   });
 
@@ -129,7 +130,7 @@
     }
   </style>{#if showPreview}
     <div>
-      <AnnotationComponent annotation={pendingAnnotation} isPreview={true} />
+      <AnnotationComponent annotation={pendingAnnotation} isPreview={true} deleteAnnotation={null}/>
     </div>
   {:else}
     <mwc-textarea

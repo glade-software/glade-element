@@ -4,8 +4,9 @@
   import "@material/mwc-textfield";
   import type { TextField } from "@material/mwc-textfield";
   import "@material/mwc-button";
-  import firebase from "@firebase/app";
-  import "@firebase/functions";
+  import { auth, functions } from "../firebase-instance";
+  import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+  import {httpsCallable} from "firebase/functions";
   import { DialogView } from "../DialogView";
   import { createEventDispatcher } from "svelte";
 
@@ -30,23 +31,20 @@
 
   console.debug("SignupFormView initialized");
 
-  async function onKeyUp(event) {
-    const enterKeyCode = 13;
-    if(event.keyCode === enterKeyCode){
+  async function onKeyUp(event: KeyboardEvent) {
+    if(event.key === "Enter"){
       handleClickCreateAccount();
     }
   }
 
   async function handleUsernameBlur(ev: { target: TextField }) {
     const usernameToCheck = ev.target.value;
-    const checkUsernameAvailability = firebase
-      .functions()
-      .httpsCallable("checkUsernameAvailability");
+    const checkUsernameAvailability = httpsCallable(functions, "checkUsernameAvailability");
 
     try {
       const usernameIsAvailableResponse = await checkUsernameAvailability(
         usernameToCheck
-      );
+      )  as CheckUsernameAvailabilityResponse;
 
       const usernameIsAvailable =
         usernameIsAvailableResponse.data.usernameAvailable;
@@ -65,16 +63,20 @@
     }
   }
 
+  interface CheckUsernameAvailabilityResponse {
+    data:{
+      usernameAvailable: boolean;
+    }
+  }
+
   async function handleClickCreateAccount() {
     const username = usernameTextField.value;
-    const checkUsernameAvailability = firebase
-      .functions()
-      .httpsCallable("checkUsernameAvailability");
+    const checkUsernameAvailability = httpsCallable(functions,"checkUsernameAvailability");
 
     try {
       const usernameIsAvailableResponse = await checkUsernameAvailability(
         username
-      );
+      ) as CheckUsernameAvailabilityResponse;
 
       const usernameIsAvailable =
         usernameIsAvailableResponse.data.usernameAvailable;
@@ -94,14 +96,12 @@
             confirmPasswordTextField.reportValidity();
             return;
           }
-          const { user } = await firebase
-            .auth()
-            .createUserWithEmailAndPassword(
+          const { user } = await createUserWithEmailAndPassword(auth,
               emailTextField.value,
               passwordTextField.value
             );
           console.debug("user created!");
-          await user.updateProfile({ displayName: username });
+          await updateProfile(user,{ displayName: username });
 
           usernameTextField.value = "";
           emailTextField.value = "";

@@ -1,14 +1,14 @@
 <svelte:options tag="glade-annotatable-settings-view" />
 
 <script lang="ts">
-  import firebase from "@firebase/app";
-  import "@firebase/auth";
+  import{auth} from '../firebase-instance'
+  import { signOut } from "firebase/auth";
   import "@material/mwc-button";
   import { DialogView } from "../DialogView";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
-  const user = firebase.auth().currentUser;
+  const user = auth.currentUser;
   /**
    * Sets the activeView in GladeAnnotatable
    * @param nextView
@@ -22,7 +22,7 @@
   }
   async function handleClickSignOut() {
     setView(DialogView.List);
-    await firebase.auth().signOut();
+    await signOut(auth);
   }
   async function handleClickSignIn() {
     setView(DialogView.AuthenticationMenu);

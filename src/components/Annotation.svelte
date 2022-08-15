@@ -5,9 +5,7 @@
   import currentUser from "../stores/user";
   export let annotation: Annotation;
   export let deleteAnnotation;
-  export let isPreview;
-  import { createEventDispatcher } from "svelte";
-  const dispatch = createEventDispatcher();
+  export let isPreview: boolean;
 
   let isDeleting = false;
   async function handleDeleteAnnotation() {

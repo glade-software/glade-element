@@ -17,7 +17,7 @@ export default {
   input: "src/index.ts",
   output: [{ file: pkg.module, format: "es", sourcemap: !production }],
   plugins: [
-    svelte({ ...svelteConfig, customElement: true }),
+    svelte({ ...svelteConfig }),
     typescript(),
     replace({
       "Reflect.decorate": "undefined",
