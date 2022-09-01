@@ -8,9 +8,11 @@ module.exports = {
   projectName: "glade-annotatable", // Usually your repo name.
   themeConfig: {
     algolia: {
-      appId: 'DM7GDZHQA2',
-      apiKey: '679fd8035519b32d53f2e3035fc1477c',
-      indexName: 'glade',
+      appId: "DM7GDZHQA2",
+      apiKey: "679fd8035519b32d53f2e3035fc1477c",
+      indexName: "glade",
+      contextualSearch: true,
+      searchPagePath: "search",
     },
     navbar: {
       title: "Glade",
