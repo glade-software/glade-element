@@ -103,7 +103,7 @@
       try {
         // TODO: can we share this type as a return value for the cloud function?
         const validityResponse = (await validateAPIKey({
-          apikey,
+          apiKey: apikey,
         })) as ValidateAPIKeyResponse;
 
         const { isValid, forest } = validityResponse.data;

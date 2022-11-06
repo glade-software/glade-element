@@ -20,8 +20,8 @@
     "crypto-js": "^4.1.1",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0",
-    "remark-html": "11.0.0",
-    "remark": "^3.0.0",
+    "remark": "^13.0.0",
+    "remark-html": "^13.0.1",
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
