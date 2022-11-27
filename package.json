@@ -1,7 +1,7 @@
 {
   "name": "@glade-software/glade-annotatable",
   "description": "a component that makes DOM annotatable",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "svelte": "src/index.ts",
   "type": "module",
   "main": "src/index.js",
