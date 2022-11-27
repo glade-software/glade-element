@@ -31,7 +31,7 @@
       justify-content: space-around;
     }
     .sm-icon:hover {
-      color: #6200f3;
+      color: #ff0000;
       cursor: pointer;
     }
     .shamelessSpacer {

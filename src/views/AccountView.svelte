@@ -1,7 +1,7 @@
 <svelte:options tag="glade-annotatable-account-view" />
 
 <script lang="ts">
-  import{auth} from '../firebase-instance'
+  import { auth } from "../firebase-instance";
   import { signOut } from "firebase/auth";
   import "@material/mwc-button";
   import { DialogView } from "../DialogView";
@@ -27,7 +27,7 @@
   async function handleClickSignIn() {
     setView(DialogView.AuthenticationMenu);
   }
-  async function goBack(){
+  async function goBack() {
     setView(DialogView.List);
   }
 </script>
@@ -39,36 +39,27 @@
       justify-content: center;
       padding-top: 8px;
       min-width: 500px;
+      flex-direction: column;
+    }
+    .flex {
+      display: flex;
     }
     .or {
       display: flex;
       justify-content: center;
       align-items: center;
     }
-    .button {
-      display: flex;
-    }
-    .back-button {
-      display: flex;
-      --mdc-theme-primary: #848482;
-    }
-
   </style>
   <div class="account-view">
     {#if user}
-      <mwc-button class="button" on:click={handleClickSignOut}
+      <mwc-button class="flex" on:click={handleClickSignOut}
         >sign out!</mwc-button
       >
     {:else}
-    <div>
-      <div>
-        <mwc-button class="button" on:click={handleClickSignIn}
-          >sign in?</mwc-button
-        >
-        <div class="or"><span>or</span></div>
-        <mwc-button class="back-button" on:click={goBack}>view annotations</mwc-button>
-      </div>
-    </div>
+      <mwc-button class="flex" on:click={handleClickSignIn}>sign in?</mwc-button
+      >
     {/if}
+    <div class="or"><span>or</span></div>
+    <mwc-button class="flex" on:click={goBack}>back to annotations</mwc-button>
   </div>
 </div>
