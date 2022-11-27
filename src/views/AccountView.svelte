@@ -1,4 +1,4 @@
-<svelte:options tag="glade-annotatable-settings-view" />
+<svelte:options tag="glade-annotatable-account-view" />
 
 <script lang="ts">
   import{auth} from '../firebase-instance'
@@ -27,32 +27,46 @@
   async function handleClickSignIn() {
     setView(DialogView.AuthenticationMenu);
   }
+  async function goBack(){
+    setView(DialogView.List);
+  }
 </script>
 
 <div>
   <style>
-    .settings {
+    .account-view {
       display: flex;
       justify-content: center;
       padding-top: 8px;
       min-width: 500px;
     }
-    .signInButton {
+    .or {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .button {
       display: flex;
     }
+    .back-button {
+      display: flex;
+      --mdc-theme-primary: #848482;
+    }
+
   </style>
-  <div class="settings">
+  <div class="account-view">
     {#if user}
-      <mwc-button class="settingsButton" on:click={handleClickSignOut}
+      <mwc-button class="button" on:click={handleClickSignOut}
         >sign out!</mwc-button
       >
     {:else}
     <div>
-      <div>there are no settings for signed out users!</div>
       <div>
-        <mwc-button class="signInButton" on:click={handleClickSignIn}
+        <mwc-button class="button" on:click={handleClickSignIn}
           >sign in?</mwc-button
         >
+        <div class="or"><span>or</span></div>
+        <mwc-button class="back-button" on:click={goBack}>view annotations</mwc-button>
       </div>
     </div>
     {/if}

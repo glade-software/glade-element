@@ -30,6 +30,9 @@
     .deleteButton {
       color: #ff0000;
       float: right;
+      bakground-color: gray;
+      border: none;
+      border-radius: 4px
     }
     .htmlContent {
       max-width: 800px;
@@ -74,7 +77,7 @@
         "accidental-anonymous-anteater"}</span
     >
     {#if (!isPreview && $currentUser && annotation?.postedBy.uid == $currentUser.uid) || $currentUser?.isForestOwner}
-      <button class="deleteButton" on:click={handleDeleteAnnotation} disabled={isDeleting}>x</button>
+      <button class="deleteButton" on:click={handleDeleteAnnotation} disabled={isDeleting}>delete</button>
     {/if}
     {#if annotation && !annotation?.htmlString}
       <div class="htmlContent loading">{annotation.plainTextBody || ""}</div>
