@@ -10,7 +10,7 @@
   // VIEWS
   import ListAnnotationsView from "./views/ListAnnotationsView.svelte";
   import CreateAnnotationView from "./views/CreateAnnotationView.svelte";
-  import SettingsView from "./views/SettingsView.svelte";
+  import AccountView from "./views/AccountView.svelte";
   import LoginFormView from "./views/LoginFormView.svelte";
   import SignupFormView from "./views/SignupFormView.svelte";
   import AuthenticationMenuView from "./views/AnthenticationMenuView.svelte";
@@ -266,10 +266,10 @@
     activeView = DialogView.List;
   };
 
-  const handleClickSettings = () => {
+  const handleClickAccount = () => {
     activeView =
-      activeView !== DialogView.Settings
-        ? DialogView.Settings
+      activeView !== DialogView.Account
+        ? DialogView.Account
         : DialogView.List;
   };
 
@@ -306,7 +306,7 @@
     processAnnotations();
   };
 
-  $: title = activeView === DialogView.Settings ? "settings" : "annotations";
+  $: title = activeView !== DialogView.Account && activeView !== DialogView.AuthenticationMenu ? "annotations" : "account";
 
   export { gladedocumenthash };
 </script>
@@ -331,7 +331,7 @@
       margin: 8px;
     }
   </style>
-  <Header {title} {handleClickSettings} />
+  <Header {title} {handleClickAccount} />
   {#if error}
     <div />
     <div class="error">
@@ -365,8 +365,8 @@
     <LoginFormView on:set-view={handleSetView} on:error={handleError} />
   {:else if activeView === DialogView.SignupForm}
     <SignupFormView on:set-view={handleSetView} on:error={handleError} />
-  {:else if activeView === DialogView.Settings}
-    <SettingsView on:set-view={handleSetView} on:error={handleError} />
+  {:else if activeView === DialogView.Account}
+    <AccountView on:set-view={handleSetView} on:error={handleError} />
   {:else}
     <div>Never let it get this far.</div>
   {/if}

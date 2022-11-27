@@ -2,7 +2,9 @@
 
 <script lang="ts">
   export let title: string;
-  export let handleClickSettings: svelte.JSX.EventHandler;
+  export let handleClickAccount: svelte.JSX.EventHandler;
+  import AccountIcon from '../img/icon/user.svelte'
+
 </script>
 
 <div>
@@ -28,23 +30,20 @@
       vertical-align: 0;
       justify-content: space-around;
     }
-    .settingsIcon {
-      display: flex;
-      justify-self: self-end;
-      font-size: 1.15rem;
-    }
-    .settingsIcon:hover {
-      color: #6200f3;
+    .sm-icon:hover {
       cursor: pointer;
     }
     .shamelessSpacer {
       display: flex;
     }
+    .sm-icon {
+      padding-top: 4px;
+    }
   </style>
   <div class="heading">
     <div class="title">{title}</div>
     <span class="shamelessSpacer" />
-    <div class="settingsIcon" on:click={handleClickSettings}>⚙</div>
+    <div class="sm-icon" on:click={handleClickAccount}><AccountIcon class="sm-icon"/></div>
   </div>
   <hr />
 </div>
