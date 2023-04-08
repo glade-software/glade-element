@@ -72,6 +72,7 @@
     "has": "^1.0.3",
     "is-core-module": "^2.10.0",
     "is-module": "^1.0.0",
+    "lexical": "^0.9.1",
     "npm-watch": "^0.11.0",
     "path-parse": "^1.0.7",
     "picomatch": "^2.3.1",

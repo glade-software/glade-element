@@ -21,10 +21,13 @@ export default {
     typescript(),
     replace({
       "Reflect.decorate": "undefined",
+      "process.env.NODE_ENV": JSON.stringify(
+        !!production ? "production" : "development" // lexical uses this, but it's not defined in the browser
+      ),
     }),
     resolve({
-      // Below is the important line!
-      dedupe: ["svelte", "svelte/transition", "svelte/internal"],
+      // Below is an important line!
+      dedupe: ["svelte", "svelte/transition", "svelte/internal", "lexical"],
       browser: true,
       main: true,
     }),
