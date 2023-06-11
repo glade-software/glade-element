@@ -55,7 +55,6 @@ export default class Annotation {
   }
 
 
-
   async getHtmlString() {
     const getHTMLFromMarkdownStringArray = httpsCallable(functions,"getHTMLFromMarkdownStringArray");
 

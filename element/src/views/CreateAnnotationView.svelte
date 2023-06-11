@@ -4,15 +4,22 @@
   import "@material/mwc-button";
   import "@material/mwc-textarea";
   import "@material/mwc-linear-progress";
-
-  import {auth} from "../firebase-instance";
+  import RichTextComposer from '../components/RichTextComposer.svelte';
+  import { auth } from "../firebase-instance";
 
   import Annotation from "../Annotation";
   import AnnotationComponent from "../components/Annotation.svelte";
   import { DialogView } from "../DialogView";
   import type { Err } from "../Err";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
+  // import type { EditorUpdateOptions } from "lexical/LexicalEditor";
+
   const dispatch = createEventDispatcher();
+  // const editor = createEditor({
+  //   namespace: "GladeEditor",
+  //   onError: console.error,
+  //   editable: true,
+  // });
 
   /**
    * Sets the activeView in GladeAnnotatable
@@ -34,7 +41,7 @@
     console.debug("dispatching", err.code);
     dispatch("error", err);
   }
-
+  let editorDiv: HTMLDivElement;
   export let gladedocumenthash: string = "0";
   export let focusedGladeDOMNodeHash: number = 0;
   export let apikey: string;
@@ -50,19 +57,24 @@
     plainTextBody,
     htmlString,
     postedBy: {
-      displayName: auth.currentUser?.displayName || 'tiny-anonymous-ocelot', // If the user is creating their first anon post, the displayName hasn't sync'd yet
+      displayName: auth.currentUser?.displayName || "tiny-anonymous-ocelot", // If the user is creating their first anon post, the displayName hasn't sync'd yet
       uid: auth.currentUser?.uid,
     },
   });
 
+  onMount(() => {
+    console.log("onMount");
+    console.log("editorDiv", editorDiv);
+  });
+
   async function handleClickPreview() {
-    if (!plainTextBody) {
-      setError({
-        message: "You need to add content before previewing!",
-        code: "CreateAnnotationView.handleClickPreview.nothingToPreview",
-      });
-      return;
-    }
+    // if (!plainTextBody) {
+    //   setError({
+    //     message: "You need to add content before previewing!",
+    //     code: "CreateAnnotationView.handleClickPreview.nothingToPreview",
+    //   });
+    //   return;
+    // }
     showPreview = true;
     htmlString = (await pendingAnnotation.getHtmlString()) || undefined;
   }
@@ -126,35 +138,51 @@
       --mdc-theme-primary: red;
     }
     mwc-linear-progress {
-    --mdc-theme-primary: rgb(78, 205, 196);
+      --mdc-theme-primary: rgb(78, 205, 196);
+    }
+    #gladeEditorDiv {
+      min-width: 500px;
+      min-height: 24px;
+      border: 1px solid #6200ee;
+      margin: 8px 3px;
+      padding: 0px 3px;
     }
   </style>{#if showPreview}
     <div>
-      <AnnotationComponent annotation={pendingAnnotation} isPreview={true} deleteAnnotation={null}/>
+      <AnnotationComponent
+        annotation={pendingAnnotation}
+        isPreview={true}
+        deleteAnnotation={null}
+      />
     </div>
   {:else}
-    <mwc-textarea
-      outlined="true"
-      value={plainTextBody}
-      placeholder=""
-      on:change={handlePlainTextBodyChange}
-    />
+    <!-- <div id="gladeEditorDiv" contenteditable bind:this={editorDiv} /> -->
+    <RichTextComposer/>
   {/if}
+
+
   <div class="buttonShelf">
+    
     <mwc-button class="cancel" on:click={handleClickDiscard}>discard</mwc-button
     >
     <div>
       {#if showPreview}
-        <mwc-button on:click={handleClickEdit} disabled={publishing}>edit!</mwc-button>
+        <mwc-button on:click={handleClickEdit} disabled={publishing}
+          >edit!</mwc-button
+        >
       {:else}
-        <mwc-button on:click={handleClickPreview} disabled={publishing}>show preview!</mwc-button>
+        <mwc-button on:click={handleClickPreview} disabled={publishing}
+          >show preview!</mwc-button
+        >
       {/if}
-      <mwc-button on:click={handleClickPublish} disabled={publishing}>publish!</mwc-button>
+      <mwc-button on:click={handleClickPublish} disabled={publishing}
+        >publish!</mwc-button
+      >
     </div>
   </div>
   <div>
     {#if publishing}
-    <div><mwc-linear-progress indeterminate /></div>
+      <div><mwc-linear-progress indeterminate /></div>
     {/if}
   </div>
 </div>

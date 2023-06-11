@@ -6,6 +6,7 @@
 /dist/
 
 /app/node_modules/
+/element/node_modules/
 
 # next.js
 /app/.next/

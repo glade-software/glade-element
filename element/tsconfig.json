@@ -8,10 +8,7 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "lib": ["es2017", "dom", "dom.iterable"],
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "rootDir": "./src"
+    "allowSyntheticDefaultImports": true
   },
   "extends": "@tsconfig/svelte/tsconfig.json",
-  "include": ["src/**/*"],
-  "exclude": []
 }
