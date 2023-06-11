@@ -4,7 +4,7 @@
   import "@material/mwc-button";
   import "@material/mwc-textarea";
   import "@material/mwc-linear-progress";
-  import RichTextComposer from '../components/RichTextComposer.svelte';
+  // import RichTextComposer from "../components/RichTextComposer.svelte";
   import { auth } from "../firebase-instance";
 
   import Annotation from "../Annotation";
@@ -68,13 +68,13 @@
   });
 
   async function handleClickPreview() {
-    // if (!plainTextBody) {
-    //   setError({
-    //     message: "You need to add content before previewing!",
-    //     code: "CreateAnnotationView.handleClickPreview.nothingToPreview",
-    //   });
-    //   return;
-    // }
+    if (!plainTextBody) {
+      setError({
+        message: "You need to add content before previewing!",
+        code: "CreateAnnotationView.handleClickPreview.nothingToPreview",
+      });
+      return;
+    }
     showPreview = true;
     htmlString = (await pendingAnnotation.getHtmlString()) || undefined;
   }
@@ -156,13 +156,17 @@
       />
     </div>
   {:else}
+    <mwc-textarea
+      outlined="true"
+      value={plainTextBody}
+      placeholder=""
+      on:change={handlePlainTextBodyChange}
+    />
     <!-- <div id="gladeEditorDiv" contenteditable bind:this={editorDiv} /> -->
-    <RichTextComposer/>
+    <!-- <RichTextComposer/> -->
   {/if}
 
-
   <div class="buttonShelf">
-    
     <mwc-button class="cancel" on:click={handleClickDiscard}>discard</mwc-button
     >
     <div>
