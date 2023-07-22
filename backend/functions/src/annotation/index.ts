@@ -1,12 +1,11 @@
 import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
 
-import remarkEmbedder from '@remark-embedder/core'
+import {default as remarkEmbedder} from '@remark-embedder/core'
 import oembedTransformer from '@remark-embedder/transformer-oembed'
 // or, if you're using CommonJS require:
-import remark from 'remark'
+import * as remark from 'remark'
 import htmlify from 'remark-html'
-
 
 import { ANNOTATION_LIMIT, ROOT_API_KEY } from "../util/config";
 

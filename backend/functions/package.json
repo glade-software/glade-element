@@ -19,8 +19,8 @@
     "@remark-embedder/core": "^3.0.2",
     "@remark-embedder/transformer-oembed": "^3.0.0",
     "crypto-js": "^4.1.1",
-    "firebase-admin": "^10.0.2",
-    "firebase-functions": "^3.18.0",
+    "firebase-admin": "^11.10.1",
+    "firebase-functions": "^4.4.1",
     "remark": "^14.0.2",
     "remark-html": "^15.0.1",
     "unique-names-generator": "^4.7.1"
