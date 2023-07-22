@@ -1,8 +1,8 @@
 import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
 
-import remarkEmbedder from '@remark-embedder/core'
-import oembedTransformer from '@remark-embedder/transformer-oembed'
+import * as remarkEmbedder from '@remark-embedder/core'
+import * as oembedTransformer from '@remark-embedder/transformer-oembed'
 // or, if you're using CommonJS require:
 // const {default: oembedTransformer} = require('@remark-embedder/transformer-oembed')
 import remark from 'remark'
