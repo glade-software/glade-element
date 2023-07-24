@@ -62,7 +62,6 @@
     "@material/mwc-linear-progress": "^0.25.3",
     "@material/mwc-textarea": "^0.20.0",
     "builtin-modules": "^3.2.0",
-    "cohere-js": "^1.0.21",
     "deepmerge": "^4.2.2",
     "estree-walker": "^3.0.1",
     "firebase": "^9.9.2",
@@ -76,8 +75,7 @@
     "picomatch": "^2.3.1",
     "require-relative": "^0.8.7",
     "resolve": "^1.22.1",
-    "sourcemap-codec": "^1.4.8",
-    "svelte-lexical": "^0.3.2"
+    "sourcemap-codec": "^1.4.8"
   },
   "repository": {
     "type": "git",

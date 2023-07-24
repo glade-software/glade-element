@@ -13591,13 +13591,6 @@ function sf(i) {
     mwc-linear-progress {
       --mdc-theme-primary: rgb(78, 205, 196);
     }
-    #gladeEditorDiv {
-      min-width: 500px;
-      min-height: 24px;
-      border: 1px solid #6200ee;
-      margin: 8px 3px;
-      padding: 0px 3px;
-    }
   `, r.c(), o = F(), s = I("div"), a = I("mwc-button"), a.textContent = "discard", d = F(), l = I("div"), k.c(), u = F(), c = I("mwc-button"), f = fe("publish!"), h = F(), p = I("div"), A && A.c(), this.c = R, C(a, "class", "cancel"), C(
         c,
         "disabled",
