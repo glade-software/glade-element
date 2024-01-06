@@ -1,22 +1,11 @@
 import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
 
-import remark = require("remark");
-
-import htmlify = require("remark-html");
-
-import { default as remarkEmbedder } from "@remark-embedder/core";
-import { default as oembedTransformer } from "@remark-embedder/transformer-oembed";
-
 import { ANNOTATION_LIMIT, ROOT_API_KEY } from "../util/config";
 
 import { validateAnnotation } from "./validateAnnotation";
 
 const db = admin.firestore();
-
-interface GetHTMLFromMarkdownArgs {
-  markdownStrings: string[];
-}
 
 type PostedBy = {
   uid: string;
@@ -26,74 +15,6 @@ type PostedBy = {
 interface Annotation {
   uid: string;
 }
-
-export const getHTMLFromMarkdownStringArray = functions.https.onCall(
-  async ({ markdownStrings }: GetHTMLFromMarkdownArgs, context) => {
-    // this Array has one entry when we are creating a new annotation or displaying a preview
-    // it contains one per annotation when we are reading an entire list
-
-    if (!context.auth) {
-      throw new functions.https.HttpsError(
-        "unauthenticated",
-        "You need to be authenticated to getHTMLFromMarkdown!"
-      );
-    }
-
-    if (!Array.isArray(markdownStrings)) {
-      throw new functions.https.HttpsError(
-        "invalid-argument",
-        '"markdownStrings" must be an array of strings!'
-      );
-    }
-
-    const htmlStrings = [];
-
-    if (Array.isArray(markdownStrings)) {
-      for (let index = 0; index < markdownStrings.length; index++) {
-        const markdownString = markdownStrings[index];
-        if (
-          !(typeof markdownString === "string") ||
-          markdownString.length === 0
-        ) {
-          // Throwing an HttpsError so that the client gets the error details.
-          throw new functions.https.HttpsError(
-            "invalid-argument",
-            'The "markdownStrings" Array items each must be non-empty strings'
-          );
-        }
-
-        try {
-          // convert the current markdownString into an htmlString
-          const htmlResult = await remark()
-            .use(remarkEmbedder, {
-              transformers: [
-                [oembedTransformer, { params: { maxwidth: 800 } }],
-              ],
-            })
-            .use(htmlify)
-            .process(markdownString);
-          // add the new htmlString to the response Array
-          htmlStrings.push(htmlResult.toString());
-        } catch (error) {
-          throw new functions.https.HttpsError(
-            "internal",
-            `markdownString[${index}]\n ${error}`
-          );
-        }
-      }
-    }
-
-    if (htmlStrings.length !== markdownStrings.length) {
-      throw new functions.https.HttpsError(
-        "internal",
-        `failed to process all markdownStrings \n
-            m${markdownStrings.length}\nh${htmlStrings.length}`
-      );
-    }
-    // return all new htmlStrings
-    return { htmlStrings };
-  }
-);
 
 export const getAnnotations = functions.https.onCall(async (query) => {
   if (query.gladeDocumentHash) {
