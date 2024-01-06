@@ -14400,7 +14400,7 @@ class oa extends ye {
 customElements.define("account-icon", oa);
 function yf(i) {
   let e, t, n, r, o, s, a, d, l, u, c, f, h, p, _, x;
-  return c = new oa({ props: { class: "sm-icon" } }), {
+  return c = new oa({}), {
     c() {
       e = I("div"), t = I("style"), t.textContent = `hr {
       width: 100%;
