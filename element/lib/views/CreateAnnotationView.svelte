@@ -5,13 +5,14 @@
   import "@material/mwc-textarea";
   import "@material/mwc-linear-progress";
 
-  import {auth} from "../firebase-instance";
+  import { auth } from "../firebase-instance";
 
   import Annotation from "../Annotation";
   import AnnotationComponent from "../components/Annotation.svelte";
   import { DialogView } from "../DialogView";
   import type { Err } from "../Err";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
+
   const dispatch = createEventDispatcher();
 
   /**
@@ -50,7 +51,7 @@
     plainTextBody,
     htmlString,
     postedBy: {
-      displayName: auth.currentUser?.displayName || 'tiny-anonymous-ocelot', // If the user is creating their first anon post, the displayName hasn't sync'd yet
+      displayName: auth.currentUser?.displayName || "tiny-anonymous-ocelot", // If the user is creating their first anon post, the displayName hasn't sync'd yet
       uid: auth.currentUser?.uid,
     },
   });
@@ -126,11 +127,15 @@
       --mdc-theme-primary: red;
     }
     mwc-linear-progress {
-    --mdc-theme-primary: rgb(78, 205, 196);
+      --mdc-theme-primary: rgb(78, 205, 196);
     }
   </style>{#if showPreview}
     <div>
-      <AnnotationComponent annotation={pendingAnnotation} isPreview={true} deleteAnnotation={null}/>
+      <AnnotationComponent
+        annotation={pendingAnnotation}
+        isPreview={true}
+        deleteAnnotation={null}
+      />
     </div>
   {:else}
     <mwc-textarea
@@ -140,21 +145,28 @@
       on:change={handlePlainTextBodyChange}
     />
   {/if}
+
   <div class="buttonShelf">
     <mwc-button class="cancel" on:click={handleClickDiscard}>discard</mwc-button
     >
     <div>
       {#if showPreview}
-        <mwc-button on:click={handleClickEdit} disabled={publishing}>edit!</mwc-button>
+        <mwc-button on:click={handleClickEdit} disabled={publishing}
+          >edit!</mwc-button
+        >
       {:else}
-        <mwc-button on:click={handleClickPreview} disabled={publishing}>show preview!</mwc-button>
+        <mwc-button on:click={handleClickPreview} disabled={publishing}
+          >show preview!</mwc-button
+        >
       {/if}
-      <mwc-button on:click={handleClickPublish} disabled={publishing}>publish!</mwc-button>
+      <mwc-button on:click={handleClickPublish} disabled={publishing}
+        >publish!</mwc-button
+      >
     </div>
   </div>
   <div>
     {#if publishing}
-    <div><mwc-linear-progress indeterminate /></div>
+      <div><mwc-linear-progress indeterminate /></div>
     {/if}
   </div>
 </div>

@@ -313,7 +313,7 @@
 
 <!-- The host website's DOM-->
 <article
-  glade-document-hash={gladedocumenthash}
+  data-glade-document-hash={gladedocumenthash}
   bind:this={article}
   on:mouseup={handleArticleMouseUp}
 >

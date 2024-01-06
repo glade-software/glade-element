@@ -43,7 +43,9 @@
   <div class="heading">
     <div class="title">{title}</div>
     <span class="shamelessSpacer" />
-    <div class="sm-icon" on:click={handleClickAccount}><AccountIcon class="sm-icon"/></div>
+    <div class="sm-icon" on:click={handleClickAccount}>
+      <AccountIcon/>
+    </div>
   </div>
   <hr />
 </div>
