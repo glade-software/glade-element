@@ -16,7 +16,7 @@ function Home() {
         <Head>
           <script
             type="module"
-            src="https://unpkg.com/@glade-software/glade-annotatable"
+            src="https://unpkg.com/@glade-software/glade-annotatable?module"
           ></script>
           <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
           <meta name="apple-mobile-web-app-title" content="Glade Docs"/>
