@@ -9,7 +9,7 @@ To get started you just need to include our javascript library on your page like
 ```html
 <script
   type="module"
-  src="https://unpkg.com/@glade-software/glade-annotatable"
+  src="https://unpkg.com/@glade-software/glade-annotatable?module"
 ></script>
 ```
 

@@ -82,7 +82,7 @@
     "url": "https://github.com/glade-software/glade-element"
   },
   "author": "Matt Johnston",
-  "license": "BSD-3-Clause",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/glade-software/glade-element/issues"
   },
