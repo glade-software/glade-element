@@ -21,12 +21,6 @@ export type AnnotationData = {
   uid?: string;
 };
 
-interface GetHTMLFromMarkdownStringArrayResponse {
-  data:{
-  htmlStrings: string[];
-  }
-}
-
 interface PublishAnnotationResponse {
   data:{
   uid: string;
@@ -56,13 +50,13 @@ export default class Annotation {
 
 
   async getHtmlString() {
-    const getHTMLFromMarkdownStringArray = httpsCallable(functions,"getHTMLFromMarkdownStringArray");
-
     try {
-      const result = await getHTMLFromMarkdownStringArray({
-        markdownStrings: [this.plainTextBody],
-      }) as GetHTMLFromMarkdownStringArrayResponse;
-      this.htmlString = result.data.htmlStrings[0];
+      const response = await fetch('https://marker.deno.dev',{
+        method: 'POST',
+        body: JSON.stringify({markdown: this.plainTextBody}),
+      })
+      const result = await response.json();
+      this.htmlString = result.html;
       return this.htmlString;
     } catch (getHTMLFromMarkdownError) {
       console.error(getHTMLFromMarkdownError);
