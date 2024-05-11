@@ -89,7 +89,7 @@ module.exports = {
 
           // Please change this to your repo.
           editUrl:
-            "https://github.com/glade-software/glade-element/edit/master/docs/",
+            "https://github.com/glade-software/glade-element/edit/main/docs/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
