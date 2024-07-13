@@ -99,6 +99,8 @@ function Home() {
           <link rel="canonical" href="https://docs.glade.app" />
           <style>
             {`
+              
+            .glade-has-annotations {
               cursor: context-menu;
               position: relative;
               display: inline-block;
