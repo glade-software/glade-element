@@ -163,14 +163,16 @@ function Home() {
                     annotations there too.
                   </p>
                   <p>
-                    You can use Glade for free by including the tag anywhere on
-                    the web.
-                  </p>
-                  <p>
-                    If you want to own or moderate the conversation on your site
-                    exclusively, you'll need an API Key.
+                    You can use Glade for free by wrapping content with the{" "}
+                    {"<glade-annotatable>"} tag anywhere on the web.
                   </p>
                 </glade-annotatable>
+                <p>
+                  If you want to own or moderate the conversation on your site
+                  exclusively, email{" "}
+                  <a href="mailto:matt@glade.software">matt@glade.software</a>{" "}
+                  for an API key!
+                </p>
               </div>
             </div>
           </section>
