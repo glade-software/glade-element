@@ -23,6 +23,15 @@
   justify-content: center;
 }
 
+.getStarted {
+  margin: 1rem;
+  border: 2px solid whitesmoke;
+}
+
+.getStarted:hover {
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+}
+
 .features {
   display: flex;
   align-items: center;

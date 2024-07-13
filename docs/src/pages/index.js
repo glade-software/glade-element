@@ -136,7 +136,7 @@ function Home() {
             <div className={styles.buttons}>
               <Link
                 className={classnames(
-                  "button button--outline button--tertiary button--lg",
+                  "button button--outline button--tertiary button--lg button--rounded button--border",
                   styles.getStarted
                 )}
                 to={useBaseUrl("docs/getting-started")}
