@@ -102,15 +102,10 @@ function Home() {
               
             .glade-has-annotations {
               cursor: context-menu;
-              position: relative;
-              display: inline-block;
               background: linear-gradient(90deg, #e3f2fd, #bbdefb, #e3f2fd);
-              background-size: 200% 100%;
               color: #0d47a1;
               animation: shimmer 4s infinite;
-              padding: 0.2em 0.5em;
               border-radius: 5px;
-              overflow: hidden;
             }
 
             @keyframes shimmer {
@@ -124,7 +119,10 @@ function Home() {
 
             glade-annotatable > * {
               cursor: copy;
-              padding: 12px;
+              padding: 0.2em 0.5em;
+              position: relative;
+              display: inline-block;
+              background-size: 200% 100%;
             }
           `}
           </style>
@@ -150,7 +148,7 @@ function Home() {
           <section className={styles.features}>
             <div className="container">
               <div className="row" style={{ justifyContent: "center" }}>
-                <glade-annotatable verbose>
+                <glade-annotatable className="row" style={{ justifyContent: "center" }} verbose>
                   <p>
                     You can add annotations to this page because it is using
                     Glade.
@@ -169,12 +167,17 @@ function Home() {
                     {"<glade-annotatable>"} tag anywhere on the web.
                   </p>
                 </glade-annotatable>
-                <p>
-                  If you want to own or moderate the conversation on your site
-                  exclusively, email{" "}
-                  <a href="mailto:matt@glade.software">matt@glade.software</a>{" "}
-                  for an API key!
-                </p>
+                <div style={{flexGrow: 1}}>
+                  <div>
+                    <hr style={{color: "grey"}}/>
+                  </div>
+                  <p style={{fontFamily: 'monospace'}}>
+                    If you want to own or moderate the conversation on your site
+                    exclusively, email{" "}
+                    <a href="mailto:matt@glade.software">matt@glade.software</a>{" "}
+                    for an early API key!
+                  </p>
+                </div>
               </div>
             </div>
           </section>
