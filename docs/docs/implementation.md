@@ -42,7 +42,6 @@ Let's assume you've gone through the [Getting Started Guide](/docs/getting-start
 
 At that point after your page loads, the following events will occur in the browser as a result of the component being rendered to the DOM.
 
-
 The Svelte lifecycle event [onMount](https://svelte.dev/docs#onMount) will be triggered, and we call `startGlade()`, which will perform the following 3 actions:
 
 1. Glade will `setSemanticContentHashes`, which means it will generate a unique identifier for each node within the glade document as they appear to the user.
@@ -52,6 +51,6 @@ The Svelte lifecycle event [onMount](https://svelte.dev/docs#onMount) will be tr
 
 2. Next, all these hashes are concatenated and hashed once more, this new hash is called the `gladeDocumentHash` and this is used as the unique identifier for the Glade [**document**](/docs/glossary#document).
 
-3. Then `getAnnotations` is called and all Glade [**annotations**](/docs/glossary#annotations) are looked up by their `gladeDocumentHash` in [firestore](https://firebase.google.com/products/firestore), and are subsequently iterated through in the client and assigned to their [**referent**](/docs/glossary#referent) nodes by looking at the annotation's `gladeDomNodeHash` property and comparing them to the ones in the DOM as attributes currently.
+3. Then `getAnnotations` is called and all Glade [**annotations**](/docs/glossary#annotation) are looked up by their `gladeDocumentHash` in [firestore](https://firebase.google.com/products/firestore), and are subsequently iterated through in the client and assigned to their [**referent**](/docs/glossary#referent) nodes by looking at the annotation's `gladeDomNodeHash` property and comparing them to the ones in the DOM as attributes currently.
 
 4. If a [**referent**](/docs/glossary#referent) has annotations, the `glade-has-annotations` [class](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/class) is applied to that node so that users can style their nodes accordingly.

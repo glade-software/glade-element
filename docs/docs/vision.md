@@ -12,4 +12,4 @@ Annotations are just more online content. They can be any approved format of onl
 
 Annotations are [created](creating-annotations) using **Markdown** and can also render embeds from all known [oembed providers](https://oembed.com/providers.json)!
 
-The vision is to enable users to see and create annotations on every webpage, but we'd love to start with just yours <3
+The vision is to enable users to see and create annotations on every webpage, but we'd love to start with just yours ❤️

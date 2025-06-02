@@ -135,7 +135,7 @@ function Home() {
               <Link
                 className={classnames(
                   "button button--outline button--tertiary button--lg button--rounded button--border",
-                  styles.getStarted
+                  styles.getStarted,
                 )}
                 to={useBaseUrl("docs/getting-started")}
               >
@@ -148,7 +148,11 @@ function Home() {
           <section className={styles.features}>
             <div className="container">
               <div className="row" style={{ justifyContent: "center" }}>
-                <glade-annotatable className="row" style={{ justifyContent: "center" }} verbose>
+                <glade-annotatable
+                  className="row"
+                  style={{ justifyContent: "center" }}
+                  verbose
+                >
                   <p>
                     You can add annotations to this page because it is using
                     Glade.
@@ -167,11 +171,11 @@ function Home() {
                     {"<glade-annotatable>"} tag anywhere on the web.
                   </p>
                 </glade-annotatable>
-                <div style={{flexGrow: 1}}>
+                <div style={{ flexGrow: 1 }}>
                   <div>
-                    <hr style={{color: "grey"}}/>
+                    <hr style={{ color: "grey" }} />
                   </div>
-                  <p style={{fontFamily: 'monospace'}}>
+                  <p style={{ fontFamily: "monospace" }}>
                     If you want to own or moderate the conversation on your site
                     exclusively, email{" "}
                     <a href="mailto:matt@glade.software">matt@glade.software</a>{" "}

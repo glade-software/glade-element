@@ -1,5 +1,12 @@
 module.exports = {
   someSidebar: {
-    Docs: [ 'vision','getting-started', 'creating-annotations',  'objectives', 'glossary', 'implementation']
+    Docs: [
+      "vision",
+      "getting-started",
+      "creating-annotations",
+      "objectives",
+      "glossary",
+      "implementation",
+    ],
   },
 };
