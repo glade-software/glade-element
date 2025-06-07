@@ -11,7 +11,7 @@
     "@nandorojo/swr-firestore": "^0.16.0",
     "crypto-js": "^4.0.0",
     "firebase": "^7.23.0",
-    "firebase-admin": "^9.6.0",
+    "firebase-admin": "^11.1.0",
     "formik": "^2.1.4",
     "grommet": "^2.17.1",
     "next": "^10.0.1",
