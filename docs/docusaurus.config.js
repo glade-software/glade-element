@@ -4,8 +4,8 @@ module.exports = {
   url: "https://docs.glade.app",
   baseUrl: "/",
   favicon: "img/favicon.ico",
-  organizationName: "glade-software", // Usually your GitHub org/user name.
-  projectName: "glade-annotatable", // Usually your repo name.
+  organizationName: "glade-software", 
+  projectName: "glade-annotatable", 
   themeConfig: {
     algolia: {
       appId: "DM7GDZHQA2",
